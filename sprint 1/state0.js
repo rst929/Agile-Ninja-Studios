@@ -6,7 +6,7 @@ var st0 = {
 
 function p0() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
-    game.load.image('castle', 'assets/castle.png');
+    game.load.image('castle', 'assets/castle_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('sam', 'assets/player.png', 110, 110);
@@ -34,7 +34,7 @@ function c0() {
     // create platform for ground
     platforms = game.add.group();
     platforms.enableBody = true;
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
+    var ground = platforms.create(0, game.world.height - 25, 'ground');
     ground.scale.setTo(2, 2); //make ground right size
     
     stone = game.add.sprite(0, game.world.height - 290, 'stone');
