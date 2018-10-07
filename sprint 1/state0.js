@@ -21,6 +21,8 @@ var attackButton; // F to attack
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
+var instructions; //game instructions'
+
 
 function c0() {
     //  Physics
@@ -98,6 +100,10 @@ function c0() {
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
+    
+    //instructions
+    instructions = game.add.text(50,200, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
+
 }
 
 var pHealth = 100; //player health
