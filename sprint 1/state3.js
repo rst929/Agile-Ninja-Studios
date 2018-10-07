@@ -1,10 +1,10 @@
-var st0 = {
-    preload: p0,
-    create: c0,
-    update: u0
+var st3 = {
+    preload: p3,
+    create: c3,
+    update: u3
 }
 
-function p0() {
+function p3() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_v2.png');
     game.load.image('ground', 'assets/platform.png');
@@ -13,7 +13,8 @@ function p0() {
     game.load.image('stone', 'assets/stone.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
-    game.load.image('wave', 'assets/Wave smash.png')
+    game.load.image('wave', 'assets/Wave smash.png');
+    game.load.image('door_closed','assets/closed_door.png');
 }
 
 var image; //background
@@ -24,7 +25,7 @@ var sumoMusic; //boss music
 var instructions; //game instructions'
 
 
-function c0() {
+function c3() {
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
     image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
@@ -49,8 +50,8 @@ function c0() {
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
-    sumo = game.add.sprite(game.world.width - 200, game.world.height - 450, 'sumo');
-    sumo.scale.setTo(3,3);
+    //door
+    door = game.add.sprite(game.world.width-250, game.world.height-250, 'door');
     
     //sword hitbox creation
     hitbox = game.add.group();
@@ -61,7 +62,6 @@ function c0() {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
-    game.physics.arcade.enable(sumo);
     game.physics.arcade.enable(swordHitbox);
     
     //  Player physics properties
@@ -70,33 +70,26 @@ function c0() {
     player.body.collideWorldBounds = true;
     player.body.setSize(15, 40, 0, 100);
 
-    //sumo physics properties
-    sumo.body.bounce.y = 0.2;
-    sumo.body.gravity.y = 1000;
-    sumo.body.collideWorldBounds = true;
-    sumo.body.setSize(70, 100, 30, 0);
+
+    //enable door
+    game.physics.arcade.enable(door);
     
-    //wave properties 
-    wave = game.add.sprite(sumo.x -190, sumo.y, 'wave');
-    wave.scale.setTo(.8, .8);
-    game.physics.arcade.enable(wave);
-    wave.body.setSize(50, 200, 115, 100);
-    wave.kill();
+    //  Player physics properties
+    door.body.bounce.y = 0.2;
+    door.body.gravity.y = 1000;
+    door.body.collideWorldBounds = true;
+    door.body.setSize(15, 40, 0, 100);
     
     //  animations
     player.animations.add('left', [0, 1], 10, true);
     player.animations.add('right', [0, 1], 10, true);
     player.animations.add('attack', [2, 3, 4], 10, true);
-    sumo.animations.add('attack', [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 2, 1, 0], 20, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#000' });
-    bossHealth = game.add.text(500,16, 'Boss Health: 100', { fontSize: '32px', fill: '#000' });
-    game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
-    game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
-    game.time.events.loop(Phaser.Timer.SECOND * 1, makePlayerVulnerable, this);
+
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
@@ -109,14 +102,12 @@ function c0() {
 var pHealth = 100; //player health
 var bHealth = 100; //boss / sumo health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
-var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 
-function u0() {
+function u3() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check
-    var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
-    var runIntoSumo = game.physics.arcade.overlap(player, sumo); // Overlap with player and sumo
+    var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
     
     //movement tree for player
     if (cursors.left.isDown) {
@@ -143,34 +134,7 @@ function u0() {
     playerHealth.text = "Sam: " + pHealth;
     bossHealth.text = "Boss: " + bHealth;
     
-    //if wave is alive, send it to the left offscreen and check if it hits player
-    if(wave.alive) {
-        wave.x -= 7;
-        if(wave.x < -150) {
-            wave.kill();
-        } else {
-            if(game.physics.arcade.overlap(player, wave) && playerVulnerable) {
-                pDamage(25);
-                playerVulnerable = false;
-            }
-        }
-    }
-    
-    //if player runs into sumo, damage him
-    if(runIntoSumo) {
-        if(playerVulnerable) {
-            pDamage(10);
-            playerVulnerable = false;
-        }
-    }
-    
-    //check for winning/defeat conditions
-    if(bHealth <= 0) { // victory
-        game.state.start('state2');
-    } else if(pHealth <= 0) { // defeat
-        game.state.start('state1');
-    }
-}
+   
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 function deathScene() {
@@ -191,25 +155,4 @@ function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
 }
-
-
-function sumoAttack() {
-    sumo.animations.play('attack');
-    sumo.animations.currentAnim.onComplete.add(waveSpawn)
-}
-
-function waveSpawn() {
-    wave.reset(sumo.x - 50, sumo.y + 90);
-}
-
-function pDamage(amount) {
-    pHealth -= amount;
-}
-
-function makeSumoVulnerable() {
-    sumoVulnerable = true;
-}
-
-function makePlayerVulnerable() {
-    playerVulnerable = true;
 }
