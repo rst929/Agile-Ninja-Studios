@@ -14,6 +14,7 @@ function p4() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('closed_door', 'assets/closed_door.png');
+    game.load.image('open_door', 'assets/open_door.png');
     game.load.image('wave', 'assets/Wave smash.png')
 }
 
@@ -53,6 +54,8 @@ function c4() {
     //the door
     door = game.add.sprite(500, game.world.height -390, 'closed_door');
     door.scale.setTo(.4,.4);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immovable = true;
     //sword hitbox creation
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -130,7 +133,11 @@ function u4() {
     playerHealth.text = "Sam: " + pHealth;
     
     if(dHealth <= 0) { // victory
-        game.state.start('state3');
+        door.kill();
+        open = game.add.sprite(500, game.world.height -390, 'open_door');
+        open.scale.setTo(.4,.4);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
     } 
     
   
