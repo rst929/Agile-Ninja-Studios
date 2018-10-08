@@ -50,8 +50,8 @@ function c4() {
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
-    door = game.add.sprite(500, game.world.height -250, 'closed_door');
-    game.physics.enable(door, Phaser.Physics.ARCADE);
+    //the door
+    game.add.sprite(500, game.world.height -250, 'closed_door');
 
     //sword hitbox creation
     hitbox = game.add.group();
