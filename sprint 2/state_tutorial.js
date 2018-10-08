@@ -6,7 +6,7 @@ var st_tut = {
 
 function p_tut() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
-    game.load.image('castle', 'assets/castle_v2.png');
+    game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('sam', 'assets/player.png', 110, 110);
@@ -14,6 +14,7 @@ function p_tut() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
+    game.load.image('stone_flat', 'assets/stone_flat.png')
 }
 
 var image; //background
@@ -37,9 +38,8 @@ function c_tut() {
     var ground = platforms.create(0, game.world.height - 25, 'ground');
     ground.scale.setTo(2, 2); //make ground right size
     
-    var stone1 = platforms.create(100, game.world.height - 400, 'stone');
+    var stone1 = platforms.create(200, game.world.height - 200, 'stone_flat');
     stone1.width = game.world.width/2;
-    //stone1.scale.setTo(1,1);
     
     stone = game.add.sprite(0, game.world.height - 290, 'stone');
     stone.width = game.width;
