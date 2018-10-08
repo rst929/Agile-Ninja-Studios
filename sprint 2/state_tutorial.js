@@ -16,6 +16,8 @@ function p_tut() {
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
     game.load.image('stone_flat', 'assets/stone_flat2.png')
+    game.load.image('open_door', 'assets/open_door.png');
+
     game.load.image('closed_door', 'assets/closed_door.png');
 }
 
@@ -61,14 +63,23 @@ function c_tut() {
     
     door = game.add.sprite(580, game.world.height-580, 'closed_door');
     door.scale.setTo(.4, .4);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immobile = true;
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     player.scale.setTo(.6,.6)
     
-    
+    //sword hitbox creation
+    hitbox = game.add.group();
+    hitbox.enableBody = true;
+    player.addChild(hitbox);
+    var swordHitbox = hitbox.create(0, 0, null);
+    swordHitbox.body.setSize(30, 20, player.width/3, 0);
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
+    //game.physics.arcade.enable(door);
+    game.physics.arcade.enable(swordHitbox);
     
     //  Player physics properties
     player.body.bounce.y = 0.2;
@@ -96,12 +107,15 @@ function c_tut() {
 
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
+var dHealth = 5; //player health
 
 
 function u_tut() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    
+    var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
+    var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -109,14 +123,11 @@ function u_tut() {
         movePRight();
     } else if(attackButton.isDown) {
         player.animations.play('attack');
-    }
-    /*else if(attackButton.isDown) {
-        player.animations.play('attack');
-        if(swordHit && sumoVulnerable) { //hitbox check for sumo boss to take away health
-            bHealth -= 5;
-            sumoVulnerable = false; 
-        } */
-    else {
+        if(swordHit) { 
+           dHealth-=5;
+        }
+        
+    } else {
         //  Stand still
         player.animations.stop();
         player.frame = 0;
@@ -134,12 +145,24 @@ function u_tut() {
 
     var tutorial_done = false
 
+    
+    if(dHealth <= 0) { // victory
+        door.kill();
+        open = game.add.sprite(580, game.world.height -580, 'open_door');
+        open.scale.setTo(.4,.4);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
+    } 
+    if(game.physics.arcade.overlap(player, open)){
+           var tutorial_done = true
+    } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
-        game.state.start('state0')
+        game.state.start('state1')
+        
     }
-    
 }
+
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
