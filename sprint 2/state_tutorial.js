@@ -9,8 +9,9 @@ function p_tut() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player.png', 110, 110);
+    game.load.spritesheet('sam', 'assets/player3.png', 172, 135);
     game.load.image('stone', 'assets/stone.png')
+    game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
@@ -52,6 +53,7 @@ function c_tut() {
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
+    player.scale.setTo(.75,.75)
     
     
     //  We need to enable physics on the player
