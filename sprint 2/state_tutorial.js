@@ -15,7 +15,7 @@ function p_tut() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
-    game.load.image('stone_flat', 'assets/stone_flat.png')
+    game.load.image('stone_flat', 'assets/stone_flat2.png')
 }
 
 var image; //background
@@ -23,6 +23,8 @@ var attackButton; // F to attack
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
+var instructions; //game instructions'
+
 
 function c_tut() {
     //  Physics
@@ -39,21 +41,26 @@ function c_tut() {
     var ground = platforms.create(0, game.world.height - 25, 'ground');
     ground.scale.setTo(2, 2); //make ground right size
     
-    var stone1 = platforms.create(200, game.world.height - 200, 'stone_flat');
+    var stone1 = platforms.create(-20, game.world.height - 200, 'stone_flat');
     stone1.width = game.world.width/2;
+    
+    var stone2 = platforms.create(500, game.world.height - 325, 'stone_flat');
+    stone2.width = game.world.width/2;
     
     stone = game.add.sprite(0, game.world.height - 290, 'stone');
     stone.width = game.width;
+    stone.height = 300;
     stone.height = 300;
     game.physics.enable(stone, Phaser.Physics.ARCADE);
 
     //  Make ground stable
     ground.body.immovable = true;
     stone1.body.immovable = true;
+    stone2.body.immovable = true;
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
-    player.scale.setTo(.75,.75)
+    player.scale.setTo(.6,.6)
     
     
     //  We need to enable physics on the player
@@ -78,6 +85,8 @@ function c_tut() {
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
+    
+    instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
 }
 
 var pHealth = 100; //player health
