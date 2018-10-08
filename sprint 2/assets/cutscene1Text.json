@@ -1,0 +1,15 @@
+{
+        "blackBackgroundText": [ 
+            {"text": "Sam, a chubby down-on-his luck failed samurai, abandons the way of the samurai in hopes of becoming a successful ninja. However, no one is willing to hire him. Jobless and weak, Sam seeks out his only comfort…", "type": 8},
+            {"text": "alcohol", "type": 6}
+        ],
+       "goonDialogue": [
+            {"text": "testing from L goon", "type": 3},
+            {"text": "testing from R goon", "type": 5},
+            {"text": "testing from L goon", "type": 3},
+            {"text": "testing from R goon", "type": 4},     
+            {"text": "testing from R goon again", "type": 4},     
+            {"text": "testing from L goon", "type": 2}
+        ]
+                        
+}
