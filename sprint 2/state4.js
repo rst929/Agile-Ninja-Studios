@@ -14,6 +14,7 @@ function p4() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('closed_door', 'assets/closed_door.png');
+    game.load.image('open_door', 'assets/open_door.png');
     game.load.image('wave', 'assets/Wave smash.png')
 }
 
@@ -51,8 +52,10 @@ function c4() {
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     //the door
-    game.add.sprite(500, game.world.height -250, 'closed_door');
-
+    door = game.add.sprite(500, game.world.height -390, 'closed_door');
+    door.scale.setTo(.4,.4);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immovable = true;
     //sword hitbox creation
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -62,7 +65,11 @@ function c4() {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
+    //game.physics.arcade.enable(door);
     game.physics.arcade.enable(swordHitbox);
+    
+
+
     
     //  Player physics properties
     player.body.bounce.y = 0.2;
@@ -94,11 +101,13 @@ function c4() {
 }
 
 var pHealth = 100; //player health
-
+var dHealth = 10;
 function u4() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    
+    var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
+    var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -106,6 +115,9 @@ function u4() {
         movePRight();
     } else if(attackButton.isDown) {
         player.animations.play('attack');
+        if(swordHit) { 
+           dHealth-=5;
+        }
         
     } else {
         //  Stand still
@@ -120,7 +132,13 @@ function u4() {
     }
     playerHealth.text = "Sam: " + pHealth;
     
- 
+    if(dHealth <= 0) { // victory
+        door.kill();
+        open = game.add.sprite(500, game.world.height -390, 'open_door');
+        open.scale.setTo(.4,.4);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
+    } 
     
   
     
