@@ -16,6 +16,7 @@ function p_tut() {
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
     game.load.image('stone_flat', 'assets/stone_flat2.png')
+    game.load.image('closed_door', 'assets/closed_door.png');
 }
 
 var image; //background
@@ -58,9 +59,12 @@ function c_tut() {
     stone1.body.immovable = true;
     stone2.body.immovable = true;
     
+    door = game.add.sprite(580, game.world.height-580, 'closed_door');
+    door.scale.setTo(.4, .4);
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     player.scale.setTo(.6,.6)
+    
     
     
     //  We need to enable physics on the player

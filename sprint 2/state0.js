@@ -43,8 +43,8 @@ function c0() {
     
     
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
-    style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 450 }; // text for dialogue
-    game.time.events.loop(Phaser.Timer.SECOND * 3, skipButtonActive, this);
+    style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 650 }; // text for dialogue
+    game.time.events.loop(Phaser.Timer.SECOND * 1, skipButtonActive, this);
     
     dialogue = game.add.text(10, 10, this.levelData.blackBackgroundText[index].text, style);
 }
@@ -56,7 +56,7 @@ function u0() {
         displayBackground(this.levelData.blackBackgroundText[index].type);
         dialogue = game.add.text(10, 10, this.levelData.blackBackgroundText[index].text, style);
     } else if(skipButton.isDown && active && this.levelData.goonDialogue.length > index2 + 1) {
-        style = { font: "bold 30px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 450 }; // text for dialogue
+        style = { font: "bold 30px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 550 }; // text for dialogue
         index2++;
         active = false;
         displayBackground(this.levelData.goonDialogue[index2].type);
