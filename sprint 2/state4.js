@@ -62,15 +62,11 @@ function c4() {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
-    game.physics.arcade.enable(door);
+    //game.physics.arcade.enable(door);
     game.physics.arcade.enable(swordHitbox);
     
 
-    // door physics
-    door.body.bounce.y = 0.2;
-    door.body.gravity.y = 1000;
-    door.body.collideWorldBounds = true;
-    door.body.setSize(70, 100, 30, 0);
+
     
     //  Player physics properties
     player.body.bounce.y = 0.2;
@@ -102,13 +98,13 @@ function c4() {
 }
 
 var pHealth = 100; //player health
-
+var dHealth = 10;
 function u4() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
     var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
-    var runIntoSumo = game.physics.arcade.overlap(player, door); // Overlap with player and sumo
+    var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -116,6 +112,9 @@ function u4() {
         movePRight();
     } else if(attackButton.isDown) {
         player.animations.play('attack');
+        if(swordHit) { 
+           dHealth-=5;
+        }
         
     } else {
         //  Stand still
@@ -130,7 +129,9 @@ function u4() {
     }
     playerHealth.text = "Sam: " + pHealth;
     
- 
+    if(dHealth <= 0) { // victory
+        game.state.start('state3');
+    } 
     
   
     
