@@ -80,13 +80,14 @@ function c_tut() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#000' });
+    playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
 
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
     instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
+    
 }
 
 var pHealth = 100; //player health
@@ -122,7 +123,7 @@ function u_tut() {
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -700;
     }
-    playerHealth.text = "Sam: " + pHealth;
+    playerHealth.text = "Sam HP: " + pHealth;
     
     
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
