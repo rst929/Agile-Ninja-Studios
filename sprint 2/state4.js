@@ -51,8 +51,8 @@ function c4() {
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     //the door
-    game.add.sprite(500, game.world.height -250, 'closed_door');
-
+    door = game.add.sprite(500, game.world.height -390, 'closed_door');
+    door.scale.setTo(.4,.4);
     //sword hitbox creation
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -62,7 +62,15 @@ function c4() {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
+    game.physics.arcade.enable(door);
     game.physics.arcade.enable(swordHitbox);
+    
+
+    // door physics
+    door.body.bounce.y = 0.2;
+    door.body.gravity.y = 1000;
+    door.body.collideWorldBounds = true;
+    door.body.setSize(70, 100, 30, 0);
     
     //  Player physics properties
     player.body.bounce.y = 0.2;
@@ -98,7 +106,9 @@ var pHealth = 100; //player health
 function u4() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    
+    var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
+    var runIntoSumo = game.physics.arcade.overlap(player, door); // Overlap with player and sumo
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
