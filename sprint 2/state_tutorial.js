@@ -17,7 +17,6 @@ function p_tut() {
     game.load.image('wave', 'assets/Wave smash.png')
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('open_door', 'assets/open_door.png');
-
     game.load.image('closed_door', 'assets/closed_door.png');
 }
 
@@ -32,7 +31,7 @@ var instructions; //game instructions'
 function c_tut() {
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
+    image = game.add.sprite(0, 0,'castle'); // first visible bkgd
     image.width = game.width;
     image.height = game.height + 100;
     game.physics.enable(image, Phaser.Physics.ARCADE); 

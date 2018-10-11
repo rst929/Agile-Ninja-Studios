@@ -33,7 +33,7 @@ var instructions; //game instructions'
 
 function c1() {
     
-    
+    game.world.setBounds(0, 0, 8000, 8000);
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
     image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
@@ -43,15 +43,17 @@ function c1() {
     
     //creating map
     var map = game.add.tilemap('castle_map');
-    map.addTilesetImage('stone_tile');
-    map.addTilesetImage('castle_tile');
+    map.addTilesetImage('stone_tile2','stone_tile');
+    map.addTilesetImage('castle_background','castle_tile');
     
     //creating layers
     var background = map.createLayer('Background');
     var stone_platforms = map.createLayer('Platforms');
     
-    
-    
+    background.resizeWorld();
+    stone_platforms.resizeWorld();
+    background.wrap=true;
+    stone_platforms.wrap=true;
     // create platform for ground
     platforms = game.add.group();
     platforms.enableBody = true;
@@ -91,7 +93,10 @@ function c1() {
     sumoMusic.play();
     
     instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
+    //camerma moves
     
+    game.camera.follow(player);
+
 }
 
 var pHealth = 100; //player health
