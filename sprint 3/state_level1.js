@@ -33,32 +33,32 @@ var instructions; //game instructions'
 
 function c1() {
     
-    game.world.setBounds(0, 0, 8000, 8000);
+    game.world.setBounds(0, 0, 8000, 2000);
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
-    image.width = game.width;
-    image.height = game.height + 100;
-    game.physics.enable(image, Phaser.Physics.ARCADE); 
+    //image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
+    //image.width = game.width;
+    //image.height = game.height + 100;
+    //game.physics.enable(image, Phaser.Physics.ARCADE); 
     
     //creating map
     var map = game.add.tilemap('castle_map');
     map.addTilesetImage('stone_tile2','stone_tile');
     map.addTilesetImage('castle_background','castle_tile');
-    
-    //creating layers
+    game.physics.enable(map, Phaser.Physics.ARCADE);    //creating layers
     var background = map.createLayer('Background');
     var stone_platforms = map.createLayer('Platforms');
-    
+    map.width=game.width;
+    map.height=game.height+100;
     background.resizeWorld();
     stone_platforms.resizeWorld();
-    background.wrap=true;
-    stone_platforms.wrap=true;
+    //background.wrap=true;
+    //stone_platforms.wrap=true;
     // create platform for ground
     platforms = game.add.group();
     platforms.enableBody = true;
-    var ground = platforms.create(0, game.world.height - 25, 'ground');
-    ground.scale.setTo(2, 2); //make ground right size
+    var ground = platforms.create(0, game.world.height - 150, 'ground');
+    ground.scale.setTo(7,7); //make ground right size
     
     //  Make ground stable
     ground.body.immovable = true;
@@ -106,7 +106,8 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 function u1() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    
+    //var hitPlatforms = game.physics.arcade.collide(player, stone_platforms); //collide with platform (i.e. ground) check
+
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
