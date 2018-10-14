@@ -5,6 +5,7 @@ game.state.add('state2', st2);
 game.state.add('state3', st3);
 game.state.add('state4', st4);
 game.state.add('state_tutorial', st_tut);
-//game.state.start('state_tutorial')
+game.state.add('state5', st5);
+game.state.start('state5')
 // CHANGE BACK WHEN READY game.state.start('state0')
-game.state.start('state0');
+//game.state.start('state0');
