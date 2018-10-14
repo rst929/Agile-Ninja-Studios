@@ -29,7 +29,8 @@ var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
-
+var stone_platforms;
+var background;
 
 function c1() {
     
@@ -57,15 +58,18 @@ function c1() {
     //background.wrap=true;
     //stone_platforms.wrap=true;
     // create platform for ground
-    platforms = game.add.group();
-    platforms.enableBody = true;
-    var ground = platforms.create(0, game.world.height - 150, 'ground');
-    ground.scale.setTo(2,2); //make ground right size
+    //platforms = game.add.group();
+    //platforms.enableBody = true;
+    //var ground = platforms.create(0, game.world.height - 150, 'ground');
+    //ground.scale.setTo(2,2); //make ground right size
     //  Make ground stable
-    ground.body.immovable = true;
+    //ground.body.immovable = true;
     stone_platforms.body.immovable= true;
+    background.body.immovable=true;
+    stone_platforms.enableBody=true;
+    background.enableBody=true;
     // The player and its settings
-    player = game.add.sprite(250, game.world.height - 250, 'sam');
+    player = game.add.sprite(350, game.world.height - 500, 'sam');
     player.scale.setTo(.6,.6)
     
     
@@ -78,7 +82,7 @@ function c1() {
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
     player.body.setSize(15, 40, 0, 100);
-    map.setCollisionBetween(0,10000,true,stone_platforms);
+    map.setCollisionBetween(0,50000,true,stone_platforms);
 
     //  animations
     player.animations.add('left', [0, 1], 10, true);
@@ -89,7 +93,7 @@ function c1() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
-
+    playerHealth.fixedToCamera=true;
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
@@ -107,7 +111,7 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 
 function u1() {
     //  Collide the player and the stars with the platforms
-    var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
+    var hitPlatform = game.physics.arcade.collide(player, stone_platforms); //collide with platform (i.e. ground) check
     //var hitPlatforms = game.physics.arcade.collide(player, map); //collide with platform (i.e. ground) check
 
     //movement tree for player
