@@ -30,7 +30,7 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
 var stone_platforms;
-var background;
+//var background;
 
 function c1() {
     
@@ -48,9 +48,9 @@ function c1() {
     map.addTilesetImage('castle_background','castle_tile');
     var background = map.createLayer('Background');
     var stone_platforms = map.createLayer('Platforms');
-    game.physics.enable(map, Phaser.Physics.ARCADE);    //creating layers
+    //game.physics.enable(map, Phaser.Physics.ARCADE);    //creating layers
     game.physics.enable(stone_platforms, Phaser.Physics.ARCADE);    //creating layers
-    game.physics.enable(background, Phaser.Physics.ARCADE);    //creating layers
+    //game.physics.enable(background, Phaser.Physics.ARCADE);    //creating layers
     map.width=game.width;
     map.height=game.height+100;
     background.resizeWorld();
@@ -64,15 +64,19 @@ function c1() {
     //ground.scale.setTo(2,2); //make ground right size
     //  Make ground stable
     //ground.body.immovable = true;
-    stone_platforms.body.immovable= true;
-    background.body.immovable=true;
+    
+    //background.body.immovable=true;
+    //background.enableBody=true;
+    
     stone_platforms.enableBody=true;
-    background.enableBody=true;
+    stone_platforms.body.immovable= true;
+    
     // The player and its settings
     player = game.add.sprite(350, game.world.height - 500, 'sam');
     player.scale.setTo(.6,.6)
     
     
+    game.physics.arcade.enable(stone_platforms);
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -82,8 +86,9 @@ function c1() {
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
     player.body.setSize(15, 40, 0, 100);
-    map.setCollisionBetween(0,50000,true,stone_platforms);
 
+    map.setCollision([1,229],true,stone_platforms);
+    
     //  animations
     player.animations.add('left', [0, 1], 10, true);
     player.animations.add('right', [0, 1], 10, true);
@@ -111,9 +116,11 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 
 function u1() {
     //  Collide the player and the stars with the platforms
-    var hitPlatform = game.physics.arcade.collide(player, stone_platforms); //collide with platform (i.e. ground) check
-    //var hitPlatforms = game.physics.arcade.collide(player, map); //collide with platform (i.e. ground) check
+    var hitPlatform = game.physics.arcade.collide(player, stone_platforms, function(){console.log('hitting platforms!');}); //collide with platform (i.e. ground) check
 
+    game.physics.arcade.TILE_BIAS = 40;
+    game.physics.arcade.collide(player, stone_platforms);
+    
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
