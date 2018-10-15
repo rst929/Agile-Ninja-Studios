@@ -20,6 +20,7 @@ WebFontConfig = {
 
 };
 
+//psedu comment
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
