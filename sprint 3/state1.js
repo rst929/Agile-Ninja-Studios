@@ -23,11 +23,13 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 
 function c1() {
+    game.world.setBounds(0, 0, 800, 416);
+
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
     image = game.add.sprite(0, 0, 'castle'); // first visible bkgd
     image.width = game.width;
-    image.height = game.height + 100;
+    image.height = game.height+20;
     game.physics.enable(image, Phaser.Physics.ARCADE); 
     
     
@@ -98,6 +100,9 @@ function c1() {
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
+    
+    game.camera.follow(player);
+
 }
 
 var pHealth = 100; //player health

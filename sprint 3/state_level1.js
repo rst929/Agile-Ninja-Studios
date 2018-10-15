@@ -259,7 +259,6 @@ var hitPlatform = false;
 var lastEnemyX = 0;
 
 
-
 function u1() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
@@ -282,6 +281,9 @@ function u1() {
         }
     } else if(attackButton.isDown) {
         player.animations.play('attack');
+        if(game.physics.arcade.collide(hitbox,door)){
+           dhealth-5;
+           }
     } else {
         //  Stand still
         player.animations.stop();
@@ -301,10 +303,20 @@ function u1() {
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
 
     var tutorial_done = false
-
+    if(game.physics.arcade.collide(hitbox,door)) { // victory
+        door.kill();
+        open = game.add.sprite(2229, game.world.height-437, 'open_door');
+        open.scale.setTo(.23,.23);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
+    } 
+    if(game.physics.arcade.overlap(player, open)){
+           var tutorial_done = true
+    } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
-        game.state.start('state0')
+        game.state.start('state1')
+        
     }
     
     for(var i = 0; i < swordsmanArray.length; i++) {
