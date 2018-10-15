@@ -315,6 +315,7 @@ function u1() {
                 var deathCheck = swordsmanArray[i].attacked();
                 if(deathCheck) {
                     swordsmanArray[i].swordsman.kill();
+                    
                 }
                 
             }

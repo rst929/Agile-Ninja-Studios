@@ -44,7 +44,7 @@ function c0() {
     
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
     style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
-    game.time.events.loop(Phaser.Timer.SECOND * .5, skipButtonActive, this);
+    game.time.events.loop(Phaser.Timer.SECOND * 1, skipButtonActive, this);
     
     dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
 }
