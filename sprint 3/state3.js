@@ -10,8 +10,8 @@ var win;
 function c3() {
     sumoMusic.mute = true;
     game.stage.backgroundColor = '#000000'
-    var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    win = game.add.text(0, 0, 'VICTORY', style);
+    var style = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+    win = game.add.text(300, 120, 'VICTORY', style);
 }
 
 function u3() {

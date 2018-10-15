@@ -14,6 +14,10 @@ function p0() {
     game.load.image('bartend_sam', 'assets/bartendandsam_bar.png');
     game.load.image('bartend', 'assets/bartenderonly_bar.png');
     game.load.image('blackPic', 'assets/A_blank_black_picture.jpg');
+    game.load.image('samFindingSword', 'assets/sam_finding_sword.png');
+    game.load.image('surprisesam1', 'assets/surprisesam1.png');
+    game.load.image('surprisesam2', 'assets/surprisesam2.png');
+    game.load.image('surprisesam3', 'assets/surprisesam3.png');
     
     this.load.text('barText', 'assets/cutscene1Text.json');
 }
@@ -33,7 +37,7 @@ function c0() {
     game.stage.backgroundColor = "#000000";
     skipButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
     
-    imageArray = ["goonsEmpty", "oneGoon", "goonLtalking_SL", "goonLtalking", "goonRtalking_SL", "goonRtalking", "bartend_sam", "bartend", "blackPic"];
+    imageArray = ["goonsEmpty", "oneGoon", "goonLtalking_SL", "goonLtalking", "goonRtalking_SL", "goonRtalking", "bartend_sam", "bartend", "blackPic", "samFindingSword", "surprisesam1", "surprisesam2", "surprisesam3"];
     
     //parse file
     image = game.add.sprite(100, 0, 'blackPic');
@@ -56,7 +60,11 @@ function u0() {
         displayBackground(this.levelData.blackBackgroundText[index].type);
         dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
     } else if(skipButton.isDown && active && this.levelData.goonDialogue.length > index2 + 1) {
-        style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+        if(this.levelData.goonDialogue[index2].color == 1) { //black
+            style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+        } else if(this.levelData.goonDialogue[index2].color == 0) { //white
+            style = { font: "bold 20px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+        }
         index2++;
         active = false;
         displayBackground(this.levelData.goonDialogue[index2].type);

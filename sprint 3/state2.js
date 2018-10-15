@@ -15,8 +15,8 @@ function c2() {
     deathMusic = game.add.audio('deathMusic');
     deathMusic.play();
     game.stage.backgroundColor = '#000000'
-    var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    gameOver = game.add.text(game.world.centerX - 100, game.world.centerY - 50, 'GAME OVER', style);
+    var style = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+    gameOver = game.add.text(300, 120, 'GAME OVER', style);
     console.log("WORKING2");
 }
 
