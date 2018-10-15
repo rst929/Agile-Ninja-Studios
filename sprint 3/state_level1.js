@@ -5,6 +5,21 @@ var st_lev1 = {
     render: r1
 }
 
+//  The Google WebFont Loader will look for this object, so create it before loading the script.
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Revalia', 'Teko', 'Permanent+Marker', 'Lato']
+    }
+
+};
+
 function p1() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
@@ -23,6 +38,10 @@ function p1() {
     game.load.tilemap('castle_map','assets/tilemap/castle.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
+    
+    //  Load the Google WebFont Loader script
+
+	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     game.load.spritesheet('swordsman', 'assets/green_enemy.png', 285, 325);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
@@ -211,13 +230,18 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
-    instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
+    instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    
+    instructions.font = 'Lato';
+
     //camerma moves
     
     game.camera.follow(player);
