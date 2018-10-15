@@ -4,6 +4,22 @@ var st_tut = {
     update: u_tut
 }
 
+//  The Google WebFont Loader will look for this object, so create it before loading the script.
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Revalia', 'Teko', 'Permanent+Marker', 'Lato']
+    }
+
+};
+
+
 function p_tut() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
@@ -18,6 +34,9 @@ function p_tut() {
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('closed_door', 'assets/closed_door.png');
+    
+	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
 }
 
 var image; //background
@@ -96,6 +115,7 @@ function c_tut() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth.font = 'Revalia';
 
     
     sumoMusic = game.add.audio('sumoMusic');

@@ -21,7 +21,7 @@ WebFontConfig = {
 };
 
 function p1() {
-    game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
+    //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
@@ -163,7 +163,7 @@ var image; //background
 var attackButton; // F to attack
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
-var sumoMusic; //boss music
+//var sumoMusic; //boss music
 var instructions; //game instructions'
 var stone_platforms;
 var map;
@@ -234,8 +234,8 @@ function c1() {
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
     
-    sumoMusic = game.add.audio('sumoMusic');
-    sumoMusic.play();
+    //sumoMusic = game.add.audio('sumoMusic');
+    //sumoMusic.play();
     
     instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     

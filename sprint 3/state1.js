@@ -93,13 +93,13 @@ function c1() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#000' });
-    bossHealth = game.add.text(500,16, 'Boss Health: 100', { fontSize: '32px', fill: '#000' });
+    bossHealth = game.add.text(600,16, 'Boss Health: 100', { fontSize: '32px', fill: '#000' });
     game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makePlayerVulnerable, this);
     
-    sumoMusic = game.add.audio('sumoMusic');
-    sumoMusic.play();
+    //sumoMusic = game.add.audio('sumoMusic');
+    //sumoMusic.play();
     
     game.camera.follow(player);
 
