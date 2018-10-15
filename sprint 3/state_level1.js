@@ -11,11 +11,11 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+    active: function() { game.time.events.add(Phaser.Timer.SECOND/10, createText, this); },
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
-      families: ['Revalia', 'Teko', 'Permanent+Marker', 'Lato']
+      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
     }
 
 };
@@ -230,18 +230,10 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(38,2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
-
-	playerHealth.font = 'Revalia';
-    playerHealth.fixedToCamera=true;
     
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
-    instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
-    
-    instructions.font = 'Lato';
-
     //camerma moves
     
     game.camera.follow(player);
@@ -375,4 +367,18 @@ function movePRight() {
 
 function makePlayerVulnerable() {
     playerVulnerable = true;
+}
+
+function createText() {
+
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    
+    instructions.font = 'Permanent Marker';
+
+
 }

@@ -5,19 +5,6 @@ var st_tut = {
 }
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
-WebFontConfig = {
-
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
-
-    //  The Google Fonts we want to load (specify as many as you like in the array)
-    google: {
-      families: ['Revalia', 'Teko', 'Permanent+Marker', 'Lato']
-    }
-
-};
 
 
 function p_tut() {
@@ -114,14 +101,11 @@ function c_tut() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
-    playerHealth.font = 'Revalia';
 
     
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
-    instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
     game.camera.follow(player);
 
 }
@@ -159,7 +143,7 @@ function u_tut() {
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -700;
     }
-    playerHealth.text = "Sam HP: " + pHealth;
+    //playerHealth.text = "Sam HP: " + pHealth;
     
     
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
