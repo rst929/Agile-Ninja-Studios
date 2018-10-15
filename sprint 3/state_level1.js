@@ -176,6 +176,12 @@ function c1() {
     background.resizeWorld();
     stone_platforms.resizeWorld();
     
+    //add door
+    door = game.add.sprite(2229, game.world.height-437, 'closed_door');
+    door.scale.setTo(.23, .23);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immobile = true;
+    
     // The player and its settings
     player = game.add.sprite(350, game.world.height - 500, 'sam');
     player.scale.setTo(.6,.6)
@@ -218,12 +224,7 @@ function c1() {
     
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
-    
-    //add door
-    door = game.add.sprite(2100, game.world.height-380, 'closed_door');
-    door.scale.setTo(.3, .3);
-    game.physics.enable(door, Phaser.Physics.ARCADE);
-    door.body.immobile = true;
+
 }
 
 var pHealth = 100; //player health
