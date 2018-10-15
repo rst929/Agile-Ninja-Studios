@@ -63,7 +63,7 @@ function u0() {
         dialogue = game.add.text(100, 50, this.levelData.goonDialogue[index2].text, style);
         scene1 = false;
     } else if(skipButton.isDown && active) {
-        game.state.start('state_tutorial')
+        game.state.start('state_level1')
     }
 }  
 
