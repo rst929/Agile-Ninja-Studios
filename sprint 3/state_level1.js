@@ -18,7 +18,8 @@ function p1() {
     game.load.image('wave', 'assets/Wave smash.png')
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('closed_door', 'assets/closed_door.png');
-    
+    game.load.image('open_door', 'assets/open_door.png');
+
     game.load.tilemap('castle_map','assets/tilemap/castle.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
@@ -26,7 +27,7 @@ function p1() {
     game.load.spritesheet('swordsman', 'assets/green_enemy.png', 285, 325);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
-var swordsman;
+
 EnemySwordsman = function(index, game, x, y) {
 
     this.swordsman = game.add.sprite(x, y, 'swordsman');
@@ -185,7 +186,11 @@ function c1() {
     
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
-
+    //add door
+    door = game.add.sprite(2100, game.world.height-380, 'closed_door');
+    door.scale.setTo(.3, .3);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immobile = true;
 }
 
 var pHealth = 100; //player health
@@ -199,7 +204,7 @@ function u1() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     console.log(hitPlatform);
     game.physics.arcade.TILE_BIAS = 40;
-    game.physics.arcade.collide(swordsmanArray, stone_platforms);
+    game.physics.arcade.collide(player, stone_platforms);
     
     //game.physics.arcade.collide(player, map);
     
