@@ -82,7 +82,7 @@ function c_tut() {
     
     
     door = game.add.sprite(580, game.world.height-580, 'closed_door');
-    door.scale.setTo(.23, .23);
+    door.scale.setTo(.4, .4);
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
