@@ -352,8 +352,8 @@ function u1() {
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 function r1() {
-//    game.debug.body(stone_platforms);
-//    game.debug.body(player);
+    game.debug.body(stone_platforms);
+    game.debug.body(player);
     
 }
 function swordAttack() {
