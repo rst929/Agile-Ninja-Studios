@@ -36,16 +36,11 @@ EnemySwordsman = function(index, game, x, y) {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(this.swordsman);
-    
-//    //create timer
-//    var attackTimer;
-//    attackTimer = game.time.create(false);
-//    attackTimer.loop(2000 + game.rnd.integerInRange(100, 200), console.log(2000 + game.rnd.integerInRange(100, 200)), this);
-    
+        
     this.swordsman.body.bounce.y = 0.2;
     this.swordsman.body.gravity.y = 1000;
     this.swordsman.body.collideWorldBounds = true;
-    //this.swordsman.body.setSize(15, 40, 0, 100);
+    this.swordsman.body.setSize(70, 200, 200, 100); //need to fix sprite going left
     
     //animations
     this.swordsman.animations.add('left', [8, 9], 3, true);
@@ -53,51 +48,84 @@ EnemySwordsman = function(index, game, x, y) {
     var attackL = this.swordsman.animations.add('attackL', [0, 1, 2, 2, 1, 0], 10, false);
     var attackR = this.swordsman.animations.add('attackR', [3, 4, 5, 5, 4, 3], 10, false);
     
+    enemyHitbox = game.add.group();
+    enemyHitbox.enableBody = true;
+    this.swordsman.addChild(enemyHitbox);
+    var enemySwordHitbox = enemyHitbox.create(0, 0, null);
+    enemySwordHitbox.body.setSize(50, 100, -50, -30);
+    
     
     this.stand = function() {
         this.swordsman.frame = 8;
     };
-    
-    
+        
     var canAttack = false;
+    var vulnerable = true;
     var lookingL = false;
     var lookingR = false;
-    var extraDist = game.rnd.integerInRange(0, 10);
+    var extraDist = game.rnd.integerInRange(0, 20);
     var velocity = game.rnd.integerInRange(200 , 300);
+    this.finishedAttack = false;
+    var hitCount = 2;
     
     this.canAttack = function() {
         canAttack = true;
     };
     
-    game.time.events.loop(Phaser.Timer.SECOND * (1 +  game.rnd.integerInRange(1, 2)), this.canAttack, this);
+    this.vulnerable = function() {
+        vulnerable = false;
+    };
+    
+    this.finishedAttack = function() {
+        return this.finishedAttack;
+    }
+    this.attacked = function() {
+        if(vulnerable) {
+            hitCount--;
+            vulnerable = false;
+        }
+        return Boolean(hitCount <= 0);
+    }
+    
+    this.hasAttacked = function() {
+        finishedAttack = true;
+    }
+    
+    game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this);
+    game.time.events.loop(Phaser.Timer.SECOND * .2, this.vulnerable, this);
     
     this.move = function(pX) {
-        console.log(canAttack);
-        if(pX + 100 + extraDist <= this.swordsman.x) { //go left
+        game.physics.arcade.collide(this.swordsman, stone_platforms);
+//        game.debug.body(this.swordsman);
+//        game.debug.body(enemySwordHitbox);
+        if(pX + 60 + extraDist <= this.swordsman.x) { //go left
             this.swordsman.body.velocity.x = -velocity;
             this.swordsman.animations.play('left');
             lookingL = true;
             lookingR = false;
-//            attackTimer.stop(false);
             
         } else if (pX - extraDist >= this.swordsman.x) { //go right
             this.swordsman.body.velocity.x = velocity;
             this.swordsman.animations.play('right');
             lookingL = false;
             lookingR = true;
-//            attackTimer.stop(false);
         } else if(lookingL) {
             this.swordsman.body.velocity.x = 0;
             if(canAttack) {
-                this.swordsman.play('attackL');
+                var leftAttack = this.swordsman.play('attackL');
+                leftAttack.onComplete.add(this.hasAttacked);
                 canAttack = false;
+            } else {
+                finishedAttack = false;
             }
-            
         } else if(lookingR) {
             this.swordsman.body.velocity.x = 0;
             if(canAttack) {
-                this.swordsman.play('attackR');
+                var rightAttack = this.swordsman.play('attackR');
+                rightAttack.onComplete.add(this.hasAttacked);
                 canAttack = false;
+            } else {
+                finishedAttack = false;
             }
         } else {
             this.swordsman.body.velocity.x = 0;
@@ -107,12 +135,10 @@ EnemySwordsman = function(index, game, x, y) {
     
     //if swordsman is dead
     this.die = function() {
-        //isDead = true;
-        //swordsman.animations.play('dead');
-        //swordsman.animations.currentAnim.onComplete.destroy();
-        swordsman.destroy();
+        console.log("should be dead");
+        this.swordsman.destroy();
     };
-    //if()
+    
 }
 
 var image; //background
@@ -122,11 +148,10 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
 var stone_platforms;
-//var background;
-
 var map;
 var stone_platforms;
 var background;
+var hitbox;
 
 
 function c1() {
@@ -150,7 +175,6 @@ function c1() {
     map.height=game.height+100;
     background.resizeWorld();
     stone_platforms.resizeWorld();
-    stone_platforms.debug = true;
     
     // The player and its settings
     player = game.add.sprite(350, game.world.height - 500, 'sam');
@@ -163,7 +187,15 @@ function c1() {
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
-    player.body.setSize(15, 40, 0, 100);
+    player.body.setSize(40, 100, 35, 30);
+    
+    //create hitbox for sword
+    hitbox = game.add.group();
+    hitbox.enableBody = true;
+    player.addChild(hitbox);
+    var swordHitbox = hitbox.create(0, 0, null);
+    swordHitbox.body.setSize(30, 20, player.width/3, 0);
+    game.physics.arcade.enable(swordHitbox);
     
     //  animations
     player.animations.add('left', [0, 1], 10, true);
@@ -186,6 +218,7 @@ function c1() {
     
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
+    
     //add door
     door = game.add.sprite(2100, game.world.height-380, 'closed_door');
     door.scale.setTo(.3, .3);
@@ -202,7 +235,6 @@ var hitPlatform = false;
 function u1() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
-    console.log(hitPlatform);
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
     
@@ -211,29 +243,17 @@ function u1() {
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
-        //player.body.velocity.x = -150;
-
     } else if (cursors.right.isDown) {
         movePRight();
-        //player.body.velocity.x = 150;
-
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
             if(player.x == this.enemyLocData.enemySpawnLoc[enemyLocIndex].x) {
                 swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 20, player.y));
-                //swordsman.stand();f
                 enemyLocIndex++;
             }
         }
     } else if(attackButton.isDown) {
         player.animations.play('attack');
-    }
-    /*else if(attackButton.isDown) {
-        player.animations.play('attack');
-        if(swordHit && sumoVulnerable) { //hitbox check for sumo boss to take away health
-            bHealth -= 5;
-            sumoVulnerable = false; 
-        } */
-    else {
+    } else {
         //  Stand still
         player.animations.stop();
         player.frame = 0;
@@ -258,13 +278,36 @@ function u1() {
         game.state.start('state0')
     }
     
+    for(var i = 0; i < swordsmanArray.length; i++) {
+        swordsmanArray[i].move(player.x);
+        //var swordHit = game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox); // Overlap with sword and player 2
+        if(attackButton.isDown) {
+            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
+                var deathCheck = swordsmanArray[i].attacked;
+                if(deathCheck) {
+                    swordsmanArray[i].swordsman.kill();
+                }
+                //console.log(deathCheck);
+                
+            }
+//            if(game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player)); // Overlap with sword and player 2)) {
+//                swordsmanArray[i].die();
+//            }
+        }
+        
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].swordsman.finishedAttack) {
+            pHealth -= 5;
+        }
+        console.log(swordsmanArray[i].finishedAttack)
+    }
+    
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 function r1() {
-    game.debug.body(stone_platforms);
-    game.debug.body(player);
+//    game.debug.body(stone_platforms);
+//    game.debug.body(player);
     
 }
 function swordAttack() {
