@@ -136,7 +136,7 @@ EnemySwordsman = function(index, game, x, y) {
     //if swordsman is dead
     this.die = function() {
         console.log("should be dead");
-        this.swordsman.destroy();
+        this.swordsman.kill();
     };
     
 }
@@ -248,7 +248,7 @@ function u1() {
         movePRight();
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
             if(player.x == this.enemyLocData.enemySpawnLoc[enemyLocIndex].x) {
-                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 20, player.y));
+                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
                 enemyLocIndex++;
             }
         }
