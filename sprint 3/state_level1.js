@@ -26,7 +26,7 @@ function p1() {
     game.load.spritesheet('swordsman', 'assets/green_enemy.png', 285, 325);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
-
+var swordsman;
 EnemySwordsman = function(index, game, x, y) {
 
     this.swordsman = game.add.sprite(x, y, 'swordsman');
@@ -199,14 +199,19 @@ function u1() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     console.log(hitPlatform);
     game.physics.arcade.TILE_BIAS = 40;
-    game.physics.arcade.collide(player, stone_platforms);
+    game.physics.arcade.collide(swordsmanArray, stone_platforms);
+    
     //game.physics.arcade.collide(player, map);
     
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
+        //player.body.velocity.x = -150;
+
     } else if (cursors.right.isDown) {
         movePRight();
+        //player.body.velocity.x = 150;
+
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
             if(player.x == this.enemyLocData.enemySpawnLoc[enemyLocIndex].x) {
                 swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 20, player.y));
@@ -232,7 +237,7 @@ function u1() {
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
+    if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
