@@ -17,6 +17,7 @@ function c2() {
     game.stage.backgroundColor = '#000000'
     var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
     gameOver = game.add.text(game.world.centerX - 100, game.world.centerY - 50, 'GAME OVER', style);
+    console.log("WORKING2");
 }
 
 function u2() {

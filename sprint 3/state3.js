@@ -11,7 +11,7 @@ function c3() {
     sumoMusic.mute = true;
     game.stage.backgroundColor = '#000000'
     var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    win = game.add.text(game.world.centerX - 100, game.world.centerY - 50, 'VICTORY', style);
+    win = game.add.text(0, 0, 'VICTORY', style);
 }
 
 function u3() {

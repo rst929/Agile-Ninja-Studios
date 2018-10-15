@@ -30,23 +30,23 @@ var imageArray;
 var scene1 = true;
 
 function c0() {
-    game.stage.backgroundColor = "#4488AA";
+    game.stage.backgroundColor = "#000000";
     skipButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
     
     imageArray = ["goonsEmpty", "oneGoon", "goonLtalking_SL", "goonLtalking", "goonRtalking_SL", "goonRtalking", "bartend_sam", "bartend", "blackPic"];
     
     //parse file
-    image = game.add.sprite(0, 0, 'blackPic');
-    image.width = game.width;
+    image = game.add.sprite(100, 0, 'blackPic');
+    image.width = game.width - 225;
     image.height = game.height;
     game.physics.enable(image, Phaser.Physics.ARCADE);
     
     
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
-    style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 650 }; // text for dialogue
-    game.time.events.loop(Phaser.Timer.SECOND * 1, skipButtonActive, this);
+    style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
+    game.time.events.loop(Phaser.Timer.SECOND * .5, skipButtonActive, this);
     
-    dialogue = game.add.text(10, 10, this.levelData.blackBackgroundText[index].text, style);
+    dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
 }
 
 function u0() {
@@ -54,13 +54,13 @@ function u0() {
         index++;
         active = false;
         displayBackground(this.levelData.blackBackgroundText[index].type);
-        dialogue = game.add.text(10, 10, this.levelData.blackBackgroundText[index].text, style);
+        dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
     } else if(skipButton.isDown && active && this.levelData.goonDialogue.length > index2 + 1) {
-        style = { font: "bold 30px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 550 }; // text for dialogue
+        style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
         index2++;
         active = false;
         displayBackground(this.levelData.goonDialogue[index2].type);
-        dialogue = game.add.text(100, 50, this.levelData.goonDialogue[index2].text, style);
+        dialogue = game.add.text(180, 50, this.levelData.goonDialogue[index2].text, style);
         scene1 = false;
     } else if(skipButton.isDown && active) {
         game.state.start('state_level1')
@@ -76,8 +76,8 @@ function skipButtonActive() {
 }
 
 function displayBackground(name) {
-    image = game.add.sprite(0, 0, imageArray[name]);
-    image.width = game.width;
+    image = game.add.sprite(100, 0, imageArray[name]);
+    image.width = game.width - 225;
     image.height = game.height;
     game.physics.enable(image, Phaser.Physics.ARCADE);
 }

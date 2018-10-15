@@ -64,93 +64,91 @@ EnemySwordsman = function(index, game, x, y) {
     //animations
     this.swordsman.animations.add('left', [8, 9], 3, true);
     this.swordsman.animations.add('right', [6, 7], 3, true);
-    var attackL = this.swordsman.animations.add('attackL', [0, 1, 2, 2, 1, 0], 10, false);
-    var attackR = this.swordsman.animations.add('attackR', [3, 4, 5, 5, 4, 3], 10, false);
+    this.attackL = this.swordsman.animations.add('attackL', [0, 1, 2, 2, 1, 0], 10, false);
+    this.attackR = this.swordsman.animations.add('attackR', [3, 4, 5, 5, 4, 3], 10, false);
     
-    enemyHitbox = game.add.group();
-    enemyHitbox.enableBody = true;
-    this.swordsman.addChild(enemyHitbox);
-    var enemySwordHitbox = enemyHitbox.create(0, 0, null);
-    enemySwordHitbox.body.setSize(50, 100, -50, -30);
+    this.enemyHitbox = game.add.group();
+    this.enemyHitbox.enableBody = true;
+    this.swordsman.addChild(this.enemyHitbox);
+    this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
+    this.enemySwordHitbox.body.setSize(50, 100, -50, -30);
     
     
     this.stand = function() {
         this.swordsman.frame = 8;
     };
         
-    var canAttack = false;
-    var vulnerable = true;
-    var lookingL = false;
-    var lookingR = false;
-    var extraDist = game.rnd.integerInRange(0, 20);
-    var velocity = game.rnd.integerInRange(200 , 300);
-    this.finishedAttack = false;
-    var hitCount = 2;
+    this.canAttack = false;
+    this.vulnerable = true;
+    this.lookingL = false;
+    this.lookingR = false;
+    this.extraDist = game.rnd.integerInRange(0, 20);
+    velocity = game.rnd.integerInRange(200 , 300);
+    this.doneAttacking = false;
+    this.hitCount = 2;
     
     this.canAttack = function() {
-        canAttack = true;
+        this.canAttack = true;
     };
     
     this.vulnerable = function() {
-        vulnerable = false;
+        this.vulnerable = true;
     };
     
     this.finishedAttack = function() {
-        return this.finishedAttack;
-    }
+        return this.doneAttacking;
+    };
+    
     this.attacked = function() {
-        if(vulnerable) {
-            hitCount--;
-            vulnerable = false;
+        if(this.vulnerable) {
+            this.hitCount--;
+            this.vulnerable = false;
         }
-        return Boolean(hitCount <= 0);
-    }
+        return Boolean(this.hitCount <= 0);
+    };
     
     this.hasAttacked = function() {
-        finishedAttack = true;
-    }
+        this.doneAttacking = true;
+    };
+    this.temp = function() {
+        return true;
+    };
     
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this);
-    game.time.events.loop(Phaser.Timer.SECOND * .2, this.vulnerable, this);
+    game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this);
     
     this.move = function(pX) {
         game.physics.arcade.collide(this.swordsman, stone_platforms);
-//        game.debug.body(this.swordsman);
-//        game.debug.body(enemySwordHitbox);
-        if(pX + 60 + extraDist <= this.swordsman.x) { //go left
+        if(pX + 60 + this.extraDist <= this.swordsman.x) { //go left
             this.swordsman.body.velocity.x = -velocity;
             this.swordsman.animations.play('left');
-            lookingL = true;
-            lookingR = false;
+            this.lookingL = true;
+            this.lookingR = false;
             
-        } else if (pX - extraDist >= this.swordsman.x) { //go right
+        } else if (pX - this.extraDist >= this.swordsman.x) { //go right
             this.swordsman.body.velocity.x = velocity;
             this.swordsman.animations.play('right');
-            lookingL = false;
-            lookingR = true;
-        } else if(lookingL) {
+            this.lookingL = false;
+            this.lookingR = true;
+        } else if(this.lookingL) {
             this.swordsman.body.velocity.x = 0;
-            if(canAttack) {
-                var leftAttack = this.swordsman.play('attackL');
-                leftAttack.onComplete.add(this.hasAttacked);
-                canAttack = false;
-            } else {
-                finishedAttack = false;
+            if(this.canAttack) {
+                this.leftAttack = this.swordsman.play('attackL');
+                this.leftAttack.onComplete.add(this.hasAttacked, this);
+                this.canAttack = false;
             }
-        } else if(lookingR) {
+        } else if(this.lookingR) {
             this.swordsman.body.velocity.x = 0;
-            if(canAttack) {
-                var rightAttack = this.swordsman.play('attackR');
-                rightAttack.onComplete.add(this.hasAttacked);
-                canAttack = false;
-            } else {
-                finishedAttack = false;
+            if(this.canAttack) {
+                this.rightAttack = this.swordsman.play('attackR');
+                this.rightAttack.onComplete.add(this.hasAttacked, this);
+                this.canAttack = false;
             }
         } else {
             this.swordsman.body.velocity.x = 0;
             this.swordsman.frame = 8;
         }
-    }
+    };
     
     //if swordsman is dead
     this.die = function() {
@@ -158,6 +156,7 @@ EnemySwordsman = function(index, game, x, y) {
         this.swordsman.kill();
     };
     
+    //return this.finishedAttack;
 }
 
 var image; //background
@@ -175,7 +174,7 @@ var hitbox;
 
 function c1() {
     
-    //game.world.setBounds(0, 0, 2400, 416);
+    game.world.setBounds(0, 0, 2400, 416);
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -248,6 +247,7 @@ function c1() {
     
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
+    game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
 
 }
 
@@ -256,6 +256,9 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var enemyLocIndex = 0;
 var swordsmanArray = [];
 var hitPlatform = false;
+var lastEnemyX = 0;
+
+
 
 function u1() {
     //  Collide the player and the stars with the platforms
@@ -271,8 +274,9 @@ function u1() {
     } else if (cursors.right.isDown) {
         movePRight();
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
-            if(player.x == this.enemyLocData.enemySpawnLoc[enemyLocIndex].x) {
+            if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
                 swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
+                lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
                 enemyLocIndex++;
             }
         }
@@ -308,22 +312,26 @@ function u1() {
         //var swordHit = game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox); // Overlap with sword and player 2
         if(attackButton.isDown) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
-                var deathCheck = swordsmanArray[i].attacked;
+                var deathCheck = swordsmanArray[i].attacked();
                 if(deathCheck) {
                     swordsmanArray[i].swordsman.kill();
                 }
-                //console.log(deathCheck);
                 
             }
 //            if(game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player)); // Overlap with sword and player 2)) {
 //                swordsmanArray[i].die();
 //            }
+            
         }
-        
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].swordsman.finishedAttack) {
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
             pHealth -= 5;
+            playerVulnerable = false;
         }
-        console.log(swordsmanArray[i].finishedAttack)
+        //console.log(swordsmanArray[i].finishedAttack)
+    }
+    
+    if(pHealth <= 0) {
+        game.state.start('state2');
     }
     
 }
