@@ -237,16 +237,16 @@ function c1() {
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
-<<<<<<< HEAD
+//<<<<<<< HEAD
     //camerma moves
     
-=======
+//=======
     instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     
     instructions.font = 'Lato';
 
     //camera moves
->>>>>>> 6412756d6026607ba7e6b94d62289b3cd9b806d5
+//>>>>>>> 6412756d6026607ba7e6b94d62289b3cd9b806d5
     game.camera.follow(player);
     
     //setting up JSON file to be read
