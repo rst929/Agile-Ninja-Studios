@@ -80,8 +80,8 @@ function c_tut() {
     stone1.body.immovable = true;
     stone2.body.immovable = true;
     
-    door = game.add.sprite(580, game.world.height-580, 'closed_door');
-    door.scale.setTo(.4, .4);
+    door = game.add.sprite(660, game.world.height-470, 'closed_door');
+    door.scale.setTo(.23, .23);
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
@@ -104,7 +104,7 @@ function c_tut() {
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
-    player.body.setSize(15, 40, 0, 100);
+    player.body.setSize(40,100, 35, 30);
     
     //  animations
     player.animations.add('left', [0, 1], 10, true);
@@ -121,7 +121,7 @@ function c_tut() {
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
-    instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '25px', fill:'#fff'});
+    instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '24px', fill:'#fff'});
     game.camera.follow(player);
 
 }
@@ -169,8 +169,8 @@ function u_tut() {
     
     if(dHealth <= 0) { // victory
         door.kill();
-        open = game.add.sprite(580, game.world.height -580, 'open_door');
-        open.scale.setTo(.4,.4);
+        open = game.add.sprite(660, game.world.height -470, 'open_door');
+        open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
     } 
