@@ -241,9 +241,9 @@ function c1() {
     //camerma moves
     
 //=======
-    instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    //instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     
-    instructions.font = 'Lato';
+    //instructions.font = 'Lato';
 
     //camera moves
 //>>>>>>> 6412756d6026607ba7e6b94d62289b3cd9b806d5
