@@ -11,16 +11,15 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+    active: function() { game.time.events.add(Phaser.Timer.SECOND/10, createText, this); },
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
-      families: ['Revalia', 'Teko', 'Permanent+Marker', 'Lato']
+      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
     }
 
 };
 
-//psedu comment
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
@@ -49,7 +48,8 @@ function p1() {
 }
 
 EnemySwordsman = function(index, game, x, y) {
-
+    
+    //initializing body of enemy swordsman
     this.swordsman = game.add.sprite(x, y, 'swordsman');
     this.swordsman.anchor.setTo(.5, .5);
     this.swordsman.scale.setTo(.45,.45);
@@ -57,90 +57,96 @@ EnemySwordsman = function(index, game, x, y) {
     //  We need to enable physics on the player
     game.physics.arcade.enable(this.swordsman);
         
+    //gravity of swordsman
     this.swordsman.body.bounce.y = 0.2;
     this.swordsman.body.gravity.y = 1000;
     this.swordsman.body.collideWorldBounds = true;
+    
+    //creates the hitbox for image of the swordsman
     this.swordsman.body.setSize(70, 200, 200, 100); //need to fix sprite going left
     
     //animations
     this.swordsman.animations.add('left', [8, 9], 3, true);
     this.swordsman.animations.add('right', [6, 7], 3, true);
-    this.attackL = this.swordsman.animations.add('attackL', [0, 1, 2, 2, 1, 0], 10, false);
+    this.attackL = this.swordsman.animations.add('attackL', [0, 1, 2, 2, 1, 0], 10, false); // false because you dont' want animation to repeat constantly
     this.attackR = this.swordsman.animations.add('attackR', [3, 4, 5, 5, 4, 3], 10, false);
     
+    //
     this.enemyHitbox = game.add.group();
     this.enemyHitbox.enableBody = true;
     this.swordsman.addChild(this.enemyHitbox);
     this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
     this.enemySwordHitbox.body.setSize(50, 100, -50, -30);
     
-    
+    //him standing and doing nothing
     this.stand = function() {
         this.swordsman.frame = 8;
     };
-        
-    this.canAttack = false;
-    this.vulnerable = true;
+    
+    // use this marker to signify global variable
+    this.canAttack = false; //signifies timer is reset so enemy can attack
+    this.vulnerable = true; //signifies invulnerability timer enmey reset
     this.lookingL = false;
     this.lookingR = false;
-    this.extraDist = game.rnd.integerInRange(0, 20);
-    velocity = game.rnd.integerInRange(200 , 300);
-    this.doneAttacking = false;
-    this.hitCount = 2;
+    this.extraDist = game.rnd.integerInRange(0, 20); // signifies extra distance enemy has away from player before attacking (to look right)
+    velocity = game.rnd.integerInRange(200 , 300); // how fast they're moving
+    this.doneAttacking = false; // after animation is complete
+    this.hitCount = 2; // however many hits enemy has
     
     this.canAttack = function() {
-        this.canAttack = true;
+        this.canAttack = true; //change name from something different
     };
     
-    this.vulnerable = function() {
-        this.vulnerable = true;
+    this.vulnerable = function() { //possible bug area, may need to change name to different from function
+        this.vulnerable = true; //change name to something different
     };
     
     this.finishedAttack = function() {
-        return this.doneAttacking;
+        return this.doneAttacking; //done attacking = 
     };
     
+    // when called, reduces health of enemy
+    // returns if dead or not (health points 0 or less)
     this.attacked = function() {
         if(this.vulnerable) {
             this.hitCount--;
             this.vulnerable = false;
         }
-        return Boolean(this.hitCount <= 0);
+        return Boolean(this.hitCount <= 0); //boolean() function pointless
     };
     
     this.hasAttacked = function() {
         this.doneAttacking = true;
     };
-    this.temp = function() {
-        return true;
-    };
     
-    game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this);
-    game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this);
+    // 
+    game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
+    game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this); // i frames
     
-    this.move = function(pX) {
+    //movement tree for enemy
+    this.move = function(pX) { //pX = player.x position
         game.physics.arcade.collide(this.swordsman, stone_platforms);
-        if(pX + 60 + this.extraDist <= this.swordsman.x) { //go left
+        if(pX + 60 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
             this.swordsman.body.velocity.x = -velocity;
             this.swordsman.animations.play('left');
-            this.lookingL = true;
-            this.lookingR = false;
+            this.lookingL = true; //enemy is looking L (important for later in movement tree)
+            this.lookingR = false; 
             
         } else if (pX - this.extraDist >= this.swordsman.x) { //go right
             this.swordsman.body.velocity.x = velocity;
             this.swordsman.animations.play('right');
-            this.lookingL = false;
-            this.lookingR = true;
-        } else if(this.lookingL) {
+            this.lookingL = false; 
+            this.lookingR = true; //enemy is looking R (important for later in movement tree)
+        } else if(this.lookingL) { 
             this.swordsman.body.velocity.x = 0;
-            if(this.canAttack) {
+            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
                 this.leftAttack = this.swordsman.play('attackL');
                 this.leftAttack.onComplete.add(this.hasAttacked, this);
                 this.canAttack = false;
             }
         } else if(this.lookingR) {
             this.swordsman.body.velocity.x = 0;
-            if(this.canAttack) {
+            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
                 this.rightAttack = this.swordsman.play('attackR');
                 this.rightAttack.onComplete.add(this.hasAttacked, this);
                 this.canAttack = false;
@@ -156,8 +162,6 @@ EnemySwordsman = function(index, game, x, y) {
         console.log("should be dead");
         this.swordsman.kill();
     };
-    
-    //return this.finishedAttack;
 }
 
 var image; //background
@@ -187,9 +191,8 @@ function c1() {
     //layers
     background = map.createLayer('Background');
     stone_platforms = map.createLayer('Platforms');
-    //map.setTileIndexCallback(26, loggedVal, this);
     
-    map.setCollisionBetween(1, 300, true, 'Platforms');    
+    map.setCollisionBetween(1, 300, true, 'Platforms'); //basically tells what possible positions in the json file to check for
     map.width=game.width;
     map.height=game.height+100;
     background.resizeWorld();
@@ -218,11 +221,11 @@ function c1() {
     hitbox = game.add.group();
     hitbox.enableBody = true;
     player.addChild(hitbox);
-    var swordHitbox = hitbox.create(0, 0, null);
-    swordHitbox.body.setSize(30, 20, player.width/3, 0);
-    game.physics.arcade.enable(swordHitbox);
+    var swordHitbox = hitbox.create(0, 0, null); // creating the hitbox itself
+    swordHitbox.body.setSize(30, 20, player.width/3, 0); //hitbox parameters for sword (adjust these to work with sam's sprite)
+    game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     
-    //  animations
+    //  animations, true 
     player.animations.add('left', [0, 1], 10, true);
     player.animations.add('right', [0, 1], 10, true);
     player.animations.add('attack', [2, 3, 4], 10, true);
@@ -230,20 +233,20 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(38,2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
-
-	playerHealth.font = 'Revalia';
-    playerHealth.fixedToCamera=true;
     
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
+<<<<<<< HEAD
+    //camerma moves
+    
+=======
     instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     
     instructions.font = 'Lato';
 
-    //camerma moves
-    
+    //camera moves
+>>>>>>> 6412756d6026607ba7e6b94d62289b3cd9b806d5
     game.camera.follow(player);
     
     //setting up JSON file to be read
@@ -254,10 +257,10 @@ function c1() {
 
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
-var enemyLocIndex = 0;
-var swordsmanArray = [];
-var hitPlatform = false;
-var lastEnemyX = 0;
+var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
+var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+var hitPlatform = false; //if sam has hit platform
+var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 
 
 function u1() {
@@ -280,7 +283,7 @@ function u1() {
                 enemyLocIndex++;
             }
         }
-    } else if(attackButton.isDown) {
+    } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
         player.animations.play('attack');
         if(game.physics.arcade.collide(hitbox,door)){
            dhealth-5;
@@ -298,13 +301,10 @@ function u1() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth;
+    playerHealth.text = "Sam HP: " + pHealth; //player health is updated with current health
     
-    
-    //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
-
     var tutorial_done = false
-    if(game.physics.arcade.collide(hitbox,door)) { // victory
+    if(game.physics.arcade.collide(hitbox,door)) {
         door.kill();
         open = game.add.sprite(2229, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);
@@ -320,30 +320,26 @@ function u1() {
         
     }
     
+    //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
-        swordsmanArray[i].move(player.x);
-        //var swordHit = game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox); // Overlap with sword and player 2
-        if(attackButton.isDown) {
+        swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
+        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
-                var deathCheck = swordsmanArray[i].attacked();
-                if(deathCheck) {
-                    swordsmanArray[i].swordsman.kill();
-                    
+                if(swordsmanArray[i].attacked()) {
+                    swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    //note: bug is currently happening where enemy attacks remain
                 }
-                
             }
-//            if(game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player)); // Overlap with sword and player 2)) {
-//                swordsmanArray[i].die();
-//            }
             
         }
+        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
-            pHealth -= 5;
-            playerVulnerable = false;
+            pHealth -= 5; //remove 5 from player's health
+            playerVulnerable = false; //give player i frames
         }
-        //console.log(swordsmanArray[i].finishedAttack)
     }
     
+    //if player has no health, go to game over state
     if(pHealth <= 0) {
         game.state.start('state2');
     }
@@ -352,11 +348,14 @@ function u1() {
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
+//just for debugging purposes
 function r1() {
     game.debug.body(stone_platforms);
     game.debug.body(player);
     
 }
+
+//player's sword attack animation
 function swordAttack() {
     player.animations.play('attack');
 }
@@ -372,7 +371,20 @@ function movePRight() {
     player.animations.play('right');
 }
 
-
 function makePlayerVulnerable() {
     playerVulnerable = true;
+}
+
+function createText() {
+
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    
+    instructions.font = 'Permanent Marker';
+
+
 }

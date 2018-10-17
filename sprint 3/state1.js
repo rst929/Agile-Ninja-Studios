@@ -92,8 +92,10 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(16, 16, 'Your Health: 100', { fontSize: '32px', fill: '#000' });
-    bossHealth = game.add.text(600,16, 'Boss Health: 100', { fontSize: '32px', fill: '#000' });
+    playerHealth = game.add.text(38, 2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth.font = 'Revalia';
+    bossHealth = game.add.text(570,2, 'Boss Health: 100', { fontSize: '32px', fill: '#fff' });
+    bossHealth.font = 'Revalia';
     game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makePlayerVulnerable, this);
