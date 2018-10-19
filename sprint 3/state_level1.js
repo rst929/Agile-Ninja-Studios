@@ -76,7 +76,7 @@ EnemySwordsman = function(index, game, x, y) {
     this.enemyHitbox.enableBody = true;
     this.swordsman.addChild(this.enemyHitbox);
     this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
-    this.enemySwordHitbox.body.setSize(50, 100, -50, -30);
+    this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
     
     //him standing and doing nothing
     this.stand = function() {
@@ -125,18 +125,21 @@ EnemySwordsman = function(index, game, x, y) {
     
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
+        game.debug.body(this.enemySwordHitbox);
         game.physics.arcade.collide(this.swordsman, stone_platforms);
-        if(pX + 60 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
+        if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
             this.swordsman.body.velocity.x = -velocity;
             this.swordsman.animations.play('left');
             this.lookingL = true; //enemy is looking L (important for later in movement tree)
             this.lookingR = false; 
+            this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
             
         } else if (pX - this.extraDist >= this.swordsman.x) { //go right
             this.swordsman.body.velocity.x = velocity;
             this.swordsman.animations.play('right');
             this.lookingL = false; 
             this.lookingR = true; //enemy is looking R (important for later in movement tree)
+            this.enemySwordHitbox.body.setSize(50, 75, 25, -20);
         } else if(this.lookingL) { 
             this.swordsman.body.velocity.x = 0;
             if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
@@ -175,7 +178,6 @@ var map;
 var stone_platforms;
 var background;
 var hitbox;
-
 
 function c1() {
     
@@ -218,13 +220,12 @@ function c1() {
     player.body.setSize(300, 600, 350, 350);
     
     //create hitbox for sword
-    this.hitbox = game.add.group();
-    this.hitbox.enableBody = true;
-    player.addChild(this.hitbox);
-    this.swordHitbox = this.hitbox.create(50, 50, null); // creating the hitbox itself
-    this.swordHitbox.body.setSize(100, 100, 100, 100); //hitbox parameters for sword (adjust these to work with sam's sprite)
-    game.physics.arcade.enable(this.swordHitbox); //so can be used for overlap
-    
+    hitbox = game.add.group();
+    hitbox.enableBody = true;
+    player.addChild(hitbox);
+    swordHitbox = hitbox.create(0, 0, null); // creating the hitbox itself
+    swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+    game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     //  animations, true 
     player.animations.add('left', [5, 6], 10, true);
     player.animations.add('attackL', [7, 8, 9], 10, true);
@@ -238,10 +239,8 @@ function c1() {
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
-//<<<<<<< HEAD
     //camerma moves
     
-//=======
     //instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     
     //instructions.font = 'Lato';
@@ -252,7 +251,7 @@ function c1() {
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
-
+    
 }
 
 var pHealth = 100; //player health
@@ -263,10 +262,8 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 
-
 function u1() {
-        game.debug.body(this.hitbox);
-
+//    game.debug.body(player.hitbox);
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
@@ -277,8 +274,10 @@ function u1() {
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
+        swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
     } else if (cursors.right.isDown) {
         movePRight();
+        swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
             if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
                 swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
@@ -335,7 +334,7 @@ function u1() {
     for(var i = 0; i < swordsmanArray.length; i++) {
         swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, this.hitbox)) { // Overlap with sword and player 2)) {
+            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
                 if(swordsmanArray[i].attacked()) {
                     swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
@@ -354,14 +353,15 @@ function u1() {
     if(pHealth <= 0) {
         game.state.start('state2');
     }
-    
+    hitbox.debug = true;
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 //just for debugging purposes
 function r1() {
-    game.debug.body(stone_platforms);
+    game.debug.body(swordHitbox);
+    //game.debug.spriteBounds(this.hitbox.swordHitbox);
     for(var i = 0; i < swordsmanArray.length; i++) {
         game.debug.body(swordsmanArray[i].swordsman);
     }
@@ -377,6 +377,8 @@ function movePLeft() {
     player.body.velocity.x = -300;
     player.animations.play('left');
     movingRight = false;
+    
+    
 
 }
 
@@ -384,6 +386,8 @@ function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
     movingRight = true;
+    
+    
 
 }
 
