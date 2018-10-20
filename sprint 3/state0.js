@@ -32,8 +32,19 @@ var active = true;
 var image;
 var imageArray;
 var scene1 = true;
+var atkTimer;
 
 function c0() {
+    
+    /*atkTimer = game.time.create(true)
+    atkTimer.add(1200, function () 
+        {
+            skipButtonActive();
+            console.log("timer is running")
+        }, this);
+    */
+    
+    
     game.stage.backgroundColor = "#000000";
     skipButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
     
@@ -48,31 +59,45 @@ function c0() {
     
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
     style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
-    game.time.events.loop(Phaser.Timer.SECOND * 1, skipButtonActive, this);
+    
+    game.time.events.loop(Phaser.Timer.SECOND * 1.5, skipButtonActive, this);
     
     dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
 }
 
 function u0() {
-    if(skipButton.isDown && active && this.levelData.blackBackgroundText.length > index + 1) {
-        index++;
-        active = false;
-        displayBackground(this.levelData.blackBackgroundText[index].type);
-        dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
-    } else if(skipButton.isDown && active && this.levelData.goonDialogue.length > index2 + 1) {
-        if(this.levelData.goonDialogue[index2].color == 1) { //black
-            style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
-        } else if(this.levelData.goonDialogue[index2].color == 0) { //white
-            style = { font: "bold 20px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+    
+    if(skipButton.isDown){
+        if(active && this.levelData.blackBackgroundText.length > index + 1) {
+            index++;
+            active = false;
+            displayBackground(this.levelData.blackBackgroundText[index].type);
+            dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
+        } else if(active && this.levelData.goonDialogue.length > index2 + 1) {
+            if(this.levelData.goonDialogue[index2].color == 1) { //black
+                style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+            } else if(this.levelData.goonDialogue[index2].color == 0) { //white
+                style = { font: "bold 20px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+            }
+            index2++;
+            active = false;
+            displayBackground(this.levelData.goonDialogue[index2].type);
+            dialogue = game.add.text(180, 50, this.levelData.goonDialogue[index2].text, style);
+            scene1 = false;
+        } else if(active) {
+            game.state.start('state_tutorial')
         }
-        index2++;
-        active = false;
-        displayBackground(this.levelData.goonDialogue[index2].type);
-        dialogue = game.add.text(180, 50, this.levelData.goonDialogue[index2].text, style);
-        scene1 = false;
-    } else if(skipButton.isDown && active) {
-        game.state.start('state_tutorial')
+        
+        /*
+        //active = false
+        atkTimer.start();
+        atkTimer.loop();
+        */
+        console.log(active);
+        
+        
     }
+    
 }  
 
 function increaseIndex() {
