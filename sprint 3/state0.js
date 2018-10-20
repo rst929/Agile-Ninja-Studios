@@ -33,6 +33,7 @@ var image;
 var imageArray;
 var scene1 = true;
 var atkTimer;
+var canChange = true;
 
 function c0() {
     
@@ -60,17 +61,17 @@ function c0() {
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
     style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
     
-    game.time.events.loop(Phaser.Timer.SECOND * 1.5, skipButtonActive, this);
+    // game.time.events.loop(Phaser.Timer.SECOND * 1.5, skipButtonActive, this);
     
     dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
 }
 
 function u0() {
-    
-    if(skipButton.isDown){
+    if(skipButton.isDown && canChange){
+        canChange = false;
         if(active && this.levelData.blackBackgroundText.length > index + 1) {
             index++;
-            active = false;
+            //active = false;
             displayBackground(this.levelData.blackBackgroundText[index].type);
             dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
         } else if(active && this.levelData.goonDialogue.length > index2 + 1) {
@@ -80,7 +81,7 @@ function u0() {
                 style = { font: "bold 20px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
             }
             index2++;
-            active = false;
+            //active = false;
             displayBackground(this.levelData.goonDialogue[index2].type);
             dialogue = game.add.text(180, 50, this.levelData.goonDialogue[index2].text, style);
             scene1 = false;
@@ -88,12 +89,17 @@ function u0() {
             game.state.start('state_tutorial')
         }
         
+        game.input.keyboard.onUpCallback = function(){
+            canChange = true
+        }
+        
         /*
         //active = false
         atkTimer.start();
         atkTimer.loop();
         */
-        console.log(active);
+        console.log('active: ' + active);
+        console.log('canChange: ' + canChange);
         
         
     }
