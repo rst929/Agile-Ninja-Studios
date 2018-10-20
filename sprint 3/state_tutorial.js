@@ -1,7 +1,8 @@
 var st_tut = {
     preload: p_tut,
     create: c_tut,
-    update: u_tut
+    update: u_tut,
+    render: r_tut
 }
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
@@ -98,7 +99,7 @@ function c_tut() {
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
-    player.body.setSize(40,100, 35, 30);
+    player.body.setSize(200,500, 350, 450);
     
     //animations
     player.animations.add('left', [5, 6], 10, true);
@@ -190,6 +191,9 @@ function u_tut() {
 
 }
 
+function r_tut() {
+    game.debug.body(player);
+}
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
