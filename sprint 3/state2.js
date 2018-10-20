@@ -11,12 +11,12 @@ function p2() {
 var deathMusic;
 var gameOver;
 function c2() {
-    sumoMusic.mute = true;
+    //sumoMusic.mute = true;
     deathMusic = game.add.audio('deathMusic');
     deathMusic.play();
     game.stage.backgroundColor = '#000000'
     var style = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-    gameOver = game.add.text(300, 120, 'GAME OVER', style);
+    gameOver = game.add.text(250, 150, 'GAME OVER', style);
     console.log("WORKING2");
 }
 
