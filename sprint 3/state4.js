@@ -43,7 +43,7 @@ function p4() {
 	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
-    game.load.spritesheet('shurikenman', 'assets/blue_enemy.png', 50, 116);
+    game.load.spritesheet('shurikenman', 'assets/blue_enemy.png', 320, 126);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
