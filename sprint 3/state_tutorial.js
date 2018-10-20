@@ -125,7 +125,7 @@ function c_tut() {
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var dHealth = 5; //player health
-var isRight=true;
+var movingRight=true;
 
 function u_tut() {
     //  Collide the player and the stars with the platforms
@@ -137,16 +137,14 @@ function u_tut() {
     if (cursors.left.isDown) {
         movePLeft();
         swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        isRight=false;
     } else if (cursors.right.isDown) {
         movePRight();
-        isRight=true;
         swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
     } else if(attackButton.isDown) {
-        if(isRight){
-            player.animation.play("attackR");
+        if(movingRight){
+            player.animations.play("attackR");
         }else{
-            player.animation.play('attackL');
+            player.animations.play("attackL");
         }
         if(swordHit) { 
            dHealth-=5;
@@ -154,7 +152,7 @@ function u_tut() {
         
     } else {
         //  Stand still
-        if(isRight) {
+        if(movingRight) {
             player.frame = 0;
         } else {
             player.frame = 5;
@@ -189,6 +187,7 @@ function u_tut() {
         game.state.start('state_level1')
         
     }
+
 }
 
 
@@ -198,18 +197,22 @@ function swordAttack() {
     player.animations.play('attack');
 }
 
+
 function movePLeft() {
     //  Move to the left
     player.body.velocity.x = -300;
     player.animations.play('left');
+    movingRight = false;
+    
+    
+
 }
 
 function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
-}
+    movingRight = true;
+    
+    
 
-
-function makePlayerVulnerable() {
-    playerVulnerable = true;
 }
