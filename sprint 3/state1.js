@@ -1,7 +1,8 @@
 var st1 = {
     preload: p1,
     create: c1,
-    update: u1
+    update: u1,
+    render: r1
 }
 
 function p1() {
@@ -51,7 +52,7 @@ function c1() {
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     player.scale.setTo(.09,.09);
 
-    sumo = game.add.sprite(game.world.width - 200, game.world.height - 450, 'sumo');
+    sumo = game.add.sprite(game.world.width - 300, game.world.height - 450, 'sumo');
     sumo.scale.setTo(3,3);
     
         //create hitbox for sword
@@ -72,13 +73,13 @@ function c1() {
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
-    player.body.setSize(15, 40, 0, 100);
+    player.body.setSize(300, 600, 350, 350);
 
     //sumo physics properties
     sumo.body.bounce.y = 0.2;
     sumo.body.gravity.y = 1000;
     sumo.body.collideWorldBounds = true;
-    sumo.body.setSize(70, 100, 30, 0);
+    sumo.body.setSize(50, 75, 45, 24);
     
     //wave properties 
     wave = game.add.sprite(sumo.x -190, sumo.y, 'wave');
@@ -187,6 +188,12 @@ function u1() {
         game.state.start('state2');
     }
 }
+
+function r1() {
+    game.debug.body(player);
+    game.debug.body(sumo);
+}
+
 
 //note: some functions are small now, but idea is that they'll grow with the game
 function deathScene() {

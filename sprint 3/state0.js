@@ -23,6 +23,7 @@ function p0() {
 }
 
 var skipButton;
+var nextScene;
 var levelData;
 var index = 0; //index for black screen
 var index2 = 0; //index for bar dialogue
@@ -48,6 +49,7 @@ function c0() {
     
     game.stage.backgroundColor = "#000000";
     skipButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
+    nextScene = game.input.keyboard.addKey(Phaser.Keyboard.S);
     
     imageArray = ["goonsEmpty", "oneGoon", "goonLtalking_SL", "goonLtalking", "goonRtalking_SL", "goonRtalking", "bartend_sam", "bartend", "blackPic", "samFindingSword", "surprisesam1", "surprisesam2", "surprisesam3"];
     
@@ -92,16 +94,10 @@ function u0() {
         game.input.keyboard.onUpCallback = function(){
             canChange = true
         }
-        
-        /*
-        //active = false
-        atkTimer.start();
-        atkTimer.loop();
-        */
-        console.log('active: ' + active);
-        console.log('canChange: ' + canChange);
-        
-        
+    }
+    
+    if(nextScene.isDown) {
+        game.state.start('state_tutorial');
     }
     
 }  

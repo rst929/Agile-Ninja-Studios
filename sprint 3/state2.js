@@ -11,7 +11,7 @@ function p2() {
 var deathMusic;
 var gameOver;
 function c2() {
-    //sumoMusic.mute = true;
+    sumoMusic.mute = true;
     deathMusic = game.add.audio('deathMusic');
     deathMusic.play();
     game.stage.backgroundColor = '#000000'

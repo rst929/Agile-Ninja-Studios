@@ -1,7 +1,8 @@
 var st_tut = {
     preload: p_tut,
     create: c_tut,
-    update: u_tut
+    update: u_tut,
+    render: r_tut
 }
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
@@ -67,14 +68,9 @@ function c_tut() {
     stone1.body.immovable = true;
     stone2.body.immovable = true;
     
-//<<<<<<< HEAD
     door = game.add.sprite(660, game.world.height-470, 'closed_door');
     door.scale.setTo(.23, .23);
-//=======
     
-   // door = game.add.sprite(580, game.world.height-580, 'closed_door');
-   // door.scale.setTo(.4, .4);
-//>>>>>>> 6c530c4889a94dd832c5e4b2a6e98201c7a8c8d2
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
@@ -98,7 +94,7 @@ function c_tut() {
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
-    player.body.setSize(40,100, 35, 30);
+    player.body.setSize(200,500, 350, 450);
     
     //animations
     player.animations.add('left', [5, 6], 10, true);
@@ -190,6 +186,9 @@ function u_tut() {
 
 }
 
+function r_tut() {
+    game.debug.body(player);
+}
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
