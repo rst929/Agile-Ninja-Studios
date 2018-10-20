@@ -12,7 +12,7 @@ function p_tut() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player3.png', 172, 135);
+    game.load.spritesheet('sam', 'assets/player_fix.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -72,21 +72,22 @@ function c_tut() {
     door.scale.setTo(.23, .23);
 //=======
     
-    door = game.add.sprite(580, game.world.height-580, 'closed_door');
-    door.scale.setTo(.4, .4);
+   // door = game.add.sprite(580, game.world.height-580, 'closed_door');
+   // door.scale.setTo(.4, .4);
 //>>>>>>> 6c530c4889a94dd832c5e4b2a6e98201c7a8c8d2
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
-    player.scale.setTo(.6,.6)
+    player.scale.setTo(.09,.09);
     
-    //sword hitbox creation
+    //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
     player.addChild(hitbox);
-    var swordHitbox = hitbox.create(0, 0, null);
-    swordHitbox.body.setSize(30, 20, player.width/3, 0);
+    swordHitbox = hitbox.create(0, 0, null); // creating the hitbox itself
+    swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+    game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -99,10 +100,11 @@ function c_tut() {
     player.body.collideWorldBounds = true;
     player.body.setSize(40,100, 35, 30);
     
-    //  animations
-    player.animations.add('left', [0, 1], 10, true);
+    //animations
+    player.animations.add('left', [5, 6], 10, true);
+    player.animations.add('attackL', [7, 8, 9], 10, true);
     player.animations.add('right', [0, 1], 10, true);
-    player.animations.add('attack', [2, 3, 4], 10, true);
+    player.animations.add('attackR', [2, 3, 4], 10, true);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
@@ -123,7 +125,7 @@ function c_tut() {
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var dHealth = 5; //player health
-
+var isRight=true;
 
 function u_tut() {
     //  Collide the player and the stars with the platforms
@@ -134,18 +136,29 @@ function u_tut() {
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
+        swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        isRight=false;
     } else if (cursors.right.isDown) {
         movePRight();
+        isRight=true;
+        swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
     } else if(attackButton.isDown) {
-        player.animations.play('attack');
+        if(isRight){
+            player.animation.play("attackR");
+        }else{
+            player.animation.play('attackL');
+        }
         if(swordHit) { 
            dHealth-=5;
         }
         
     } else {
         //  Stand still
-        player.animations.stop();
-        player.frame = 0;
+        if(isRight) {
+            player.frame = 0;
+        } else {
+            player.frame = 5;
+        }
         player.body.velocity.x = 0;
     }
 
