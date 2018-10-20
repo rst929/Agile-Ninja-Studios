@@ -68,14 +68,9 @@ function c_tut() {
     stone1.body.immovable = true;
     stone2.body.immovable = true;
     
-//<<<<<<< HEAD
     door = game.add.sprite(660, game.world.height-470, 'closed_door');
     door.scale.setTo(.23, .23);
-//=======
     
-   // door = game.add.sprite(580, game.world.height-580, 'closed_door');
-   // door.scale.setTo(.4, .4);
-//>>>>>>> 6c530c4889a94dd832c5e4b2a6e98201c7a8c8d2
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
