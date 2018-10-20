@@ -1,8 +1,7 @@
-var st_lev1 = {
-    preload: p1,
-    create: c1,
-    update: u1,
-    render: r1
+var st4 = {
+    preload: p4,
+    create: c4,
+    update: u4,
 }
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
@@ -20,7 +19,7 @@ WebFontConfig = {
 
 };
 
-function p1() {
+function p4() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
@@ -44,43 +43,44 @@ function p1() {
 	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
+    game.load.spritesheet('shurikenman', 'assets/blue_enemy.png', 50, 116);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
-EnemySwordsman = function(index, game, x, y) {
+Enemyshurikenman = function(index, game, x, y) {
     
-    //initializing body of enemy swordsman
-    this.swordsman = game.add.sprite(x, y, 'swordsman');
-    this.swordsman.anchor.setTo(.5, .5);
-    this.swordsman.scale.setTo(1,1);
+    //initializing body of enemy shurikenman
+    this.shurikenman = game.add.sprite(x, y, 'shurikenman');
+    this.shurikenman.anchor.setTo(.1, .1);
+    this.shurikenman.scale.setTo(.4,.4);
     
     //  We need to enable physics on the player
-    game.physics.arcade.enable(this.swordsman);
+    game.physics.arcade.enable(this.shurikenman);
         
-    //gravity of swordsman
-    this.swordsman.body.bounce.y = 0.2;
-    this.swordsman.body.gravity.y = 1000;
-    this.swordsman.body.collideWorldBounds = true;
+    //gravity of shurikenman
+    this.shurikenman.body.bounce.y = 0.2;
+    this.shurikenman.body.gravity.y = 1000;
+    this.shurikenman.body.collideWorldBounds = true;
     
-    //creates the hitbox for image of the swordsman
-    this.swordsman.body.setSize(30, 75, 95, 40); //need to fix sprite going left
+    //creates the hitbox for image of the shurikenman
+    this.shurikenman.body.setSize(30, 75, 95, 40); //need to fix sprite going left
     
     //animations
-    this.swordsman.animations.add('left', [0, 1], 3, true);
-    this.swordsman.animations.add('right', [5, 6], 3, true);
-    this.attackL = this.swordsman.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
-    this.attackR = this.swordsman.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
+    this.shurikenman.animations.add('left', [0, 1], 3, true);
+    this.shurikenman.animations.add('right', [5, 6], 3, true);
+    this.attackL = this.shurikenman.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
+    this.attackR = this.shurikenman.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
     
     //
     this.enemyHitbox = game.add.group();
     this.enemyHitbox.enableBody = true;
-    this.swordsman.addChild(this.enemyHitbox);
+    this.shurikenman.addChild(this.enemyHitbox);
     this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
     this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
     
     //him standing and doing nothing
     this.stand = function() {
-        this.swordsman.frame = 8;
+        this.shurikenman.frame = 8;
     };
     
     // use this marker to signify global variable
@@ -126,44 +126,44 @@ EnemySwordsman = function(index, game, x, y) {
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
         game.debug.body(this.enemySwordHitbox);
-        game.physics.arcade.collide(this.swordsman, stone_platforms);
-        if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
-            this.swordsman.body.velocity.x = -velocity;
-            this.swordsman.animations.play('left');
+        game.physics.arcade.collide(this.shurikenman, stone_platforms);
+        if(pX + 100 + this.extraDist <= this.shurikenman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
+            this.shurikenman.body.velocity.x = -velocity;
+            this.shurikenman.animations.play('left');
             this.lookingL = true; //enemy is looking L (important for later in movement tree)
             this.lookingR = false; 
             this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
             
-        } else if (pX - this.extraDist >= this.swordsman.x) { //go right
-            this.swordsman.body.velocity.x = velocity;
-            this.swordsman.animations.play('right');
+        } else if (pX - this.extraDist >= this.shurikenman.x) { //go right
+            this.shurikenman.body.velocity.x = velocity;
+            this.shurikenman.animations.play('right');
             this.lookingL = false; 
             this.lookingR = true; //enemy is looking R (important for later in movement tree)
             this.enemySwordHitbox.body.setSize(50, 75, 25, -20);
         } else if(this.lookingL) { 
-            this.swordsman.body.velocity.x = 0;
+            this.shurikenman.body.velocity.x = 0;
             if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.leftAttack = this.swordsman.play('attackL');
+                this.leftAttack = this.shurikenman.play('attackL');
                 this.leftAttack.onComplete.add(this.hasAttacked, this);
                 this.canAttack = false;
             }
         } else if(this.lookingR) {
-            this.swordsman.body.velocity.x = 0;
+            this.shurikenman.body.velocity.x = 0;
             if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.rightAttack = this.swordsman.play('attackR');
+                this.rightAttack = this.shurikenman.play('attackR');
                 this.rightAttack.onComplete.add(this.hasAttacked, this);
                 this.canAttack = false;
             }
         } else {
-            this.swordsman.body.velocity.x = 0;
-            this.swordsman.frame = 8;
+            this.shurikenman.body.velocity.x = 0;
+            this.shurikenman.frame = 8;
         }
     };
     
-    //if swordsman is dead
+    //if shurikenman is dead
     this.die = function() {
         console.log("should be dead");
-        this.swordsman.kill();
+        this.shurikenman.kill();
     };
 }
 
@@ -178,8 +178,7 @@ var map;
 var stone_platforms;
 var background;
 var hitbox;
-
-function c1() {
+function c4() {
     
     game.world.setBounds(0, 0, 2400, 416);
     //  Physics
@@ -257,12 +256,12 @@ function c1() {
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
-var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+var shurikenmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
 var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 
-function u1() {
+function u4() {
 //    game.debug.body(player.hitbox);
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
@@ -280,7 +279,7 @@ function u1() {
         swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
         if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
             if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
-                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
+                shurikenmanArray.push(new Enemyshurikenman(enemyLocIndex, game, player.x + 500, player.y));
                 lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
                 enemyLocIndex++;
             }
@@ -311,7 +310,7 @@ function u1() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth; //player health is updated with current health
+    //playerHealth.text = "Sam HP: " + pHealth; //player health is updated with current health
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -331,19 +330,19 @@ function u1() {
     }
     
     //scan through every currently spawned enemy
-    for(var i = 0; i < swordsmanArray.length; i++) {
-        swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
+    for(var i = 0; i < shurikenmanArray.length; i++) {
+        shurikenmanArray[i].move(player.x); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
-                if(swordsmanArray[i].attacked()) {
-                    swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+            if(game.physics.arcade.overlap(shurikenmanArray[i].shurikenman, hitbox)) { // Overlap with sword and player 2)) {
+                if(shurikenmanArray[i].attacked()) {
+                    shurikenmanArray[i].shurikenman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
                 }
             }
             
         }
-        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and shurikenman has finished attack
+        if(playerVulnerable && game.physics.arcade.overlap(shurikenmanArray[i].enemyHitbox, player) && shurikenmanArray[i].finishedAttack()) {
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
@@ -359,11 +358,11 @@ function u1() {
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 //just for debugging purposes
-function r1() {
+function r4() {
     game.debug.body(swordHitbox);
     //game.debug.spriteBounds(this.hitbox.swordHitbox);
-    for(var i = 0; i < swordsmanArray.length; i++) {
-        game.debug.body(swordsmanArray[i].swordsman);
+    for(var i = 0; i < shurikenmanArray.length; i++) {
+        game.debug.body(shurikenmanArray[i].shurikenman);
     }
 }
 
