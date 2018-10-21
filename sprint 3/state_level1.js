@@ -248,6 +248,10 @@ EnemyShurikenThrower = function(index, game, x, y) {
     this.move = function(pX) { //pX = player.x position
         if(this.attackL.isFinished && this.canAttackAgain) {
             console.log("shuriken here")
+            this.shuriken=game.add.sprite(this.x+1, this.y+1,"shuriken");
+            game.physics.arcade.enable(this.shuriken);
+            this.LeftShuriken = this.shuriken.animations.add('LeftShuriken', [4,5,6,7],false);
+            this.RightShuriken = this.shuriken.animations.add('RightShuriken', [0,1,2,3], false);
         }
 //        game.debug.body(this.);
         game.physics.arcade.collide(this.shurikenThrower, stone_platforms);
@@ -261,12 +265,24 @@ EnemyShurikenThrower = function(index, game, x, y) {
         
         if(lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
             this.shurikenThrower.animations.play("attackL");
+            this.shuriken=game.add.sprite(this.x+1, this.y+1,"shuriken");
+            game.physics.arcade.enable(this.shuriken);
+            this.LeftShuriken = this.shuriken.animations.add('LeftShuriken', [4,5,6,7],false);
+            this.RightShuriken = this.shuriken.animations.add('RightShuriken', [0,1,2,3], false);
+            this.shuriken.body.velocity.x=300;
+            this.shuriken.animations.play("RightShuriken");
             if(this.attackL.isFinished) {
-//                console.log("done");
+                console.log("done");
             }
             this.canAttackAgain = false;
         } else if(lookingR && (pX - this.shurikenThrower.x) >= 350) {
+            this.shuriken=game.add.sprite(this.x+1, this.y+1,"shuriken");
+            game.physics.arcade.enable(this.shuriken);
+            this.LeftShuriken = this.shuriken.animations.add('LeftShuriken', [4,5,6,7],false);
+            this.RightShuriken = this.shuriken.animations.add('RightShuriken', [0,1,2,3], false);
             this.shurikenThrower.animations.play("attackR");
+            this.shuriken.body.velocity.x=300;
+            this.shuriken.animations.play("RightShuriken");
 
         }
         
@@ -279,11 +295,11 @@ EnemyShurikenThrower = function(index, game, x, y) {
     };
 }
 
-Shuriken = function(game, x, y, goLeft) {
-    this.shuriken = game.add.sprite(x, y, 'shuriken');
-    this.shuriken.anchor.setTo(.5, .5);
-    this.shuriken.scale.setTo(1, 1);
-}
+//Shuriken = function(game, x, y, goLeft) {
+    //this.shuriken = game.add.sprite(x, y, 'shuriken');
+    //this.shuriken.anchor.setTo(.5, .5);
+    //this.shuriken.scale.setTo(1, 1);
+//}
 
 var image; //background
 var attackButton; // F to attack
@@ -551,4 +567,12 @@ function createText() {
     instructions.font = 'Permanent Marker';
 
 
+}
+function shurikenflyright(){
+    shuriken.body.velocity.x=300;
+    player.animations.play("RightShuriken");
+}
+function shurikenflyleft(){
+    shuriken.body.velocity.x=300;
+    player.animations.play("LeftShuriken");
 }
