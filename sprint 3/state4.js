@@ -43,16 +43,18 @@ function p4() {
 	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
-    game.load.spritesheet('shurikenman', 'assets/blue_enemy.png', 320, 126);
+    game.load.spritesheet('shurikenman', 'assets/blue_enemy.png', 500, 315);
+    game.load.spritesheet('shuriken','assets/shuriken.png', 250, 170);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
+    
 }
 
 Enemyshurikenman = function(index, game, x, y) {
     
     //initializing body of enemy shurikenman
     this.shurikenman = game.add.sprite(x, y, 'shurikenman');
-    this.shurikenman.anchor.setTo(.1, .1);
-    this.shurikenman.scale.setTo(.4,.4);
+    this.shurikenman.anchor.setTo(.5, .5);
+    this.shurikenman.scale.setTo(.33,.33);
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(this.shurikenman);
@@ -78,6 +80,7 @@ Enemyshurikenman = function(index, game, x, y) {
     this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
     this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
     
+
     //him standing and doing nothing
     this.stand = function() {
         this.shurikenman.frame = 8;
