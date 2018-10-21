@@ -45,6 +45,7 @@ function p1() {
     
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy.png', 500, 315);
+    game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
@@ -183,7 +184,7 @@ EnemyShurikenThrower = function(index, game, x, y) {
     this.shurikenThrower.body.collideWorldBounds = true;
     
     //creates the hitbox for image of the shurikenThrower
-    this.shurikenThrower.body.setSize(30, 75, 95, 40); //need to fix sprite going left
+    this.shurikenThrower.body.setSize(100, 200, 220, 100); //need to fix sprite going left
     
     //animations
     this.shurikenThrower.animations.add('left', [0, 1], 3, true);
@@ -204,7 +205,7 @@ EnemyShurikenThrower = function(index, game, x, y) {
     };
     
     // use this marker to signify global variable
-    this.canAttack = false; //signifies timer is reset so enemy can attack
+    this.canAttackAgain = true; //signifies timer is reset so enemy can attack
     this.vulnerable = true; //signifies invulnerability timer enmey reset
     this.lookingL = false;
     this.lookingR = false;
@@ -214,7 +215,7 @@ EnemyShurikenThrower = function(index, game, x, y) {
     this.hitCount = 2; // however many hits enemy has
     
     this.canAttack = function() {
-        this.canAttack = true; //change name from something different
+        this.canAttackAgain = true; //change name from something different
     };
     
     this.vulnerable = function() { //possible bug area, may need to change name to different from function
@@ -245,39 +246,30 @@ EnemyShurikenThrower = function(index, game, x, y) {
     
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
-        game.debug.body(this.enemyShurikenThrowerHitbox);
-        game.physics.arcade.collide(this.shurikenThrower, stone_platforms);
-        if(pX + 100 + this.extraDist <= this.shurikenThrower.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
-            this.shurikenThrower.body.velocity.x = -velocity;
-            this.shurikenThrower.animations.play('left');
-            this.lookingL = true; //enemy is looking L (important for later in movement tree)
-            this.lookingR = false; 
-            this.enemyShurikenThrowerHitbox.body.setSize(50, 75, -75, -20);
-            
-        } else if (pX - this.extraDist >= this.shurikenThrower.x) { //go right
-            this.shurikenThrower.body.velocity.x = velocity;
-            this.shurikenThrower.animations.play('right');
-            this.lookingL = false; 
-            this.lookingR = true; //enemy is looking R (important for later in movement tree)
-            this.enemyShurikenThrowerHitbox.body.setSize(50, 75, 25, -20);
-        } else if(this.lookingL) { 
-            this.shurikenThrower.body.velocity.x = 0;
-            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.leftAttack = this.shurikenThrower.play('attackL');
-                this.leftAttack.onComplete.add(this.hasAttacked, this);
-                this.canAttack = false;
-            }
-        } else if(this.lookingR) {
-            this.shurikenThrower.body.velocity.x = 0;
-            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.rightAttack = this.shurikenThrower.play('attackR');
-                this.rightAttack.onComplete.add(this.hasAttacked, this);
-                this.canAttack = false;
-            }
-        } else {
-            this.shurikenThrower.body.velocity.x = 0;
-            this.shurikenThrower.frame = 8;
+        if(this.attackL.isFinished && this.canAttackAgain) {
+            console.log("shuriken here")
         }
+//        game.debug.body(this.);
+        game.physics.arcade.collide(this.shurikenThrower, stone_platforms);
+        if(pX + this.extraDist <= this.shurikenThrower.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
+            lookingL = true;
+            lookingR = false;
+        } else if(pX - this.extraDist >= this.shurikenThrower.x) {
+            lookingL = false;
+            lookingR = true;
+        }
+        
+        if(lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
+            this.shurikenThrower.animations.play("attackL");
+            if(this.attackL.isFinished) {
+//                console.log("done");
+            }
+            this.canAttackAgain = false;
+        } else if(lookingR && (pX - this.shurikenThrower.x) >= 350) {
+            this.shurikenThrower.animations.play("attackR");
+
+        }
+        
     };
     
     //if shurikenThrower is dead
@@ -285,6 +277,12 @@ EnemyShurikenThrower = function(index, game, x, y) {
         console.log("should be dead");
         this.shurikenThrower.kill();
     };
+}
+
+Shuriken = function(game, x, y, goLeft) {
+    this.shuriken = game.add.sprite(x, y, 'shuriken');
+    this.shuriken.anchor.setTo(.5, .5);
+    this.shuriken.scale.setTo(1, 1);
 }
 
 var image; //background
@@ -477,7 +475,7 @@ function u1() {
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurienThrower, hitbox)) { // Overlap with sword and player 2)) {
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked()) {
                     shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
@@ -507,6 +505,9 @@ function r1() {
     //game.debug.spriteBounds(this.hitbox.swordHitbox);
     for(var i = 0; i < swordsmanArray.length; i++) {
         game.debug.body(swordsmanArray[i].swordsman);
+    }
+    for(var i = 0; i < shurikenThrowerArray.length; i++) {
+        game.debug.body(shurikenThrowerArray[i].shurikenThrower);
     }
 }
 
