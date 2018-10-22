@@ -5,6 +5,8 @@ var st_lev1 = {
     render: r1
 }
 
+var stateVar = 1
+
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 WebFontConfig = {
 
@@ -405,6 +407,7 @@ function c1() {
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
+    stateVar = 2
     
 }
 
@@ -417,7 +420,7 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 20; //how many shurikens sam is holding
+var playerShurikenTotal = 10; //how many shurikens sam is holding
 var canThrow = true;
 
 function u1() {
@@ -644,8 +647,14 @@ function createText() {
     playerHealth.fixedToCamera=true;
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    if (stateVar != 1){
+      instructions2 = game.add.text(38,62, 'use d key to throw shuriken', {fontSize: '22px', fill:'#fff'});
+        instructions2.font = 'Permanent Marker';
+    } 
     
     instructions.font = 'Permanent Marker';
+    
+    
 
 
 }
