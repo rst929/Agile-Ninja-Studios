@@ -448,7 +448,7 @@ function u1() {
     //game.physics.arcade.collide(drop, stone_platforms,function(){hitPlatform = true});
     //game.physics.arcade.collide(player, map);
     if (game.physics.arcade.collide(player,drop)){
-        playerShurikenTotal=playerShurikenTotal+20;
+        playerShurikenTotal=playerShurikenTotal+10;
         drop.kill();
     }
     //movement tree for player
