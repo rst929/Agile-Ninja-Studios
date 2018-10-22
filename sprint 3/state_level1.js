@@ -315,6 +315,7 @@ Shuriken = function(game, x, y, goLeft) {
 
 var image; //background
 var attackButton; // F to attack
+var throwButton;// D to throw
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 //var sumoMusic; //boss music
@@ -381,7 +382,8 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    
+    throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    //throwButton.onDown.add(throwshuriken)
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
@@ -445,7 +447,23 @@ function u1() {
         if(game.physics.arcade.collide(this.hitbox,door)){
            dhealth-5;
            }
-    } else {
+        //creates shuriken on command
+    }else if(throwButton.isDown){
+            playershuriken = game.add.sprite(player.x+60, player.y+45, 'shuriken');
+            //playershuriken = game.add.sprite(hitbox.x, hitbox.y, 'shuriken');
+            game.physics.arcade.enable(playershuriken);
+            playershuriken.anchor.setTo(.5, .5);
+            playerleftshuriken = playershuriken.animations.add('PlayerLeftShuriken', [4,5,6,7], 15, true);
+            playerrightShuriken = playershuriken.animations.add('PlayerRightShuriken', [0,1,2,3], 15, true);
+            playershuriken.scale.setTo(.3, .3);
+            if(movingRight){
+                playershuriken.animations.play("PlayerRightShuriken");
+                playershuriken.body.velocity.x = 300;
+            }else{
+                playershuriken.animations.play("PlayerLeftShuriken");
+                playershuriken.body.velocity.x = -300;
+            }
+    }else {
         //  Stand still
         player.animations.stop();
         if(movingRight) {
@@ -580,11 +598,3 @@ function createText() {
 
 
 }
-//function shurikenflyright(){
-//    shuriken.body.velocity.x=300;
-//    player.animations.play("RightShuriken");
-//}
-//function shurikenflyleft(){
-//    shuriken.body.velocity.x=300;
-//    player.animations.play("LeftShuriken");
-//}
