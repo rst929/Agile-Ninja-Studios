@@ -2,7 +2,7 @@
 
         "blackBackgroundText": [ 
             {"text": "Enter Sam, a chubby, down-on-his-luck, failed samurai, recently fired from his job at Himeki castle. Jobless and weak, Sam seeks out his only comfort...", "type": 8, "color": 0},
-            {"text": "Alcohol.", "type": 6, "color": 0}
+            {"text": "\n\n\n\n\n\n\nAlcohol.", "type": 6, "color": 0}
         ],
        "goonDialogue": [
             {"text": "Stuck on the night shift again? Man, I hate these rich bastards with their overpriced stuff.", "type": 3, "color": 1},

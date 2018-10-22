@@ -403,6 +403,10 @@ function c1() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    
+//    Testing camear stuff
+//    cameraButtonTest = game.input.keyboard.addKey(Phaser.Keyboard.P);
+//    cameraButtonTest.onDown.add(turnCameraOff);
     //throwButton.onDown.add(throwshuriken)
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
@@ -674,3 +678,7 @@ function createText() {
 
 
 }
+
+//function turnCameraOff() {
+//    game.camera.reset();
+//}
