@@ -5,6 +5,8 @@ var st_lev1 = {
     render: r1
 }
 
+var stateVar = 1
+
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 WebFontConfig = {
 
@@ -412,6 +414,7 @@ function c1() {
     //setting up JSON file to be read
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
+    stateVar = 2
     
 }
 
@@ -424,7 +427,11 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
+<<<<<<< HEAD
 var playerShurikenTotal = 0; //how many shurikens sam is holding
+=======
+var playerShurikenTotal = 10; //how many shurikens sam is holding
+>>>>>>> 142efdfc0982c7fb32d65928382701592603ea01
 var canThrow = true;
 
 function u1() {
@@ -522,6 +529,12 @@ function u1() {
     
     //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
+        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+            pHealth -= 5; //remove 5 from player's health
+            playerVulnerable = false; //give player i frames
+        }
+        
         swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
@@ -529,14 +542,12 @@ function u1() {
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
                     swordsmanArray.splice(i, 1);
+                    if(swordsmanArray.length == 0) {
+                        break;
+                    }
                 }
             }
             
-        }
-        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
-            pHealth -= 5; //remove 5 from player's health
-            playerVulnerable = false; //give player i frames
         }
         
         for(var j = 0; j < playerShurikens.length; j++) {
@@ -566,6 +577,9 @@ function u1() {
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
                     shurikenThrowerArray.splice(i, 1);
+                    if(shurikenThrowerArray.length == 0) {
+                        break;
+                    }
                 }
             }
             
@@ -628,18 +642,12 @@ function movePLeft() {
     player.body.velocity.x = -300;
     player.animations.play('left');
     movingRight = false;
-    
-    
-
 }
 
 function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
     movingRight = true;
-    
-    
-
 }
 
 function makePlayerVulnerable() {
@@ -654,8 +662,14 @@ function createText() {
     playerHealth.fixedToCamera=true;
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    if (stateVar != 1){
+      instructions2 = game.add.text(38,62, 'use d key to throw shuriken', {fontSize: '22px', fill:'#fff'});
+        instructions2.font = 'Permanent Marker';
+    } 
     
     instructions.font = 'Permanent Marker';
+    
+    
 
 
 }

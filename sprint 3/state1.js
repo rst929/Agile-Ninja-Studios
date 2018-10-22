@@ -82,7 +82,7 @@ function c1() {
     sumo.body.setSize(50, 75, 45, 24);
     
     //wave properties 
-    wave = game.add.sprite(sumo.x -190, sumo.y, 'wave');
+    wave = game.add.sprite(sumo.x, sumo.y, 'wave');
     wave.scale.setTo(.8, .8);
     game.physics.arcade.enable(wave);
     wave.body.setSize(50, 200, 115, 100);
@@ -229,7 +229,7 @@ function sumoAttack() {
 }
 
 function waveSpawn() {
-    wave.reset(sumo.x - 50, sumo.y + 90);
+    wave.reset(sumo.x, sumo.y + 90);
 }
 
 function pDamage(amount) {
