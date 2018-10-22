@@ -515,8 +515,9 @@ function u1() {
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked()) {
-                    swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
+                    swordsmanArray.splice(i, 1);
                 }
             }
             
@@ -530,8 +531,10 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
                 if(swordsmanArray[i].attacked()) {
-                    swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
+                    swordsmanArray.splice(i, 1);
+                    break;
                 }
             }
         }
@@ -539,15 +542,25 @@ function u1() {
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
+        for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
+                pHealth -= 10;
+                playerVulnerable = false;
+                
+            }
+        }
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked()) {
-                    shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
+                    shurikenThrowerArray.splice(i, 1);
                 }
             }
             
         }
+        
+        
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
 
         if(shurikenThrowerArray[i].checkForOverlap(player)) {
@@ -557,19 +570,14 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
                 if(shurikenThrowerArray[i].attacked()) {
-                    shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
+                    shurikenThrowerArray.splice(i, 1);
+                    break;
                 }
             }
         }
-        
-        for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
-                pHealth -= 10;
-                playerVulnerable = false;
-                
-            }
-        }
+
     }
     
     //if player has no health, go to game over state
