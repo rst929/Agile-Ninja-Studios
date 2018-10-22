@@ -625,18 +625,12 @@ function movePLeft() {
     player.body.velocity.x = -300;
     player.animations.play('left');
     movingRight = false;
-    
-    
-
 }
 
 function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
     movingRight = true;
-    
-    
-
 }
 
 function makePlayerVulnerable() {
