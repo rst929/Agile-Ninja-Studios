@@ -416,6 +416,9 @@ var shurikenThrowerArray = []; //array that starts out empty here, but later hol
 var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
+var playerShurikens = [];
+var playerShurikenTotal = 5; //how many shurikens sam is holding
+var canThrow = true;
 
 function u1() {
 //    game.debug.body(player.hitbox);
@@ -454,21 +457,12 @@ function u1() {
            dhealth-5;
            }
         //creates shuriken on command
-    }else if(throwButton.isDown){
-            playershuriken = game.add.sprite(player.x+60, player.y+45, 'shuriken');
-            //playershuriken = game.add.sprite(hitbox.x, hitbox.y, 'shuriken');
-            game.physics.arcade.enable(playershuriken);
-            playershuriken.anchor.setTo(.5, .5);
-            playerleftshuriken = playershuriken.animations.add('PlayerLeftShuriken', [4,5,6,7], 15, true);
-            playerrightShuriken = playershuriken.animations.add('PlayerRightShuriken', [0,1,2,3], 15, true);
-            playershuriken.scale.setTo(.3, .3);
-            if(movingRight){
-                playershuriken.animations.play("PlayerRightShuriken");
-                playershuriken.body.velocity.x = 300;
-            }else{
-                playershuriken.animations.play("PlayerLeftShuriken");
-                playershuriken.body.velocity.x = -300;
-            }
+    }else if(throwButton.isDown && canThrow){
+        canThrow = false;
+        if(playerShurikenTotal > 0){
+            playerShurikenTotal--;
+            playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
+        }
     }else {
         //  Stand still
         player.animations.stop();
@@ -479,6 +473,15 @@ function u1() {
         }
         player.body.velocity.x = 0;
     }
+    for(var i = 0; i < playerShurikens.length; i++) {
+        playerShurikens[i].updateShuriken();
+        if(playerShurikens[i].checkForDespawn()) {
+            playerShurikens.splice(i, 1);
+        }
+    }
+    if(!throwButton.isDown) {
+        canThrow = true;
+    }
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
@@ -486,7 +489,7 @@ function u1() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth; //player health is updated with current health
+    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
