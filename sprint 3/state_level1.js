@@ -512,8 +512,8 @@ function u1() {
     //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
         swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
-        if(attackButton.isDown || throwButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)||game.physics.arcade.overlap(swordsmanArray[i].swordsman,playerShurikens[i])) { // Overlap with sword and player 2)) 
+        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
+            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked()) {
                     swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
@@ -530,8 +530,8 @@ function u1() {
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
-        if(attackButton.isDown||throwButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)||game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower,playerShurikens[i])) { // Overlap with sword and player 2)) {
+        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked()) {
                     shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
@@ -553,8 +553,26 @@ function u1() {
                 
             }
         }
+        
+        
     }
     
+    for (var k=0; k<playerShurikens.length;k++){
+        for (var j=0; j<swordsmanArray.length; j++){
+        if(game.physics.arcade.overlap(swordsmanArray[j].swordsman,playerShurikens[k].shuriken)){
+                swordsmanArray[j].swordsman.kill();
+            }
+        }
+    }
+    for(var j = 0; j < playerShurikens.length; j++) {
+        for (var i=0; i<shurikenThrowerArray.length;i++){
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
+                shurikenThrowerArray[i].shurikenThrower.kill();
+                
+            }
+        }
+            
+    }
     //if player has no health, go to game over state
     if(pHealth <= 0) {
         game.state.start('state2');
