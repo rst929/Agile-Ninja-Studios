@@ -442,6 +442,7 @@ function u1() {
                     swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
                 } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
                     shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, player.x + 500, player.y));
+                    console.log("Enemy spawned")
                 }
                 lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
                 enemyLocIndex++;
@@ -515,8 +516,9 @@ function u1() {
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked()) {
-                    swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
+                    swordsmanArray.splice(i, 1);
                 }
             }
             
@@ -526,26 +528,23 @@ function u1() {
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
+        
+        for(var j = 0; j < playerShurikens.length; j++) {
+            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
+                if(swordsmanArray[i].attacked()) {
+                    swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    //note: bug is currently happening where enemy attacks remain
+                    swordsmanArray.splice(i, 1);
+                    break;
+                }
+            }
+        }
     }
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
-        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
-                if(shurikenThrowerArray[i].attacked()) {
-                    shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
-                    //note: bug is currently happening where enemy attacks remain
-                }
-            }
-            
-        }
-        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-
-        if(shurikenThrowerArray[i].checkForOverlap(player)) {
-//            pHealth -5;
-//            playerVulnerable = false; //give player i frames
-        }
-        
+<<<<<<< HEAD
+=======
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
                 pHealth -= 10;
@@ -553,8 +552,42 @@ function u1() {
                 
             }
         }
+>>>>>>> 7db8e1920500d9affc637a696d0bd99ec8cd6da0
+        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
+                if(shurikenThrowerArray[i].attacked()) {
+                    shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    //note: bug is currently happening where enemy attacks remain
+                    shurikenThrowerArray.splice(i, 1);
+                }
+            }
+            
+        }
         
         
+        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
+
+       /*commented out because breaking code if(shurikenThrowerArray[i].checkForOverlap(player)) {
+//            pHealth -5;
+//            playerVulnerable = false; //give player i frames
+        }
+        */
+        for(var j = 0; j < playerShurikens.length; j++) {
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
+                if(shurikenThrowerArray[i].attacked()) {
+                    shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
+                    //note: bug is currently happening where enemy attacks remain
+                    shurikenThrowerArray.splice(i, 1);
+                    break;
+                }
+            }
+        }
+<<<<<<< HEAD
+        
+        
+=======
+
+>>>>>>> 7db8e1920500d9affc637a696d0bd99ec8cd6da0
     }
     
     for (var k=0; k<playerShurikens.length;k++){
