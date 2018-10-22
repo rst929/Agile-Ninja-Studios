@@ -417,7 +417,7 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 5; //how many shurikens sam is holding
+var playerShurikenTotal = 20; //how many shurikens sam is holding
 var canThrow = true;
 
 function u1() {
@@ -463,6 +463,7 @@ function u1() {
             playerShurikenTotal--;
             playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
         }
+        
     }else {
         //  Stand still
         player.animations.stop();
@@ -511,8 +512,8 @@ function u1() {
     //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
         swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
-        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) {
+        if(attackButton.isDown || throwButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
+            if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)||game.physics.arcade.overlap(swordsmanArray[i].swordsman,playerShurikens[i])) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked()) {
                     swordsmanArray[i].swordsman.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
@@ -529,8 +530,8 @@ function u1() {
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
-        if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
+        if(attackButton.isDown||throwButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)||game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower,playerShurikens[i])) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked()) {
                     shurikenThrowerArray[i].shurikenThrower.kill(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
