@@ -442,6 +442,7 @@ function u1() {
                     swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
                 } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
                     shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, player.x + 500, player.y));
+                    console.log("Enemy spawned")
                 }
                 lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
                 enemyLocIndex++;
@@ -563,10 +564,11 @@ function u1() {
         
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
 
-        if(shurikenThrowerArray[i].checkForOverlap(player)) {
+       /*commented out because breaking code if(shurikenThrowerArray[i].checkForOverlap(player)) {
 //            pHealth -5;
 //            playerVulnerable = false; //give player i frames
         }
+        */
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
                 if(shurikenThrowerArray[i].attacked()) {
