@@ -515,6 +515,12 @@ function u1() {
     
     //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
+        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+            pHealth -= 5; //remove 5 from player's health
+            playerVulnerable = false; //give player i frames
+        }
+        
         swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
@@ -522,14 +528,12 @@ function u1() {
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
                     swordsmanArray.splice(i, 1);
+                    if(swordsmanArray.length == 0) {
+                        break;
+                    }
                 }
             }
             
-        }
-        //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
-            pHealth -= 5; //remove 5 from player's health
-            playerVulnerable = false; //give player i frames
         }
         
         for(var j = 0; j < playerShurikens.length; j++) {
@@ -559,6 +563,9 @@ function u1() {
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'killed' (made invisible/stuck)
                     //note: bug is currently happening where enemy attacks remain
                     shurikenThrowerArray.splice(i, 1);
+                    if(shurikenThrowerArray.length == 0) {
+                        break;
+                    }
                 }
             }
             
@@ -621,18 +628,12 @@ function movePLeft() {
     player.body.velocity.x = -300;
     player.animations.play('left');
     movingRight = false;
-    
-    
-
 }
 
 function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
     movingRight = true;
-    
-    
-
 }
 
 function makePlayerVulnerable() {
