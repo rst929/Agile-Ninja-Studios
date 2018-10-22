@@ -57,6 +57,7 @@ EnemySwordsman = function(index, game, x, y) {
     this.swordsman = game.add.sprite(x, y, 'swordsman');
     this.swordsman.anchor.setTo(.5, .5);
     this.swordsman.scale.setTo(1,1);
+    this.swordsman.autoCull = true;
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(this.swordsman);
@@ -81,6 +82,7 @@ EnemySwordsman = function(index, game, x, y) {
     this.swordsman.addChild(this.enemyHitbox);
     this.enemySwordHitbox = this.enemyHitbox.create(0, 0, null);
     this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
+    this.jumpingAllowed = true;
     
     //him standing and doing nothing
     this.stand = function() {
@@ -123,12 +125,16 @@ EnemySwordsman = function(index, game, x, y) {
         this.doneAttacking = true;
     };
     
+    this.canJump = function() {
+        this.jumpingAllowed = true;
+    }
+    
     // 
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
     game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this); // i frames
-    
+    game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canJump, this);
     //movement tree for enemy
-    this.move = function(pX) { //pX = player.x position
+    this.move = function(pX, pY) { //pX = player.x position
         //game.debug.body(this.enemySwordHitbox);
         game.physics.arcade.collide(this.swordsman, stone_platforms);
         if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
@@ -137,7 +143,6 @@ EnemySwordsman = function(index, game, x, y) {
             this.lookingL = true; //enemy is looking L (important for later in movement tree)
             this.lookingR = false; 
             this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
-            
         } else if (pX - this.extraDist >= this.swordsman.x) { //go right
             this.swordsman.body.velocity.x = velocity;
             this.swordsman.animations.play('right');
@@ -162,8 +167,13 @@ EnemySwordsman = function(index, game, x, y) {
             this.swordsman.body.velocity.x = 0;
             this.swordsman.frame = 8;
         }
+        
+        if(this.swordsman.y - pY > 200 && this.swordsman.body.onFloor() && this.jumpingAllowed) {
+            this.swordsman.body.velocity.y = -700;
+            this.jumpingAllowed = false;
+            
+        }
     };
-    
     //if swordsman is dead
     this.die = function() {
         console.log("should be dead");
@@ -174,7 +184,6 @@ EnemySwordsman = function(index, game, x, y) {
 //This is the enemy shuriken thrower himself. Does not include shuriken object! Check out Shuriken for that
 EnemyShurikenThrower = function(index, game, x, y) {
     this.enemyShurikenArray = []; //the array of shurikens that this specific enemy has thrown and are active
-    
     //initializing body of enemy swordsman
     this.shurikenThrower = game.add.sprite(x, y, 'shurikenThrower');
     this.shurikenThrower.anchor.setTo(.5, .5); //to fix camera/spawn movement
@@ -187,6 +196,7 @@ EnemyShurikenThrower = function(index, game, x, y) {
     this.shurikenThrower.body.bounce.y = 0.2;
     this.shurikenThrower.body.gravity.y = 1000;
     this.shurikenThrower.body.collideWorldBounds = true;
+    this.shurikenThrower.autoCull = true;
     
     //creates the hitbox for image of the shurikenThrower
     this.shurikenThrower.body.setSize(100, 200, 220, 100); //need to fix sprite going left
@@ -303,11 +313,11 @@ Shuriken = function(game, x, y, goLeft) {
     this.updateShuriken = function() {
         if(goLeft) {
             this.shuriken.animations.play("LeftShuriken");
-            this.shuriken.body.velocity.x = -300;
+            this.shuriken.body.velocity.x = -500;
             this.shuriken.body.setSize(50, 50, 130, 130);
         } else {
             this.shuriken.animations.play('RightShuriken');
-            this.shuriken.body.velocity.x = 300;
+            this.shuriken.body.velocity.x = 500;
             this.shuriken.body.setSize(50, 50, 320, 130);
         }
     }
@@ -319,7 +329,6 @@ Shuriken = function(game, x, y, goLeft) {
         }
         if(game.physics.arcade.collide(this.shuriken, stone_platforms)){
             this.shuriken.destroy();
-            console.log('shuriken collided with platform');
             return true;
         }
         return false;
@@ -367,7 +376,7 @@ function c1() {
     door.body.immobile = true;
     
     // The player and its settings
-    player = game.add.sprite(350, game.world.height - 500, 'sam');
+    player = game.add.sprite(50, game.world.height-130, 'sam');
     player.scale.setTo(.09,.09) //FIX SCALE HERE
     
     //  We need to enable physics on the player
@@ -379,13 +388,14 @@ function c1() {
     player.body.collideWorldBounds = true;
     player.body.setSize(300, 600, 350, 350);
     //add shuriken drop
-    drop=game.add.sprite(500, game.world.height-400,"shuriken");
-    drop.scale.setTo(.5, .5);
-    game.physics.enable(drop, Phaser.Physics.ARCADE);
+//    drop=game.add.sprite(500, game.world.height-400,"shuriken");
+//    drop.scale.setTo(.5, .5);
+//    game.physics.enable(drop, Phaser.Physics.ARCADE);
+    player.autoCull = true;
     //drop.body.bounce.y = 0.2;
    // drop.body.gravity.y = 1000;
     //drop.body.collideWorldBounds = true;
-    drop.body.setSize(50, 50, 130, 130);
+//    drop.body.setSize(50, 50, 130, 130);
     //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -404,19 +414,11 @@ function c1() {
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
     
-//    Testing camear stuff
-//    cameraButtonTest = game.input.keyboard.addKey(Phaser.Keyboard.P);
-//    cameraButtonTest.onDown.add(turnCameraOff);
+
     //throwButton.onDown.add(throwshuriken)
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
-    //camerma moves
-    
-    //instructions = game.add.text(38,43, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
-    
-    //instructions.font = 'Lato';
-
     //camera moves
     game.camera.follow(player);
     
@@ -436,8 +438,9 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 0; //how many shurikens sam is holding
+var playerShurikenTotal = 10; //how many shurikens sam is holding
 var canThrow = true;
+var mustStay = false; //whether camera is fixed or not
 
 function u1() {
 //    game.debug.body(player.hitbox);
@@ -445,12 +448,10 @@ function u1() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-    //game.physics.arcade.collide(drop, stone_platforms,function(){hitPlatform = true});
-    //game.physics.arcade.collide(player, map);
-    if (game.physics.arcade.collide(player,drop)){
-        playerShurikenTotal=playerShurikenTotal+10;
-        drop.kill();
-    }
+//    if (game.physics.arcade.collide(player,drop)){
+//        playerShurikenTotal=playerShurikenTotal+10;
+//        drop.kill();
+//    }
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -458,18 +459,6 @@ function u1() {
     } else if (cursors.right.isDown) {
         movePRight();
         swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
-            if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
-                if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 0) {
-                    swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, player.x + 500, player.y));
-                } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
-                    shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, player.x + 500, player.y));
-                    console.log("Enemy spawned")
-                }
-                lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
-                enemyLocIndex++;
-            }
-        }
     } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
         if(movingRight) {
             player.animations.play('attackR');
@@ -496,6 +485,18 @@ function u1() {
             player.frame = 5;
         }
         player.body.velocity.x = 0;
+    }
+    
+    if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
+        if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
+            if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 0) {
+                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y));
+            } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
+                shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y));
+            }
+            lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
+            enemyLocIndex++;
+        }
     }
     for(var i = 0; i < playerShurikens.length; i++) {
         playerShurikens[i].updateShuriken();
@@ -531,16 +532,19 @@ function u1() {
         game.state.start('state1')
         
     }
-    
+    var onScreenEnemy = false;
     //scan through every currently spawned enemy
     for(var i = 0; i < swordsmanArray.length; i++) {
+        if(swordsmanArray[i].swordsman.inCamera && swordsmanArray[i].swordsman.x < game.camera.x + 300) {
+           onScreenEnemy = true;
+        }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
         
-        swordsmanArray[i].move(player.x); //updates movement tree and does bulk of work
+        swordsmanArray[i].move(player.x, player.y); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked()) {
@@ -565,9 +569,13 @@ function u1() {
                 }
             }
         }
+        
     }
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
+        if(shurikenThrowerArray[i].shurikenThrower.inCamera && shurikenThrowerArray[i].shurikenThrower.x < game.camera.x + 300) {
+            onScreenEnemy = true;
+        }
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
@@ -593,11 +601,6 @@ function u1() {
         
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
 
-       /*commented out because breaking code if(shurikenThrowerArray[i].checkForOverlap(player)) {
-//            pHealth -5;
-//            playerVulnerable = false; //give player i frames
-        }
-        */
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
                 if(shurikenThrowerArray[i].attacked()) {
@@ -608,7 +611,6 @@ function u1() {
                 }
             }
         }
-
     }
     
     
@@ -618,6 +620,17 @@ function u1() {
     }
     //hitbox.debug = true;
     
+    if(shurikenThrowerArray.length + swordsmanArray.length >= 2 && !mustStay) {
+        var positionX = game.camera.x;
+        var positionY = game.camera.y;
+        game.camera.reset();
+        game.camera.setPosition(positionX, positionY);
+        mustStay = true;
+    }
+    if(!onScreenEnemy) {
+        mustStay = false;
+        game.camera.follow(player, .04, .04);
+    }
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
@@ -651,7 +664,11 @@ function movePLeft() {
 }
 
 function movePRight() {
-    player.body.velocity.x = 300;
+    if(player.x <= game.camera.x + 715) {
+        player.body.velocity.x = 300;
+    } else {
+        player.body.velocity.x = 0;
+    }
     player.animations.play('right');
     movingRight = true;
 }
