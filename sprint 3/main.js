@@ -8,7 +8,7 @@ game.state.add('state_tutorial', st_tut);
 game.state.add('state_level1', st_lev1 );
 
 // CHANGE BACK WHEN READY game.state.start('state0')
-game.state.start('state_tutorial');
-//game.state.start('state0');
+//game.state.start('state_tutorial');
+game.state.start('state0');
 //game.state.start('state0');
 //game.state.start('state4');
