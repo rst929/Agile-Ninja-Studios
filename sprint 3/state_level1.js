@@ -543,8 +543,6 @@ function u1() {
     
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
-<<<<<<< HEAD
-=======
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
                 pHealth -= 10;
@@ -552,7 +550,6 @@ function u1() {
                 
             }
         }
->>>>>>> 7db8e1920500d9affc637a696d0bd99ec8cd6da0
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked()) {
@@ -582,30 +579,10 @@ function u1() {
                 }
             }
         }
-<<<<<<< HEAD
-        
-        
-=======
 
->>>>>>> 7db8e1920500d9affc637a696d0bd99ec8cd6da0
     }
     
-    for (var k=0; k<playerShurikens.length;k++){
-        for (var j=0; j<swordsmanArray.length; j++){
-        if(game.physics.arcade.overlap(swordsmanArray[j].swordsman,playerShurikens[k].shuriken)){
-                swordsmanArray[j].swordsman.kill();
-            }
-        }
-    }
-    for(var j = 0; j < playerShurikens.length; j++) {
-        for (var i=0; i<shurikenThrowerArray.length;i++){
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
-                shurikenThrowerArray[i].shurikenThrower.kill();
-                
-            }
-        }
-            
-    }
+    
     //if player has no health, go to game over state
     if(pHealth <= 0) {
         game.state.start('state2');
