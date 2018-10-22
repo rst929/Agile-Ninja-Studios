@@ -427,11 +427,7 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-<<<<<<< HEAD
 var playerShurikenTotal = 0; //how many shurikens sam is holding
-=======
-var playerShurikenTotal = 10; //how many shurikens sam is holding
->>>>>>> 142efdfc0982c7fb32d65928382701592603ea01
 var canThrow = true;
 
 function u1() {
