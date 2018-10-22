@@ -190,8 +190,8 @@ function u1() {
 }
 
 function r1() {
-    game.debug.body(player);
-    game.debug.body(sumo);
+    //game.debug.body(player);
+    //game.debug.body(sumo);
 }
 
 

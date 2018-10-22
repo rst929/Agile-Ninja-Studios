@@ -129,7 +129,7 @@ EnemySwordsman = function(index, game, x, y) {
     
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
-        game.debug.body(this.enemySwordHitbox);
+        //game.debug.body(this.enemySwordHitbox);
         game.physics.arcade.collide(this.swordsman, stone_platforms);
         if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
             this.swordsman.body.velocity.x = -velocity;
@@ -616,26 +616,27 @@ function u1() {
     if(pHealth <= 0) {
         game.state.start('state2');
     }
-    hitbox.debug = true;
+    //hitbox.debug = true;
     
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 //just for debugging purposes. Comment out before submitting, but do not delete now!
-function r1() {
-    game.debug.body(swordHitbox);
+/*function r1() {
+    //game.debug.body(swordHitbox);
     //game.debug.spriteBounds(this.hitbox.swordHitbox);
     for(var i = 0; i < swordsmanArray.length; i++) {
-        game.debug.body(swordsmanArray[i].swordsman);
+        //game.debug.body(swordsmanArray[i].swordsman);
     }
     for(var i = 0; i < shurikenThrowerArray.length; i++) {
-        game.debug.body(shurikenThrowerArray[i].shurikenThrower);
+        //game.debug.body(shurikenThrowerArray[i].shurikenThrower);
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
-            game.debug.body(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken);
+            //game.debug.body(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken);
         }
     }
 }
+*/
 
 //player's sword attack animation
 function swordAttack() {

@@ -187,7 +187,7 @@ function u_tut() {
 }
 
 function r_tut() {
-    game.debug.body(player);
+    //game.debug.body(player);
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
