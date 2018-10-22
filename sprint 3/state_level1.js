@@ -317,6 +317,11 @@ Shuriken = function(game, x, y, goLeft) {
             this.shuriken.destroy();
             return true;
         }
+        if(game.physics.arcade.collide(this.shuriken, stone_platforms)){
+            this.shuriken.destroy();
+            console.log('shuriken collided with platform');
+            return true;
+        }
         return false;
     }
 }
