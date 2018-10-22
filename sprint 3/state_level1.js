@@ -371,7 +371,14 @@ function c1() {
     player.body.gravity.y = 1000;
     player.body.collideWorldBounds = true;
     player.body.setSize(300, 600, 350, 350);
-    
+    //add shuriken drop
+    drop=game.add.sprite(500, game.world.height-400,"shuriken");
+    drop.scale.setTo(.5, .5);
+    game.physics.enable(drop, Phaser.Physics.ARCADE);
+    //drop.body.bounce.y = 0.2;
+   // drop.body.gravity.y = 1000;
+    //drop.body.collideWorldBounds = true;
+    drop.body.setSize(50, 50, 130, 130);
     //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -417,7 +424,7 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 20; //how many shurikens sam is holding
+var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 
 function u1() {
@@ -426,9 +433,12 @@ function u1() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-    
+    //game.physics.arcade.collide(drop, stone_platforms,function(){hitPlatform = true});
     //game.physics.arcade.collide(player, map);
-    
+    if (game.physics.arcade.collide(player,drop)){
+        playerShurikenTotal=playerShurikenTotal+20;
+        drop.kill();
+    }
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
