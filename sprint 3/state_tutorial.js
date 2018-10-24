@@ -74,7 +74,7 @@ function c_tut() {
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     // The player and its settings
-    player = game.add.sprite(250, game.world.height - 250, 'sam');
+    player = game.add.sprite(100, game.world.height - 120, 'sam');
     player.scale.setTo(.09,.09);
     
     //create hitbox for sword
@@ -110,10 +110,7 @@ function c_tut() {
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
-//<<<<<<< HEAD
-    //instructions = game.add.text(17,55, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '24px', fill:'#fff'});
-//=======
-//>>>>>>> 6c530c4889a94dd832c5e4b2a6e98201c7a8c8d2
+
     game.camera.follow(player);
 
 }
