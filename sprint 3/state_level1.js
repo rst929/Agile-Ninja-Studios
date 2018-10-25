@@ -43,7 +43,7 @@ function p1() {
     
     //  Load the Google WebFont Loader script
 
-	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy.png', 500, 315);
