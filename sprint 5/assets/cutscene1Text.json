@@ -1,0 +1,33 @@
+{
+
+        "blackBackgroundText": [ 
+            {"text": "Enter Sam, a chubby, down-on-his-luck, failed samurai, recently fired from his job at Himeki castle. Jobless and weak, Sam seeks out his only comfort...", "type": 8, "color": 0},
+            {"text": "\n\n\n\n\n\n\nAlcohol.", "type": 6, "color": 0}
+        ],
+       "goonDialogue": [
+            {"text": "Stuck on the night shift again? Man, I hate these rich bastards with their overpriced stuff.", "type": 3, "color": 1},
+            {"text": "I swear, if I get another long shift, I am going to lose it.", "type": 5},
+            {"text": "Pay's not even THAT good. And that old Himeki castle we have to guard gives me the creep. ", "type": 3},
+            {"text": "I heard that there is a monster locked up in there. I pity the fool that tries to bust in and steal - what is it that we're guarding again?", "type": 5, "color": 1},     
+            {"text": "Some sword in the middle of castle.", "type": 2, "color": 1},     
+            {"text": "That's it! All that trouble for a sword?", "type": 4, "color": 1},
+            {"text": "Yup. Heard it gave the wielder unlimited powers or something, the Puracebo.", "type": 2, "color": 1},
+            {"text": "What a weird name! ", "type": 4, "color": 1},
+            {"text": "Yeah!      ... ... ...", "type": 4, "color": 1},
+            {"text": "Oh shitake mushroom! Time to get going. Quick, get yourself a drink and let's get out of here-- our shifts start soon!", "type": 4, "color": 1},
+            {"text": "!!! Never mind the drink, let's get out of here before we get our pay docked!", "type": 2, "color": 1},
+            {"text": " ", "type": 6, "color": 1},
+            {"text": "7 SAKE AND 3 HOURS OF STUMBLING LATER", "type": 8, "color": 0},
+            {"text": "*rumble* \t*shuffling* \t \t*hiccup*", "type": 8, "color": 0},
+            {"text": "*rumble* \t*shuffling* \t \t*hiccup* \n grrrr i'll show hirm-- i'm a great emphloyee", "type": 8, "color": 0},
+            {"text": "*rumble* \t*shuffling* \t \t*hiccup* \n grrrr i'll show hirm-- i'm a great emphloyee \n oh hrey whast' this", "type": 8, "color": 0},
+            {"text": "", "type": 9, "color": 0},
+            {"text": "", "type": 10, "color": 0},
+            {"text": "", "type": 9, "color": 0},
+            {"text": "", "type": 11, "color": 0},
+            {"text": "", "type": 9, "color": 0},
+            {"text": "", "type": 12, "color": 0},
+            {"text": "Crap.", "type": 8, "color": 0}
+        ]
+                        
+}
