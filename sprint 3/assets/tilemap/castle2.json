@@ -47,7 +47,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"stone_tile2.png",
+         "image":"..\/..\/..\/sprint 5\/assets\/tilemap\/stone_tile2.png",
          "imageheight":32,
          "imagewidth":32,
          "margin":0,
@@ -60,7 +60,7 @@
         {
          "columns":18,
          "firstgid":2,
-         "image":"castle_background_v2.png",
+         "image":"..\/..\/..\/sprint 5\/assets\/tilemap\/castle_background_v2.png",
          "imageheight":426,
          "imagewidth":592,
          "margin":0,
@@ -71,8 +71,17 @@
          "tilewidth":32
         }, 
         {
+         "columns":1,
          "firstgid":236,
-         "source":"spikes2.tsx"
+         "image":"..\/..\/..\/sprint 5\/assets\/tilemap\/spikes2.png",
+         "imageheight":100,
+         "imagewidth":155,
+         "margin":0,
+         "name":"spikes2",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":100,
+         "tilewidth":155
         }],
  "tilewidth":32,
  "type":"map",

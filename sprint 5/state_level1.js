@@ -350,7 +350,6 @@ var bossHealth; //keeps track of total boss health
 var instructions; //game instructions'
 var stone_platforms;
 var map;
-var stone_platforms;
 var background;
 var hitbox;
 

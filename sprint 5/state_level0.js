@@ -1,14 +1,14 @@
-var st_tut = {
-    preload: p_tut,
-    create: c_tut,
-    update: u_tut,
-    render: r_tut
+var st_lev0 = {
+    preload: p_0,
+    create: c_0,
+    update: u_0,
+    render: r_0
 }
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 
 
-function p_tut() {
+function p_0() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
@@ -23,6 +23,12 @@ function p_tut() {
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('closed_door', 'assets/closed_door.png');
     
+    game.load.tilemap('castle_map','assets/tilemap/castle2.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
+    game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
+    game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
+    
+    
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 }
@@ -35,7 +41,7 @@ var sumoMusic; //boss music
 var instructions; //game instructions'
 
 
-function c_tut() {
+function c_0() {
     //  Physics
     game.world.setBounds(0, 0, 800, 416);
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -44,35 +50,46 @@ function c_tut() {
     image.height = game.height + 100;
     game.physics.enable(image, Phaser.Physics.ARCADE); 
     
+        //creating map
+    map = game.add.tilemap('castle_map');
+    map.addTilesetImage('stone_tile2','stone_tile')
+    map.addTilesetImage('castle_background','castle_tile');
+    map.addTilesetImage('spikes3','spikes_tile');
+    
+    
+    //layers
+    background = map.createLayer('Background');
+    stone_platforms = map.createLayer('Platforms');
+    spikes_layer = map.createLayer('Spikes');
+    
+    
+    map.setCollisionBetween(1, 300, true, 'Platforms'); //basically tells what possible positions in the json file to check for
+    map.setCollisionBetween(236,255,true, 'Spikes')
+    
+    map.width=game.width;
+    map.height=game.height+100;
+    background.resizeWorld();
+    stone_platforms.resizeWorld();
+    spikes_layer.resizeWorld();
+    
+    //add door
+    door = game.add.sprite(2229, game.world.height-437, 'closed_door');
+    door.scale.setTo(.23, .23);
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immobile = true;
+    
     
     // create platform for ground
     platforms = game.add.group();
     platforms.enableBody = true;
-    var ground = platforms.create(0, game.world.height - 25, 'ground');
-    ground.scale.setTo(2, 2); //make ground right size
     
-    var stone1 = platforms.create(-20, game.world.height - 200, 'stone_flat');
-    stone1.width = game.world.width/2;
+    spikes = game.add.group();
+    spikes.enableBody = true;
+    //LOOK HER
+    //HERR
+    // RIGHT HERE
+    //stone
     
-    var stone2 = platforms.create(500, game.world.height - 325, 'stone_flat');
-    stone2.width = game.world.width/2;
-    
-    stone = game.add.sprite(0, game.world.height - 290, 'stone');
-    stone.width = game.width;
-    stone.height = 300;
-    stone.height = 300;
-    game.physics.enable(stone, Phaser.Physics.ARCADE);
-
-    //  Make ground stable
-    ground.body.immovable = true;
-    stone1.body.immovable = true;
-    stone2.body.immovable = true;
-    
-    door = game.add.sprite(660, game.world.height-470, 'closed_door');
-    door.scale.setTo(.23, .23);
-    
-    game.physics.enable(door, Phaser.Physics.ARCADE);
-    door.body.immobile = true;
     // The player and its settings
     player = game.add.sprite(100, game.world.height - 120, 'sam');
     player.scale.setTo(.09,.09);
@@ -119,10 +136,21 @@ var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var dHealth = 5; //player health
 var movingRight=true;
+var hitPlatform = false; //if sam has hit platform
+this.jumpingAllowed = true;
 
-function u_tut() {
+
+function u_0() {
+    
+    game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
+    game.physics.arcade.collide(player, spikes_layer, function(){hitPlatform = true; console.log('Hitting spikes'), pHealth = pHealth - 25;}); //collide with platform (i.e. ground) check
+    game.physics.arcade.TILE_BIAS = 40;
+    game.physics.arcade.collide(player, stone_platforms);
+    game.physics.arcade.collide(player, spikes_layer);
+
+    
     //  Collide the player and the stars with the platforms
-    var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
+    //var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
     var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
     var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
@@ -159,15 +187,30 @@ function u_tut() {
     }
     //playerHealth.text = "Sam HP: " + pHealth;
     
+    if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
+        player.body.velocity.y = -700;
+        hitPlatform = false;
+    }
+    
+    /*
+    if(this.swordsman.y - pY > 200 && this.swordsman.body.onFloor() && this.jumpingAllowed) {
+        this.swordsman.body.velocity.y = -700;
+        this.jumpingAllowed = false;
+    }
+    */
     
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
 
     var tutorial_done = false
 
+    //if player has no health, go to game over state
+    if(pHealth <= 0) {
+        game.state.start('state2');
+    }
     
     if(dHealth <= 0) { // victory
         door.kill();
-        open = game.add.sprite(660, game.world.height -470, 'open_door');
+        open = game.add.sprite(2239, game.world.height -470, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
@@ -177,14 +220,14 @@ function u_tut() {
     } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
-        game.state.start('state_level0')
+        game.state.start('state_level1')
         
     }
 
 }
 
-function r_tut() {
-    //game.debug.body(player);
+function r_0() {
+    game.debug.body(player);
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
@@ -199,16 +242,14 @@ function movePLeft() {
     player.body.velocity.x = -300;
     player.animations.play('left');
     movingRight = false;
-    
-    
-
 }
 
 function movePRight() {
-    player.body.velocity.x = 300;
+    if(player.x <= game.camera.x + 715) {
+        player.body.velocity.x = 300;
+    } else {
+        player.body.velocity.x = 0;
+    }
     player.animations.play('right');
     movingRight = true;
-    
-    
-
 }
