@@ -613,17 +613,15 @@ function u1() {
            onScreenEnemy = true;
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-<<<<<<< HEAD
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
             if(swordsmanArray[i].movingR()) {
                 player.animations.play("pFlinchToR");
             } else {
                 player.animations.play("pFlinchToL");
             }
-=======
+        }
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
             moan.play();
->>>>>>> 712a8f1147c8f20a4b716428934b09fdb41d2ca1
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
