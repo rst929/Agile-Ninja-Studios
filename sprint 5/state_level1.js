@@ -27,7 +27,7 @@ function p1() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_fix.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -138,6 +138,10 @@ EnemySwordsman = function(index, game, x, y) {
     
     this.canJump = function() {
         this.jumpingAllowed = true;
+    }
+    
+    this.movingR = function() {
+        return this.lookingR;
     }
     
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
@@ -389,6 +393,9 @@ var map;
 var stone_platforms;
 var background;
 var hitbox;
+var pShurikenThrowAnimation;
+var pFlinchToL;
+var pFlinchToR;
 
 function c1() {
     
@@ -453,6 +460,10 @@ function c1() {
     player.animations.add('attackL', [7, 8, 9], 10, true);
     player.animations.add('right', [0, 1], 10, true);
     player.animations.add('attackR', [2, 3, 4], 10, true);
+    pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [10, 11, 12, 13, 14, 13, 12, 11], 10, false);
+    pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
+    pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
+    pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
@@ -493,38 +504,50 @@ function u1() {
 //    }
     
     //movement tree for player
-    if (cursors.left.isDown) {
-        movePLeft();
-        swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-    } else if (cursors.right.isDown) {
-        movePRight();
-        swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-    } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
-        if(movingRight) {
-            player.animations.play('attackR');
+    if(pFlinchToL.isPlaying) {
+        player.body.velocity.x = -100;
+    } else if (pFlinchToR.isPlaying) {
+        player.body.velocity.x = 100;
+    } else {
+        if (cursors.left.isDown) {
+            movePLeft();
+            swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if (cursors.right.isDown) {
+            movePRight();
+            swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
+            if(movingRight) {
+                player.animations.play('attackR');
+            } else {
+                player.animations.play('attackL');
+            }
+            if(game.physics.arcade.collide(this.hitbox,door)){
+               dhealth-5;
+               }
+            //creates shuriken on command
+        }else if(throwButton.isDown && canThrow){
+            canThrow = false;
+            if(playerShurikenTotal > 0){
+                playerShurikenTotal--;
+                //shuriken throw animation
+                if(movingRight) {
+                    player.animations.play('pShurikenThrowAnimationR');
+                } else {
+                    player.animations.play('pShurikenThrowAnimationL');
+                }
+                playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
+            }
+
         } else {
-            player.animations.play('attackL');
+            //  Stand still
+            player.animations.stop();
+            if(movingRight) {
+                player.frame = 0;
+            } else {
+                player.frame = 5;
+            }
+            player.body.velocity.x = 0;
         }
-        if(game.physics.arcade.collide(this.hitbox,door)){
-           dhealth-5;
-           }
-        //creates shuriken on command
-    }else if(throwButton.isDown && canThrow){
-        canThrow = false;
-        if(playerShurikenTotal > 0){
-            playerShurikenTotal--;
-            playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
-        }
-        
-    }else {
-        //  Stand still
-        player.animations.stop();
-        if(movingRight) {
-            player.frame = 0;
-        } else {
-            player.frame = 5;
-        }
-        player.body.velocity.x = 0;
     }
     
     //reading data for enemy spawn points
@@ -584,7 +607,12 @@ function u1() {
            onScreenEnemy = true;
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+            if(swordsmanArray[i].movingR()) {
+                player.animations.play("pFlinchToR");
+            } else {
+                player.animations.play("pFlinchToL");
+            }
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
