@@ -24,6 +24,7 @@ WebFontConfig = {
 
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
+    game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
@@ -48,6 +49,7 @@ function p1() {
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy.png', 500, 315);
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
+    game.load.image('shurikendrop', 'assets/shurikendrop.png');
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
@@ -355,7 +357,8 @@ var background;
 var hitbox;
 
 function c1() {
-    
+    sumoMusic.mute = true;
+
     game.world.setBounds(0, 0, 2400, 416);
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -395,16 +398,16 @@ function c1() {
     player.body.setSize(300, 600, 350, 350);
     
     //add shuriken drop
-//    drop=game.add.sprite(500, game.world.height-400,"shuriken");
-//    drop.scale.setTo(.5, .5);
-//    game.physics.enable(drop, Phaser.Physics.ARCADE);
+    drop=game.add.sprite(400, game.world.height-280,"shurikendrop");
+    drop.scale.setTo(.2, .2);
+    game.physics.enable(drop, Phaser.Physics.ARCADE);
     
     player.autoCull = true; //tells phaser that you want to check game frame whether or not the player is inside camera bounds
     
-    //drop.body.bounce.y = 0.2;
-   // drop.body.gravity.y = 1000;
-    //drop.body.collideWorldBounds = true;
-//    drop.body.setSize(50, 50, 130, 130);
+    drop.body.bounce.y = 0.2;
+    drop.body.gravity.y = 1000;
+    drop.body.collideWorldBounds = true;
+    drop.body.setSize(270, 230,0,0);
     //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -442,20 +445,23 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 10; //how many shurikens sam is holding
+var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
+var moan;
 
 function u1() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-//    if (game.physics.arcade.collide(player,drop)){
-//        playerShurikenTotal=playerShurikenTotal+10;
-//        drop.kill();
-//    }
-    
+    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
+    if (game.physics.arcade.collide(player,drop)){
+        playerShurikenTotal=playerShurikenTotal+10;
+        drop.kill();
+    }
+    //add the sound effect 
+    moan=game.add.audio('moan');
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -549,6 +555,7 @@ function u1() {
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+            moan.play();
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
@@ -591,6 +598,7 @@ function u1() {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
+                moan.play();
                 pHealth -= 10;
                 playerVulnerable = false;
                 
@@ -659,6 +667,7 @@ function r1() {
 //            //game.debug.body(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken);
 //        }
 //    }
+    //game.debug.body(drop);
 }
 
 

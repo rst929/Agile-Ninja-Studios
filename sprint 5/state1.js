@@ -6,6 +6,7 @@ var st1 = {
 }
 
 function p1() {
+    game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.image('castle', 'assets/castle.png');
     game.load.image('ground', 'assets/platform.png');
@@ -22,7 +23,7 @@ var attackButton; // F to attack
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
-
+var moan;
 function c1() {
     game.world.setBounds(0, 0, 800, 416);
 
@@ -125,7 +126,7 @@ function u1() {
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check
     var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
     var runIntoSumo = game.physics.arcade.overlap(player, sumo); // Overlap with player and sumo
-    
+    moan = game.add.audio('moan');
     //movement tree for player
     if (cursors.left.isDown) {
         movePLeft();
@@ -167,6 +168,7 @@ function u1() {
             wave.kill();
         } else {
             if(game.physics.arcade.overlap(player, wave) && playerVulnerable) {
+                moan.play();
                 pDamage(25);
                 playerVulnerable = false;
             }
@@ -176,6 +178,7 @@ function u1() {
     //if player runs into sumo, damage him
     if(runIntoSumo) {
         if(playerVulnerable) {
+            moan.play();
             pDamage(10);
             playerVulnerable = false;
         }
