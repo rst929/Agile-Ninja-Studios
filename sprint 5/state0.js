@@ -18,6 +18,7 @@ function p0() {
     game.load.image('surprisesam1', 'assets/surprisesam1.png');
     game.load.image('surprisesam2', 'assets/surprisesam2.png');
     game.load.image('surprisesam3', 'assets/surprisesam3.png');
+    game.load.image('Skip and Continue', 'assets/Skip and Continue.png');
     
     this.load.text('barText', 'assets/cutscene1Text.json');
 }
@@ -57,9 +58,10 @@ function c0() {
     image = game.add.sprite(100, 0, 'blackPic');
     image.width = game.width - 225;
     image.height = game.height;
+    instructions = game.add.sprite(100,300,'Skip and Continue');
     game.physics.enable(image, Phaser.Physics.ARCADE);
-    
-    
+    game.physics.enable(instructions, Phaser.Physics.ARCADE);
+
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
     style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
     

@@ -24,10 +24,11 @@ WebFontConfig = {
 
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
+    game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_fix.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -45,9 +46,11 @@ function p1() {
 
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
-    game.load.spritesheet('swordsman', 'assets/green_enemy_fix.png', 213, 116); //fixed version
-    game.load.spritesheet('shurikenThrower', 'assets/blue_enemy.png', 500, 315);
+    //game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 213, 116); //fixed version
+    game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 639/3, 692/6); //fixed version
+    game.load.spritesheet('shurikenThrower', 'assets/blue_enemy2.png', 500, 315);
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
+    game.load.image('shurikendrop', 'assets/shurikendrop.png');
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
@@ -56,6 +59,7 @@ EnemySwordsman = function(index, game, x, y) {
     //initializing body of enemy swordsman
     this.swordsman = game.add.sprite(x, y, 'swordsman');
     this.swordsman.anchor.setTo(.5, .5);
+//    this.swordsman.scale.setTo(.4,.4);
     this.swordsman.scale.setTo(1,1);
     this.swordsman.autoCull = true;
     
@@ -75,6 +79,8 @@ EnemySwordsman = function(index, game, x, y) {
     this.swordsman.animations.add('right', [5, 6], 3, true);
     this.attackL = this.swordsman.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
     this.attackR = this.swordsman.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
+    this.flinchToR = this.swordsman.animations.add('flinchToR', [10, 11, 12, 13, 13, 13, 12, 11, 10], 15, false);
+    this.flinchToL = this.swordsman.animations.add('flinchToL', [14, 15, 16, 17, 17, 17, 16, 15, 14], 15, false);
     
     //create hitbox for enemy's sword. enemySwordHitbox is a child of enemyHitbox (children meaning in case you want to create multiple hitboxes)
     this.enemyHitbox = game.add.group();
@@ -113,9 +119,15 @@ EnemySwordsman = function(index, game, x, y) {
     
     // when called, reduces health of enemy
     // returns if dead or not (health points 0 or less)
-    this.attacked = function() {
+    this.attacked = function(pMovingRight) {
         if(this.vulnerable) {
             this.hitCount--;
+            //play animation
+            if(pMovingRight) {
+                this.swordsman.animations.play('flinchToR');
+            } else {
+                this.swordsman.animations.play('flinchToL');
+            }
             this.vulnerable = false;
         }
         return Boolean(this.hitCount <= 0); //boolean() function pointless
@@ -130,6 +142,10 @@ EnemySwordsman = function(index, game, x, y) {
         this.jumpingAllowed = true;
     }
     
+    this.movingR = function() {
+        return this.lookingR;
+    }
+    
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
     game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this); // i frames
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canJump, this);
@@ -137,41 +153,47 @@ EnemySwordsman = function(index, game, x, y) {
     this.move = function(pX, pY) { //pX = player.x position
         //game.debug.body(this.enemySwordHitbox);
         game.physics.arcade.collide(this.swordsman, stone_platforms);
-        if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
-            this.swordsman.body.velocity.x = -velocity;
-            this.swordsman.animations.play('left');
-            this.lookingL = true; //enemy is looking L (important for later in movement tree)
-            this.lookingR = false; 
-            this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
-        } else if (pX - this.extraDist >= this.swordsman.x) { //go right
-            this.swordsman.body.velocity.x = velocity;
-            this.swordsman.animations.play('right');
-            this.lookingL = false; 
-            this.lookingR = true; //enemy is looking R (important for later in movement tree)
-            this.enemySwordHitbox.body.setSize(50, 75, 25, -20);
-        } else if(this.lookingL) { 
-            this.swordsman.body.velocity.x = 0;
-            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.leftAttack = this.swordsman.play('attackL');
-                this.leftAttack.onComplete.add(this.hasAttacked, this);
-                this.canAttack = false;
+        if(this.flinchToR.isPlaying) {
+            this.swordsman.body.velocity.x = 100;
+        } else if(this.flinchToL.isPlaying) {
+            this.swordsman.body.velocity.x = -100;
+        } else { //move as normal
+            if(pX + 100 + this.extraDist <= this.swordsman.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
+                this.swordsman.body.velocity.x = -velocity;
+                this.swordsman.animations.play('left');
+                this.lookingL = true; //enemy is looking L (important for later in movement tree)
+                this.lookingR = false; 
+                this.enemySwordHitbox.body.setSize(50, 75, -75, -20);
+            } else if (pX - this.extraDist >= this.swordsman.x) { //go right
+                this.swordsman.body.velocity.x = velocity;
+                this.swordsman.animations.play('right');
+                this.lookingL = false; 
+                this.lookingR = true; //enemy is looking R (important for later in movement tree)
+                this.enemySwordHitbox.body.setSize(50, 75, 25, -20);
+            } else if(this.lookingL) { 
+                this.swordsman.body.velocity.x = 0;
+                if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
+                    this.leftAttack = this.swordsman.play('attackL');
+                    this.leftAttack.onComplete.add(this.hasAttacked, this);
+                    this.canAttack = false;
+                }
+            } else if(this.lookingR) {
+                this.swordsman.body.velocity.x = 0;
+                if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
+                    this.rightAttack = this.swordsman.play('attackR');
+                    this.rightAttack.onComplete.add(this.hasAttacked, this);
+                    this.canAttack = false;
+                }
+            } else {
+                this.swordsman.body.velocity.x = 0;
+                this.swordsman.frame = 8;
             }
-        } else if(this.lookingR) {
-            this.swordsman.body.velocity.x = 0;
-            if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                this.rightAttack = this.swordsman.play('attackR');
-                this.rightAttack.onComplete.add(this.hasAttacked, this);
-                this.canAttack = false;
+
+            if(this.swordsman.y - pY > 200 && this.swordsman.body.onFloor() && this.jumpingAllowed) {
+                this.swordsman.body.velocity.y = -700;
+                this.jumpingAllowed = false;
+
             }
-        } else {
-            this.swordsman.body.velocity.x = 0;
-            this.swordsman.frame = 8;
-        }
-        
-        if(this.swordsman.y - pY > 200 && this.swordsman.body.onFloor() && this.jumpingAllowed) {
-            this.swordsman.body.velocity.y = -700;
-            this.jumpingAllowed = false;
-            
         }
     };
     
@@ -207,6 +229,8 @@ EnemyShurikenThrower = function(index, game, x, y) {
     this.shurikenThrower.animations.add('right', [5, 6], 3, true); //doesn't really use, but may want later
     this.attackL_beginning = this.shurikenThrower.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
     this.attackR = this.shurikenThrower.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
+    this.flinchToR = this.shurikenThrower.animations.add('flinchToR', [10, 11, 12, 13, 13, 13, 12, 11, 10], 15, false);
+    this.flinchToL = this.shurikenThrower.animations.add('flinchToL', [14, 15, 16, 17, 17, 17, 16, 15, 14], 15, false);
     
     
     //him standing and doing nothing
@@ -238,9 +262,15 @@ EnemyShurikenThrower = function(index, game, x, y) {
     
     // when called, reduces health of enemy
     // returns if dead or not (health points 0 or less)
-    this.attacked = function() {
+    this.attacked = function(pMovingRight) {
         if(this.vulnerable) {
             this.hitCount--;
+            //play animation
+            if(pMovingRight) {
+                this.shurikenThrower.animations.play('flinchToR');
+            } else {
+                this.shurikenThrower.animations.play('flinchToL');
+            }
             this.vulnerable = false;
         }
         return Boolean(this.hitCount <= 0); //boolean() function pointless
@@ -257,24 +287,36 @@ EnemyShurikenThrower = function(index, game, x, y) {
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
         game.physics.arcade.collide(this.shurikenThrower, stone_platforms);
-        if(pX + this.extraDist <= this.shurikenThrower.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
-            lookingL = true;
-            lookingR = false;
-        } else if(pX - this.extraDist >= this.shurikenThrower.x) {
-            lookingL = false;
-            lookingR = true;
-        }
-        
-        if(lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
-            this.shurikenThrower.animations.play("attackL");
-            this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
-            this.shurikenThrower.animations.play("attackL");
-            this.canAttackAgain = false;
-        } else if(lookingR && (pX - this.shurikenThrower.x <= 350 && pX - this.shurikenThrower.x >= 0) && this.canAttackAgain) {
-            this.shurikenThrower.animations.play("attackR");
-            this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
-            this.canAttackAgain = false;
+        if(this.flinchToR.isPlaying) {
+            this.shurikenThrower.body.velocity.x = 100;
+        } else if(this.flinchToL.isPlaying) {
+            this.shurikenThrower.body.velocity.x = -100;
+        } else {
+            if(pX + this.extraDist <= this.shurikenThrower.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
+                lookingL = true;
+                lookingR = false;
+            } else if(pX - this.extraDist >= this.shurikenThrower.x) {
+                lookingL = false;
+                lookingR = true;
+            }
 
+            if(lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
+                this.shurikenThrower.animations.play("attackL");
+                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
+                this.shurikenThrower.animations.play("attackL");
+                this.canAttackAgain = false;
+            } else if(lookingR && (pX - this.shurikenThrower.x <= 350 && pX - this.shurikenThrower.x >= 0) && this.canAttackAgain) {
+                this.shurikenThrower.animations.play("attackR");
+                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
+                this.canAttackAgain = false;
+            } else if(!this.attackL_beginning.isPlaying && !this.attackR.isPlaying) {
+                this.shurikenThrower.body.velocity.x = 0;
+                if(lookingL) {
+                    this.shurikenThrower.frame = 0;
+                } else {
+                    this.shurikenThrower.frame = 5;
+                }
+            }
         }
         for(var i = 0; i < this.enemyShurikenArray.length; i++) {
             this.enemyShurikenArray[i].updateShuriken();
@@ -352,9 +394,13 @@ var stone_platforms;
 var map;
 var background;
 var hitbox;
+var pShurikenThrowAnimation;
+var pFlinchToL;
+var pFlinchToR;
 
 function c1() {
-    
+    sumoMusic.mute = true;
+
     game.world.setBounds(0, 0, 2400, 416);
     //  Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -394,16 +440,16 @@ function c1() {
     player.body.setSize(300, 600, 350, 350);
     
     //add shuriken drop
-//    drop=game.add.sprite(500, game.world.height-400,"shuriken");
-//    drop.scale.setTo(.5, .5);
-//    game.physics.enable(drop, Phaser.Physics.ARCADE);
+    drop=game.add.sprite(400, game.world.height-280,"shurikendrop");
+    drop.scale.setTo(.2, .2);
+    game.physics.enable(drop, Phaser.Physics.ARCADE);
     
     player.autoCull = true; //tells phaser that you want to check game frame whether or not the player is inside camera bounds
     
-    //drop.body.bounce.y = 0.2;
-   // drop.body.gravity.y = 1000;
-    //drop.body.collideWorldBounds = true;
-//    drop.body.setSize(50, 50, 130, 130);
+    drop.body.bounce.y = 0.2;
+    drop.body.gravity.y = 1000;
+    drop.body.collideWorldBounds = true;
+    drop.body.setSize(270, 230,0,0);
     //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -416,6 +462,10 @@ function c1() {
     player.animations.add('attackL', [7, 8, 9], 10, true);
     player.animations.add('right', [0, 1], 10, true);
     player.animations.add('attackR', [2, 3, 4], 10, true);
+    pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [10, 11, 12, 13, 14, 13, 12, 11], 10, false);
+    pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
+    pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
+    pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
@@ -441,53 +491,68 @@ var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
 var playerShurikens = [];
-var playerShurikenTotal = 10; //how many shurikens sam is holding
+var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
+var moan;
 
 function u1() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-//    if (game.physics.arcade.collide(player,drop)){
-//        playerShurikenTotal=playerShurikenTotal+10;
-//        drop.kill();
-//    }
-    
+    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
+    if (game.physics.arcade.collide(player,drop)){
+        playerShurikenTotal=playerShurikenTotal+10;
+        drop.kill();
+    }
+    //add the sound effect 
+    moan=game.add.audio('moan');
     //movement tree for player
-    if (cursors.left.isDown) {
-        movePLeft();
-        swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-    } else if (cursors.right.isDown) {
-        movePRight();
-        swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-    } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
-        if(movingRight) {
-            player.animations.play('attackR');
+    if(pFlinchToL.isPlaying) {
+        player.body.velocity.x = -100;
+    } else if (pFlinchToR.isPlaying) {
+        player.body.velocity.x = 100;
+    } else {
+        if (cursors.left.isDown) {
+            movePLeft();
+            swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if (cursors.right.isDown) {
+            movePRight();
+            swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
+            if(movingRight) {
+                player.animations.play('attackR');
+            } else {
+                player.animations.play('attackL');
+            }
+            if(game.physics.arcade.collide(this.hitbox,door)){
+               dhealth-5;
+               }
+            //creates shuriken on command
+        }else if(throwButton.isDown && canThrow){
+            canThrow = false;
+            if(playerShurikenTotal > 0){
+                playerShurikenTotal--;
+                //shuriken throw animation
+                if(movingRight) {
+                    player.animations.play('pShurikenThrowAnimationR');
+                } else {
+                    player.animations.play('pShurikenThrowAnimationL');
+                }
+                playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
+            }
+
         } else {
-            player.animations.play('attackL');
+            //  Stand still
+            player.animations.stop();
+            if(movingRight) {
+                player.frame = 0;
+            } else {
+                player.frame = 5;
+            }
+            player.body.velocity.x = 0;
         }
-        if(game.physics.arcade.collide(this.hitbox,door)){
-           dhealth-5;
-           }
-        //creates shuriken on command
-    }else if(throwButton.isDown && canThrow){
-        canThrow = false;
-        if(playerShurikenTotal > 0){
-            playerShurikenTotal--;
-            playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
-        }
-        
-    }else {
-        //  Stand still
-        player.animations.stop();
-        if(movingRight) {
-            player.frame = 0;
-        } else {
-            player.frame = 5;
-        }
-        player.body.velocity.x = 0;
     }
     
     //reading data for enemy spawn points
@@ -547,7 +612,15 @@ function u1() {
            onScreenEnemy = true;
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+            if(swordsmanArray[i].movingR()) {
+                player.animations.play("pFlinchToR");
+            } else {
+                player.animations.play("pFlinchToL");
+            }
+        }
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+            moan.play();
             pHealth -= 5; //remove 5 from player's health
             playerVulnerable = false; //give player i frames
         }
@@ -556,7 +629,7 @@ function u1() {
         swordsmanArray[i].move(player.x, player.y); //updates movement tree and does bulk of work
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
-                if(swordsmanArray[i].attacked()) {
+                if(swordsmanArray[i].attacked(movingRight)) {
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     if(swordsmanArray.length == 0) {
@@ -570,7 +643,7 @@ function u1() {
         //swordsman death check by shurikens
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
-                if(swordsmanArray[i].attacked()) {
+                if(swordsmanArray[i].attacked(movingRight)) {
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     break;
@@ -590,6 +663,7 @@ function u1() {
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
+                moan.play();
                 pHealth -= 10;
                 playerVulnerable = false;
                 
@@ -598,7 +672,7 @@ function u1() {
         
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
-                if(shurikenThrowerArray[i].attacked()) {
+                if(shurikenThrowerArray[i].attacked(movingRight)) {
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     if(shurikenThrowerArray.length == 0) {
@@ -613,7 +687,7 @@ function u1() {
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
-                if(shurikenThrowerArray[i].attacked()) {
+                if(shurikenThrowerArray[i].attacked(movingRight)) {
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     break;
@@ -658,6 +732,7 @@ function r1() {
 //            //game.debug.body(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken);
 //        }
 //    }
+    //game.debug.body(drop);
 }
 
 
