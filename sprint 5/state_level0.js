@@ -37,7 +37,7 @@ var image; //background
 var attackButton; // F to attack
 var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
-var sumoMusic; //boss music
+//var sumoMusic; //boss music
 var instructions; //game instructions'
 
 
@@ -124,8 +124,8 @@ function c_0() {
     attackButton.onDown.add(swordAttack)
 
     
-    sumoMusic = game.add.audio('sumoMusic');
-    sumoMusic.play();
+    //sumoMusic = game.add.audio('sumoMusic');
+    //sumoMusic.play();
     
 
     game.camera.follow(player);
@@ -138,12 +138,16 @@ var dHealth = 5; //player health
 var movingRight=true;
 var hitPlatform = false; //if sam has hit platform
 this.jumpingAllowed = true;
-
+var hitSpikes = false;
 
 function u_0() {
     
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
-    game.physics.arcade.collide(player, spikes_layer, function(){hitPlatform = true; console.log('Hitting spikes'), pHealth = pHealth - 25;}); //collide with platform (i.e. ground) check
+    game.physics.arcade.collide(player, spikes_layer, function(){
+        hitSpikes = true; 
+        console.log('Hitting spikes'), 
+        pHealth = pHealth - 25;
+    }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
     game.physics.arcade.collide(player, spikes_layer);
@@ -181,16 +185,23 @@ function u_0() {
         player.body.velocity.x = 0;
     }
 
-    //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
-        player.body.velocity.y = -700;
+    if (cursors.up.isDown && hitSpikes){
+        player.body.velocity.y = 0;
+        player.body.velocity.x = 0;
     }
-    //playerHealth.text = "Sam HP: " + pHealth;
+    else{
+        //  Allow the player to jump if they are touching the ground.
+        if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
+            player.body.velocity.y = -700;
+        }
+        //playerHealth.text = "Sam HP: " + pHealth;
     
-    if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
-        player.body.velocity.y = -700;
-        hitPlatform = false;
+        if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
+            player.body.velocity.y = -700;
+            hitPlatform = false;
+        }
     }
+    
     
     /*
     if(this.swordsman.y - pY > 200 && this.swordsman.body.onFloor() && this.jumpingAllowed) {
