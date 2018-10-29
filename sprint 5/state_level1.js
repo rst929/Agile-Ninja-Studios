@@ -50,11 +50,11 @@ function p1() {
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 639/3, 692/6); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy2.png', 500, 315);
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
-    game.load.image('shurikendrop', 'assets/shurikendrop.png');
+    game.load.image('shurikenDrop', 'assets/shurikendrop.png');
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
-EnemySwordsman = function(index, game, x, y) {
+EnemySwordsman = function(index, game, x, y, dropType) {
     
     //initializing body of enemy swordsman
     this.swordsman = game.add.sprite(x, y, 'swordsman');
@@ -96,6 +96,10 @@ EnemySwordsman = function(index, game, x, y) {
     this.stand = function() {
         this.swordsman.frame = 8;
     };
+    
+    this.myType = function() {
+        return dropType;
+    }
     
     // use this marker to signify global variable
     this.canAttack = false; //signifies timer is reset so enemy can attack
@@ -214,7 +218,7 @@ EnemySwordsman = function(index, game, x, y) {
 }
 
 //This is the enemy shuriken thrower himself. Does not include shuriken object! Check out Shuriken for that
-EnemyShurikenThrower = function(index, game, x, y) {
+EnemyShurikenThrower = function(index, game, x, y, dropType) {
     this.enemyShurikenArray = []; //the array of shurikens that this specific enemy has thrown and are active
     //initializing body of enemy swordsman
     this.shurikenThrower = game.add.sprite(x, y, 'shurikenThrower');
@@ -296,6 +300,9 @@ EnemyShurikenThrower = function(index, game, x, y) {
         return this.lookingR;
     }
     
+    this.myType = function() {
+        return dropType;
+    }
     // 
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
     game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this); // i frames
@@ -370,6 +377,27 @@ EnemyShurikenThrower = function(index, game, x, y) {
     }
 }
 
+ItemDrop = function(game, name, x, y, time) {
+    this.drop = game.add.sprite(x, y, name);
+    this.drop.scale.setTo(.2, .2);
+    game.physics.enable(this.drop, Phaser.Physics.ARCADE);
+    this.drop.body.bounce.y = 0.2;
+    this.drop.body.gravity.y = 1000;
+    this.drop.body.collideWorldBounds = true;
+    
+    this.despawnFromTime = function() {
+        
+    }
+    
+    this.myType = function() {
+        return name;
+    }
+    
+    this.update = function () {
+        game.physics.arcade.collide(this.drop, stone_platforms, function(){hitPlatform=true});
+    }
+}
+
 //SHURIKEN CLASS, USE THIS FOR ALL SHURIKENS IN GENERAL (Both sam and enemy)
 Shuriken = function(game, x, y, goLeft) {
     
@@ -426,7 +454,7 @@ var pFlinchToL;
 var pFlinchToR;
 
 function c1() {
-    sumoMusic.mute = true;
+    //sumoMusic.mute = true;
 
     game.world.setBounds(0, 0, 2400, 416);
     //  Physics
@@ -467,16 +495,16 @@ function c1() {
     player.body.setSize(300, 600, 350, 350);
     
     //add shuriken drop
-    drop=game.add.sprite(400, game.world.height-280,"shurikendrop");
-    drop.scale.setTo(.2, .2);
-    game.physics.enable(drop, Phaser.Physics.ARCADE);
+//    drop=game.add.sprite(400, game.world.height-280,"shurikendrop");
+//    drop.scale.setTo(.2, .2);
+//    game.physics.enable(drop, Phaser.Physics.ARCADE);
     
     player.autoCull = true; //tells phaser that you want to check game frame whether or not the player is inside camera bounds
     
-    drop.body.bounce.y = 0.2;
-    drop.body.gravity.y = 1000;
-    drop.body.collideWorldBounds = true;
-    drop.body.setSize(270, 230,0,0);
+//    drop.body.bounce.y = 0.2;
+//    drop.body.gravity.y = 1000;
+//    drop.body.collideWorldBounds = true;
+//    drop.body.setSize(270, 230,0,0);
     //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
@@ -514,6 +542,7 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
 var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
 var shurikenThrowerArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+var itemDropArray = []
 var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
 var movingRight = true; //if sam is looking right, is true. Looking left = false
@@ -528,11 +557,13 @@ function u1() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
-    if (game.physics.arcade.collide(player,drop)){
-        playerShurikenTotal=playerShurikenTotal+10;
-        drop.kill();
-    }
+    
+//    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
+//    if (game.physics.arcade.collide(player,drop)){
+//        playerShurikenTotal=playerShurikenTotal+10;
+//        drop.kill();
+//    }
+    
     //add the sound effect 
     moan=game.add.audio('moan');
     //movement tree for player
@@ -587,9 +618,9 @@ function u1() {
         if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
             //once player walks a certain distance before the enemy spawn, enemy spawns
             if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 0) {
-                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y));
+                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].drop));
             } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
-                shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y));
+                shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].drop));
             }
             lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
             enemyLocIndex++;
@@ -657,6 +688,9 @@ function u1() {
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, hitbox)) { // Overlap with sword and player 2)) 
                 if(swordsmanArray[i].attacked(movingRight)) {
+                    if(swordsmanArray[i].myType() == 1) {
+                        itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     if(swordsmanArray.length == 0) {
@@ -671,6 +705,9 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
                 if(swordsmanArray[i].attacked(movingRight)) {
+                    if(swordsmanArray[i].myType() == 1) {
+                        itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     break;
@@ -706,6 +743,9 @@ function u1() {
         if(attackButton.isDown) { //if player is attacking, you'll need to check if enemy is being hit
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, hitbox)) { // Overlap with sword and player 2)) {
                 if(shurikenThrowerArray[i].attacked(movingRight)) {
+                    if(shurikenThrowerArray[i].myType() == 1) {
+                        itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
+                    }
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     if(shurikenThrowerArray.length == 0) {
@@ -721,6 +761,9 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
                 if(shurikenThrowerArray[i].attacked(movingRight)) {
+                    if(shurikenThrowerArray[i].myType() == 1) {
+                        itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
+                    }
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     break;
@@ -747,6 +790,17 @@ function u1() {
     if(!onScreenEnemy) { //if there are no on screen enemies, camera does not need to move
         mustStay = false;
         game.camera.follow(player, .04, .04);
+    }
+    
+    for(var i = 0; i < itemDropArray.length; i++) {
+        itemDropArray[i].update();
+        if(game.physics.arcade.overlap(player, itemDropArray[i].drop)) {
+            if(itemDropArray[i].myType() == "shurikenDrop") {
+                playerShurikenTotal += 3;
+            }
+            itemDropArray[i].drop.destroy();
+            itemDropArray.splice(i, 1);
+        }
     }
 }
 

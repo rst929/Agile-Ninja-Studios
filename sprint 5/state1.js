@@ -101,7 +101,7 @@ function c1() {
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(38, 2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
     playerHealth.font = 'Revalia';
-    bossHealth = game.add.text(570,2, 'Boss Health: 100', { fontSize: '32px', fill: '#fff' });
+    bossHealth = game.add.text(500,2, 'Boss Health: 100', { fontSize: '32px', fill: '#fff' });
     bossHealth.font = 'Revalia';
     game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
@@ -158,8 +158,8 @@ function u1() {
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -700;
     }
-    playerHealth.text = "Sam: " + pHealth;
-    bossHealth.text = "Boss: " + bHealth;
+    playerHealth.text = "Sam HP: " + pHealth;
+    bossHealth.text = "Boss HP: " + bHealth;
     
     //if wave is alive, send it to the left offscreen and check if it hits player
     if(wave.alive) {

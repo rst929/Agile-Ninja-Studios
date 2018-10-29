@@ -238,7 +238,7 @@ function u_0() {
 }
 
 function r_0() {
-    game.debug.body(player);
+    //game.debug.body(player);
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
