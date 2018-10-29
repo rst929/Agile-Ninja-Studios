@@ -177,8 +177,8 @@ function u_tut() {
     } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
-        //game.state.start('state_level0')
-        game.state.start('state_level1')
+        game.state.start('state_level0')
+        //game.state.start('state_level1')
     }
 
 }
