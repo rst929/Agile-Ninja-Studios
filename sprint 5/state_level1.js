@@ -77,8 +77,10 @@ EnemySwordsman = function(index, game, x, y) {
     //animations
     this.swordsman.animations.add('left', [0, 1], 3, true);
     this.swordsman.animations.add('right', [5, 6], 3, true);
-    this.attackL = this.swordsman.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
-    this.attackR = this.swordsman.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
+    this.attackL1 = this.swordsman.animations.add('attackL1', [2, 3, 4], 10, false); // false because you dont' want animation to repeat constantly
+    this.attackL2 = this.swordsman.animations.add('attackL2', [4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
+    this.attackR1 = this.swordsman.animations.add('attackR1', [7, 8, 9], 10, false);
+    this.attackR2 = this.swordsman.animations.add('attackR2', [9, 8, 7], 10, false);
     this.flinchToR = this.swordsman.animations.add('flinchToR', [10, 11, 12, 13, 13, 13, 12, 11, 10], 15, false);
     this.flinchToL = this.swordsman.animations.add('flinchToL', [14, 15, 16, 17, 17, 17, 16, 15, 14], 15, false);
     
@@ -136,6 +138,12 @@ EnemySwordsman = function(index, game, x, y) {
     //signifies enemy has attacked, which helps let phaser know not to call the attack again too fast
     this.hasAttacked = function() {
         this.doneAttacking = true;
+        if(this.lookingL) {
+            this.swordsman.animations.play('attackL2');
+        } else {
+            this.swordsman.animations.play('attackR2');
+
+        }
     };
     
     this.canJump = function() {
@@ -153,6 +161,7 @@ EnemySwordsman = function(index, game, x, y) {
     this.move = function(pX, pY) { //pX = player.x position
         //game.debug.body(this.enemySwordHitbox);
         game.physics.arcade.collide(this.swordsman, stone_platforms);
+        this.doneAttacking = false;
         if(this.flinchToR.isPlaying) {
             this.swordsman.body.velocity.x = 100;
         } else if(this.flinchToL.isPlaying) {
@@ -173,14 +182,14 @@ EnemySwordsman = function(index, game, x, y) {
             } else if(this.lookingL) { 
                 this.swordsman.body.velocity.x = 0;
                 if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                    this.leftAttack = this.swordsman.play('attackL');
+                    this.leftAttack = this.swordsman.play('attackL1');
                     this.leftAttack.onComplete.add(this.hasAttacked, this);
                     this.canAttack = false;
                 }
             } else if(this.lookingR) {
                 this.swordsman.body.velocity.x = 0;
                 if(this.canAttack) { //if player is looking left and can attack (and by default via if statements), is not moving
-                    this.rightAttack = this.swordsman.play('attackR');
+                    this.rightAttack = this.swordsman.play('attackR1');
                     this.rightAttack.onComplete.add(this.hasAttacked, this);
                     this.canAttack = false;
                 }
@@ -227,8 +236,10 @@ EnemyShurikenThrower = function(index, game, x, y) {
     //animations
     this.shurikenThrower.animations.add('left', [0, 1], 3, true); //doesn't really use, but may want later
     this.shurikenThrower.animations.add('right', [5, 6], 3, true); //doesn't really use, but may want later
-    this.attackL_beginning = this.shurikenThrower.animations.add('attackL', [2, 3, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
-    this.attackR = this.shurikenThrower.animations.add('attackR', [7, 8, 9, 9, 8, 7], 10, false);
+    this.attackL_beginning = this.shurikenThrower.animations.add('attackL_beginning', [2, 3, 4], 10, false); // false because you dont' want animation to repeat constantly
+    this.attackL_end = this.shurikenThrower.animations.add('attackL_end', [4, 4, 4, 4, 3, 2], 10, false); // false because you dont' want animation to repeat constantly
+    this.attackR_beginning = this.shurikenThrower.animations.add('attackR_beginning', [7, 8, 9], 10, false);
+    this.attackR_end = this.shurikenThrower.animations.add('attackR_end', [9, 9, 9, 9, 8, 7], 10, false);
     this.flinchToR = this.shurikenThrower.animations.add('flinchToR', [10, 11, 12, 13, 13, 13, 12, 11, 10], 15, false);
     this.flinchToL = this.shurikenThrower.animations.add('flinchToL', [14, 15, 16, 17, 17, 17, 16, 15, 14], 15, false);
     
@@ -280,9 +291,23 @@ EnemyShurikenThrower = function(index, game, x, y) {
         this.doneAttacking = true;
     };
     
+        
+    this.movingR = function() {
+        return this.lookingR;
+    }
+    
     // 
     game.time.events.loop(Phaser.Timer.SECOND * (1.5 +  game.rnd.integerInRange(1, 2)), this.canAttack, this); //how fast enemy animation should
     game.time.events.loop(Phaser.Timer.SECOND * .5, this.vulnerable, this); // i frames
+    
+    this.addShuriken = function() {
+        this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, this.lookingL));
+        if(this.lookingL) {
+            this.shurikenThrower.animations.play("attackL_end");
+        } else {
+            this.shurikenThrower.animations.play("attackR_end");
+        }
+    }
     
     //movement tree for enemy
     this.move = function(pX) { //pX = player.x position
@@ -293,25 +318,27 @@ EnemyShurikenThrower = function(index, game, x, y) {
             this.shurikenThrower.body.velocity.x = -100;
         } else {
             if(pX + this.extraDist <= this.shurikenThrower.x) { //go left. Note: extra dist used to make characters not overlap completely with each other
-                lookingL = true;
-                lookingR = false;
+                this.lookingL = true;
+                this.lookingR = false;
             } else if(pX - this.extraDist >= this.shurikenThrower.x) {
-                lookingL = false;
-                lookingR = true;
+                this.lookingL = false;
+                this.lookingR = true;
             }
 
-            if(lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
-                this.shurikenThrower.animations.play("attackL");
-                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
-                this.shurikenThrower.animations.play("attackL");
+            if(this.lookingL && pX + 350 >= this.shurikenThrower.x && this.canAttackAgain) {
+                this.throwingShurikenL = this.shurikenThrower.animations.play("attackL_beginning");
+                this.throwingShurikenL.onComplete.add(this.addShuriken, this);
+//                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, this.lookingL));
+//                this.shurikenThrower.animations.play("attackL");
                 this.canAttackAgain = false;
-            } else if(lookingR && (pX - this.shurikenThrower.x <= 350 && pX - this.shurikenThrower.x >= 0) && this.canAttackAgain) {
-                this.shurikenThrower.animations.play("attackR");
-                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, lookingL));
+            } else if(this.lookingR && (pX - this.shurikenThrower.x <= 350 && pX - this.shurikenThrower.x >= 0) && this.canAttackAgain) {
+                this.throwingShurikenR = this.shurikenThrower.animations.play("attackR_beginning");
+                this.throwingShurikenR.onComplete.add(this.addShuriken, this);
+//                this.enemyShurikenArray.push(new Shuriken(game, this.shurikenThrower.x, this.shurikenThrower.y, this.lookingL));
                 this.canAttackAgain = false;
-            } else if(!this.attackL_beginning.isPlaying && !this.attackR.isPlaying) {
+            } else if(!this.attackL_beginning.isPlaying && !this.attackR_beginning.isPlaying && !this.attackL_end.isPlaying && !this.attackR_end.isPlaying) {
                 this.shurikenThrower.body.velocity.x = 0;
-                if(lookingL) {
+                if(this.lookingL) {
                     this.shurikenThrower.frame = 0;
                 } else {
                     this.shurikenThrower.frame = 5;
@@ -664,6 +691,12 @@ function u1() {
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
                 moan.play();
+                console.log(shurikenThrowerArray[i].movingR());
+                if(shurikenThrowerArray[i].movingR()) {
+                    player.animations.play("pFlinchToR");
+                } else {
+                    player.animations.play("pFlinchToL");
+                }
                 pHealth -= 10;
                 playerVulnerable = false;
                 
