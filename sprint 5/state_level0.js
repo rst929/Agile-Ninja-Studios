@@ -221,7 +221,7 @@ function u_0() {
     
     if(dHealth <= 0) { // victory
         door.kill();
-        open = game.add.sprite(2239, game.world.height -470, 'open_door');
+        open = game.add.sprite(2239, game.world.height -437, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
