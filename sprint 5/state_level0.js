@@ -50,7 +50,7 @@ function c_0() {
     image.height = game.height + 100;
     game.physics.enable(image, Phaser.Physics.ARCADE); 
     
-        //creating map
+    //creating map
     map = game.add.tilemap('castle_map');
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
@@ -146,7 +146,7 @@ function u_0() {
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
         console.log('Hitting spikes'), 
-        pHealth = pHealth - 25;
+        pHealth = pHealth - 50;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
