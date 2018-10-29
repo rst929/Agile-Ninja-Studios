@@ -61,7 +61,7 @@ function c0() {
     instructions = game.add.sprite(100,300,'Skip and Continue');
     game.physics.enable(image, Phaser.Physics.ARCADE);
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
-
+    game.world.bringToTop(instructions);
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
     style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
     
@@ -117,4 +117,7 @@ function displayBackground(name) {
     image.width = game.width - 225;
     image.height = game.height;
     game.physics.enable(image, Phaser.Physics.ARCADE);
+    instructions = game.add.sprite(100,300,'Skip and Continue');
+    game.physics.enable(instructions, Phaser.Physics.ARCADE);
+
 }
