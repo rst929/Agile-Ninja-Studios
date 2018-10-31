@@ -25,6 +25,7 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var moan;
 function c1() {
+    
     game.world.setBounds(0, 0, 800, 416);
 
     //  Physics
@@ -71,8 +72,8 @@ function c1() {
     game.physics.arcade.enable(swordHitbox);
     
     //  Player physics properties
-    player.body.bounce.y = 0.2;
-    player.body.gravity.y = 1000;
+    player.body.bounce.y = 0.1;
+    player.body.gravity.y = 1100;
     player.body.collideWorldBounds = true;
     player.body.setSize(300, 600, 350, 350);
 

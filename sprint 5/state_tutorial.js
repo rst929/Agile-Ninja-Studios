@@ -33,9 +33,11 @@ var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
-
+var tutorial_done=false;
 
 function c_tut() {
+    //game.state.restart(true,true);
+    
     //  Physics
     game.world.setBounds(0, 0, 800, 416);
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -91,8 +93,8 @@ function c_tut() {
     game.physics.arcade.enable(swordHitbox);
     
     //  Player physics properties
-    player.body.bounce.y = 0.2;
-    player.body.gravity.y = 1000;
+    player.body.bounce.y = 0.1;
+    player.body.gravity.y = 1100;
     player.body.collideWorldBounds = true;
     player.body.setSize(200,500, 350, 450);
     
@@ -177,6 +179,8 @@ function u_tut() {
     } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
+        //game.state.remove(game.state.curret);
+        tutorial_done=false;
         game.state.start('state_level0')
         //game.state.start('state_level1')
     }
