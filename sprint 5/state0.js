@@ -58,7 +58,7 @@ function c0() {
     image = game.add.sprite(100, 0, 'blackPic');
     image.width = game.width - 225;
     image.height = game.height;
-    instructions = game.add.sprite(100,300,'Skip and Continue');
+    instructions = game.add.sprite(360,345,'Skip and Continue');
     game.physics.enable(image, Phaser.Physics.ARCADE);
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
     game.world.bringToTop(instructions);
@@ -117,7 +117,7 @@ function displayBackground(name) {
     image.width = game.width - 225;
     image.height = game.height;
     game.physics.enable(image, Phaser.Physics.ARCADE);
-    instructions = game.add.sprite(100,300,'Skip and Continue');
+    instructions = game.add.sprite(360,345,'Skip and Continue');
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
 
 }
