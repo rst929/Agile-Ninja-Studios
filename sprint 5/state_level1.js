@@ -447,6 +447,7 @@ var playerHealth; //keeps track of total player health
 var bossHealth; //keeps track of total boss health
 //var sumoMusic; //boss music
 var instructions; //game instructions'
+var instructions2;
 var stone_platforms;
 var map;
 var background;
@@ -454,8 +455,9 @@ var hitbox;
 var pShurikenThrowAnimation;
 var pFlinchToL;
 var pFlinchToR;
-
+var tutorial_done=false;
 function c1() {
+    
     //sumoMusic.mute = true;
 
     game.world.setBounds(0, 0, 2400, 416);
@@ -491,8 +493,8 @@ function c1() {
     game.physics.arcade.enable(player);
     
     //  Player physics properties
-    player.body.bounce.y = 0.2;
-    player.body.gravity.y = 1000;
+    player.body.bounce.y = 0.1;
+    player.body.gravity.y = 1100;
     player.body.collideWorldBounds = true;
     player.body.setSize(300, 600, 350, 350);
     
@@ -662,6 +664,7 @@ function u1() {
     } // Overlap with player and door
     //change once tutorial is completed
     if(tutorial_done){
+        tutorial_done=false;
         game.state.start('state1')
         
     }
@@ -859,11 +862,10 @@ function createText() {
     playerHealth.fixedToCamera=true;
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
-    if (stateVar != 1){
-      instructions2 = game.add.text(38,62, 'use d key to throw shuriken', {fontSize: '22px', fill:'#fff'});
-        instructions2.font = 'Permanent Marker';
-    } 
-    
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions2.font = 'Permanent Marker';
+    instruction3 = game.add.text(38, 92, 'f to open door', {fontSize: "22px", fill:"#fff"});
+    instruction3.font= 'Permanent Marker';
     instructions.font = 'Permanent Marker';
 
 }
