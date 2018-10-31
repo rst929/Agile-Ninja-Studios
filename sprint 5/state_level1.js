@@ -50,7 +50,7 @@ function p1() {
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 639/3, 692/6); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy2.png', 500, 315);
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
-    game.load.image('shurikenDrop', 'assets/shurikendrop.png');
+    game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
 }
 
@@ -379,11 +379,13 @@ EnemyShurikenThrower = function(index, game, x, y, dropType) {
 
 ItemDrop = function(game, name, x, y, time) {
     this.drop = game.add.sprite(x, y, name);
-    this.drop.scale.setTo(.2, .2);
+    this.drop.scale.setTo(.5, .5);
     game.physics.enable(this.drop, Phaser.Physics.ARCADE);
     this.drop.body.bounce.y = 0.2;
     this.drop.body.gravity.y = 1000;
     this.drop.body.collideWorldBounds = true;
+    this.drop.animations.add('floating', [0, 1, 2, 3, 3, 2, 1, 0], 7, true);
+    this.drop.animations.play('floating');
     
     this.despawnFromTime = function() {
         
