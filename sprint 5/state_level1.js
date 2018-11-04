@@ -456,6 +456,8 @@ var pShurikenThrowAnimation;
 var pFlinchToL;
 var pFlinchToR;
 var tutorial_done=false;
+var moan;
+
 function c1() {
     
     //sumoMusic.mute = true;
@@ -538,6 +540,7 @@ function c1() {
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     stateVar = 2
+    moan = game.add.audio('moan');
     
 }
 
@@ -554,7 +557,6 @@ var playerShurikens = [];
 var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
-var moan;
 
 function u1() {
     //  Collide the player and the stars with the platforms
@@ -569,7 +571,6 @@ function u1() {
 //    }
     
     //add the sound effect 
-    moan=game.add.audio('moan');
     //movement tree for player
     if(pFlinchToL.isPlaying) {
         player.body.velocity.x = -100;
