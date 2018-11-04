@@ -123,6 +123,7 @@ var dHealth = 5; //player health
 var movingRight=true;
 
 function u_tut() {
+    
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
