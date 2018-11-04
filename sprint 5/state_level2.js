@@ -1,11 +1,11 @@
-var st_lev1 = {
-    preload: p1,
-    create: c1,
-    update: u1,
-    render: r1
+var st_lev2 = {
+    preload: p2,
+    create: c2,
+    update: u2,
+    render: r2
 }
 
-var stateVar = 1
+var stateVar = 2
 
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 WebFontConfig = {
@@ -22,7 +22,7 @@ WebFontConfig = {
 
 };
 
-function p1() {
+function p2() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.image('castle', 'assets/castle_background_v2.png');
@@ -38,9 +38,10 @@ function p1() {
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('open_door', 'assets/open_door.png');
 
-    game.load.tilemap('castle_map','assets/tilemap/castle.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('castle_map','assets/tilemap/castle3.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
+    game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
     
     //  Load the Google WebFont Loader script
 
@@ -456,9 +457,7 @@ var pShurikenThrowAnimation;
 var pFlinchToL;
 var pFlinchToR;
 var tutorial_done=false;
-var moan;
-
-function c1() {
+function c2() {
     
     //sumoMusic.mute = true;
 
@@ -470,19 +469,27 @@ function c1() {
     map = game.add.tilemap('castle_map');
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
+    map.addTilesetImage('spikes3','spikes_tile');
     
     //layers
     background = map.createLayer('Background');
     stone_platforms = map.createLayer('Platforms');
+    spikes_layer = map.createLayer('Spikes');
+
+    
     
     map.setCollisionBetween(1, 300, true, 'Platforms'); //basically tells what possible positions in the json file to check for
+    map.setCollisionBetween(236,255,true, 'Spikes')
+
+    
     map.width=game.width;
     map.height=game.height+100;
     background.resizeWorld();
     stone_platforms.resizeWorld();
+    spikes_layer.resizeWorld()
     
     //add door
-    door = game.add.sprite(2229, game.world.height-437, 'closed_door');
+    door = game.add.sprite(4498, game.world.height-437, 'closed_door');
     door.scale.setTo(.23, .23);
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
@@ -493,6 +500,11 @@ function c1() {
     
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
+    
+    platforms = game.add.group();
+    platforms.enableBody = true;
+    spikes = game.add.group();
+    spikes.enableBody = true;
     
     //  Player physics properties
     player.body.bounce.y = 0.1;
@@ -540,7 +552,6 @@ function c1() {
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     stateVar = 2
-    moan = game.add.audio('moan');
     
 }
 
@@ -557,12 +568,21 @@ var playerShurikens = [];
 var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
+var moan;
+var hitSpikes = false;
 
-function u1() {
+
+function u2() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
+    game.physics.arcade.collide(player, spikes_layer, function(){
+        hitSpikes = true; 
+        console.log('Hitting spikes'); 
+        pHealth = pHealth - 50;
+    }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
+    game.physics.arcade.collide(player, spikes_layer);
     
 //    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
 //    if (game.physics.arcade.collide(player,drop)){
@@ -571,6 +591,7 @@ function u1() {
 //    }
     
     //add the sound effect 
+    moan=game.add.audio('moan');
     //movement tree for player
     if(pFlinchToL.isPlaying) {
         player.body.velocity.x = -100;
@@ -643,6 +664,11 @@ function u1() {
     if(!throwButton.isDown) {
         canThrow = true;
     }
+    
+    if (cursors.up.isDown && hitSpikes){
+        player.body.velocity.y = 0;
+        player.body.velocity.x = 0;
+    }
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
@@ -655,7 +681,7 @@ function u1() {
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
         door.kill();
-        open = game.add.sprite(2229, game.world.height-437, 'open_door');
+        open = game.add.sprite(4498, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
@@ -666,7 +692,7 @@ function u1() {
     //change once tutorial is completed
     if(tutorial_done){
         tutorial_done=false;
-        game.state.start('state_level2')
+        game.state.start('state1')
         
     }
     var onScreenEnemy = false;
@@ -813,7 +839,7 @@ function u1() {
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 
 //just for debugging purposes. Comment out before submitting, but do not delete now!
-function r1() {
+function r2() {
 //    //game.debug.body(swordHitbox);
 //    //game.debug.spriteBounds(this.hitbox.swordHitbox);
 //    for(var i = 0; i < swordsmanArray.length; i++) {
@@ -868,5 +894,4 @@ function createText() {
     instruction3 = game.add.text(38, 92, 'f to open door', {fontSize: "22px", fill:"#fff"});
     instruction3.font= 'Permanent Marker';
     instructions.font = 'Permanent Marker';
-
 }
