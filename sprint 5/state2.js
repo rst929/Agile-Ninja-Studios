@@ -34,7 +34,7 @@ function u2() {
         hitSpikes=false;
         bHealth=100;
         deathMusic.mute=true;
-        
+        location.reload();
         game.state.start("state_tutorial");
     }
 }
