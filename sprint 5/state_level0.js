@@ -26,197 +26,197 @@ function p_0() {
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png');
-    game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
+    //game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
 
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
-    this.load.text('enemySpawnLoc', 'assets/EnemySpawn0.json');
+    //this.load.text('enemySpawnLoc', 'assets/EnemySpawn0.json');
 
     game.load.image("boxBack", "assets/blankbox.png");
     game.load.image("closeButton", "assets/xbutton.png")
-    }
+}
         
         
     
 //x, y = spawn points
 //goingL = which way the doggo should point
 //xBounds = how far the dog can run
-Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
-    this.doggo = game.add.sprite(x, y, 'dog');
-    this.doggo.scale.setTo(.35, .35);
-    this.doggo.anchor.setTo(.5, .5);
-    game.physics.enable(this.doggo, Phaser.Physics.ARCADE);
-    
-    //gravity of doggo
-    this.doggo.body.bounce.y = 0.2;
-    this.doggo.body.gravity.y = 1000;
-    this.doggo.body.collideWorldBounds = true;    
-    
-    //doggo animations
-    this.pantL = this.doggo.animations.add("pantL",[0, 1], 4, true);
-    this.pantR = this.doggo.animations.add("pantR",[10, 11], 4, true);
-    this.runL = this.doggo.animations.add("runL", [5, 6, 7, 8, 9], 15, true);
-    this.runR = this.doggo.animations.add("runR", [15, 16, 17, 18, 19], 15, true);
-    this.transformL = this.doggo.animations.add("transformL", [0, 2, 3, 4], 15, false);
-    this.reformL = this.doggo.animations.add("reformL", [4, 3, 2, 0], 15, false);
-    this.transformR = this.doggo.animations.add("transformR", [10, 12, 13, 14], 15, false);
-    this.reformR = this.doggo.animations.add("reformR", [14, 13, 12, 10], 15, false);
-    this.returnToRestL = this.doggo.animations.add("returnToRestL", [9, 8, 7, 6, 5, 4], 15, false);
-    this.returnToRestR = this.doggo.animations.add("returnToRestR", [19, 18, 17, 16, 15, 14], 15, false);
-    
-    //transferring passed in left and right bounds
-    this.xBoundL = xBoundL;
-    this.xBoundR = xBoundR;
-    this.hasTranformed = false;
-    
-    //ledge checker is a hitbox of the dog that is for the purposes of edge detection. Not affiliated with doggo's damage output
-    this.ledgeChecker = game.add.group();
-    this.ledgeChecker.enableBody = true;
-    this.doggo.addChild(this.ledgeChecker);
-    this.doggoLedgeChecker = this.ledgeChecker.create(0, 0, null);
-    this.doggo.body.setSize(150, 90, 100, 160);
-    this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
-    game.physics.arcade.enable(this.ledgeChecker);
-    
-    //tiemr stuff
-    this.timer = game.time.create();
-    // Create a delayed event 1m and 30s from now
-    this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
-    this.timerCanRun = true;
-    
-    //this.doggoLedgeChecker.body.collideWorldBounds = true;   
-    //game.physics.enable(this.doggoLedgeChecker, Phaser.Physics.ARCADE);
-    this.hitPlatform = false;
-    
-    this.movingL = goingL;
-    
-    this.pant = function() {
-        if(this.movingL) {
-            this.doggo.animations.play("transformL");
-        } else {
-            this.doggo.animations.play("transformR");
-        }
-    }
-    
-    this.transformed = function() {
-        this.hasTransformed = !this.hasTransformed;
-    }
-    
-    //transforming animation
-    this.transform = function() {
-        if(!this.hasTransformed) {
-            if(this.movingL) {
-                this.doggo.animations.play("transformL");
-                this.transformL.onComplete.add(this.transformed, this);
-            } else {
-                this.doggo.animations.play("transformR");
-                this.transformR.onComplete.add(this.transformed, this);
-            }
-            return false; //the animation finished
-        } else {
-            return true;
-        }
-        
-    }
-    
-    //to be used instead of move new when debugged
-    this.move = function() {
-        //console.log(game.physics.arcade.overlap(this.ledgeChecker, platforms));
-        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms));
-        //console.log((this.doggoLedgeChecker.body.onFloor() || this.doggoLedgeChecker.body.touching.down));
-        //console.log(this.doggoLedgeChecker.body.touching.down);
-        //console.log(game.physics.arcade.overlap(this.doggo.ledgeChecker, player));
-        this.hitPlatform = false;
-        game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms, function(){this.hitPlatform = true});
-        console.log(this.hitPlatform);
-        if(this.movingL && this.hitPlatform) { //if going 
-            //console.log("am repeating this")
-            this.doggo.animations.play("runL");
-            this.doggo.body.velocity.x = -300;
-            this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
-        } else if(!this.movingL && this.hitPlatform) {
-            this.doggo.animations.play("runR");
-            this.doggo.body.velocity.x = 300;
-            this.doggoLedgeChecker.body.setSize(5, 50, 100, -100);
-        } else {
-            this.movingL = !this.movingL;
-            //console.log("here");
-            if(this.movingL) {
-                this.doggoLedgeChecker.body.setSize(5, 50, -20, 0);
-            } else {
-                this.doggoLedgeChecker.body.setSize(5, 50, 100, 0);
-            }
-        }
-    }
-    
-    this.endTimer = function() {
-        this.timer.stop();
-        this.timer.destroy();
-        this.timer = game.time.create();
-        this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
-    }
-    
-    this.moveNew = function() {
-        if(this.movingL && this.doggo.body.x > this.xBoundL) { //if going 
-            this.doggo.animations.play("runL");
-            this.doggo.body.velocity.x = -300;
-        } else if(!this.movingL && this.doggo.body.x < this.xBoundR) {
-            this.doggo.animations.play("runR");
-            this.doggo.body.velocity.x = 300;
-        } else {
-            if(this.timerCanRun) {
-                this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 1, this.endTimer, this);
-                this.timer.start();
-                this.timerCanRun = false;
-            }
-            if(this.timer.running) {
-                this.doggo.body.velocity.x = 0;
-                this.doggo.animations.stop();
-                if(this.movingL) {
-                    console.log("playingR");
-                    this.doggo.animations.play("returnToRestR");
-                } else {
-                    console.log("playingL");
-                    this.doggo.animations.play("returnToRestL");
-                }
-                
-            } else {
-                this.movingL = !this.movingL;
-                this.timerCanRun = true;
-                console.log("here boi");
-            }
-            //console.log("here");
-        }
-    }
-    
-    this.reform = function() {
-        this.doggo.body.velocity.x = 0;
-        if(this.hasTransformed) {
-            if(this.movingL) {
-                this.doggo.animations.play("reformL");
-                this.reformL.onComplete.add(this.transformed, this);
-            } else {
-                this.doggo.animations.play("reformR");
-                this.reformR.onComplete.add(this.transformed, this);
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-    
-    this.leftBound = function() {
-        return this.xBoundL;
-    }
-    this.rightBound = function() {
-        return this.xBoundR;
-    }
-    
-    this.update = function() {
-        game.physics.arcade.collide(this.doggo, stone_platforms);
-        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms) + " check1 "); //true ch1 false ch2
-        //console.log(game.physics.arcade.overlap(this.doggo.doggoLedgeChecker, stone_platforms) + " check2");
-    }
-}
+//Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
+//    this.doggo = game.add.sprite(x, y, 'dog');
+//    this.doggo.scale.setTo(.35, .35);
+//    this.doggo.anchor.setTo(.5, .5);
+//    game.physics.enable(this.doggo, Phaser.Physics.ARCADE);
+//    
+//    //gravity of doggo
+//    this.doggo.body.bounce.y = 0.2;
+//    this.doggo.body.gravity.y = 1000;
+//    this.doggo.body.collideWorldBounds = true;    
+//    
+//    //doggo animations
+//    this.pantL = this.doggo.animations.add("pantL",[0, 1], 4, true);
+//    this.pantR = this.doggo.animations.add("pantR",[10, 11], 4, true);
+//    this.runL = this.doggo.animations.add("runL", [5, 6, 7, 8, 9], 15, true);
+//    this.runR = this.doggo.animations.add("runR", [15, 16, 17, 18, 19], 15, true);
+//    this.transformL = this.doggo.animations.add("transformL", [0, 2, 3, 4], 15, false);
+//    this.reformL = this.doggo.animations.add("reformL", [4, 3, 2, 0], 15, false);
+//    this.transformR = this.doggo.animations.add("transformR", [10, 12, 13, 14], 15, false);
+//    this.reformR = this.doggo.animations.add("reformR", [14, 13, 12, 10], 15, false);
+//    this.returnToRestL = this.doggo.animations.add("returnToRestL", [9, 8, 7, 6, 5, 4], 15, false);
+//    this.returnToRestR = this.doggo.animations.add("returnToRestR", [19, 18, 17, 16, 15, 14], 15, false);
+//    
+//    //transferring passed in left and right bounds
+//    this.xBoundL = xBoundL;
+//    this.xBoundR = xBoundR;
+//    this.hasTranformed = false;
+//    
+//    //ledge checker is a hitbox of the dog that is for the purposes of edge detection. Not affiliated with doggo's damage output
+//    this.ledgeChecker = game.add.group();
+//    this.ledgeChecker.enableBody = true;
+//    this.doggo.addChild(this.ledgeChecker);
+//    this.doggoLedgeChecker = this.ledgeChecker.create(0, 0, null);
+//    this.doggo.body.setSize(150, 90, 100, 160);
+//    this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
+//    game.physics.arcade.enable(this.ledgeChecker);
+//    
+//    //tiemr stuff
+//    this.timer = game.time.create();
+//    // Create a delayed event 1m and 30s from now
+//    this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
+//    this.timerCanRun = true;
+//    
+//    //this.doggoLedgeChecker.body.collideWorldBounds = true;   
+//    //game.physics.enable(this.doggoLedgeChecker, Phaser.Physics.ARCADE);
+//    this.hitPlatform = false;
+//    
+//    this.movingL = goingL;
+//    
+//    this.pant = function() {
+//        if(this.movingL) {
+//            this.doggo.animations.play("transformL");
+//        } else {
+//            this.doggo.animations.play("transformR");
+//        }
+//    }
+//    
+//    this.transformed = function() {
+//        this.hasTransformed = !this.hasTransformed;
+//    }
+//    
+//    //transforming animation
+//    this.transform = function() {
+//        if(!this.hasTransformed) {
+//            if(this.movingL) {
+//                this.doggo.animations.play("transformL");
+//                this.transformL.onComplete.add(this.transformed, this);
+//            } else {
+//                this.doggo.animations.play("transformR");
+//                this.transformR.onComplete.add(this.transformed, this);
+//            }
+//            return false; //the animation finished
+//        } else {
+//            return true;
+//        }
+//        
+//    }
+//    
+//    //to be used instead of move new when debugged
+//    this.move = function() {
+//        //console.log(game.physics.arcade.overlap(this.ledgeChecker, platforms));
+//        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms));
+//        //console.log((this.doggoLedgeChecker.body.onFloor() || this.doggoLedgeChecker.body.touching.down));
+//        //console.log(this.doggoLedgeChecker.body.touching.down);
+//        //console.log(game.physics.arcade.overlap(this.doggo.ledgeChecker, player));
+//        this.hitPlatform = false;
+//        game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms, function(){this.hitPlatform = true});
+//        console.log(this.hitPlatform);
+//        if(this.movingL && this.hitPlatform) { //if going 
+//            //console.log("am repeating this")
+//            this.doggo.animations.play("runL");
+//            this.doggo.body.velocity.x = -300;
+//            this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
+//        } else if(!this.movingL && this.hitPlatform) {
+//            this.doggo.animations.play("runR");
+//            this.doggo.body.velocity.x = 300;
+//            this.doggoLedgeChecker.body.setSize(5, 50, 100, -100);
+//        } else {
+//            this.movingL = !this.movingL;
+//            //console.log("here");
+//            if(this.movingL) {
+//                this.doggoLedgeChecker.body.setSize(5, 50, -20, 0);
+//            } else {
+//                this.doggoLedgeChecker.body.setSize(5, 50, 100, 0);
+//            }
+//        }
+//    }
+//    
+//    this.endTimer = function() {
+//        this.timer.stop();
+//        this.timer.destroy();
+//        this.timer = game.time.create();
+//        this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
+//    }
+//    
+//    this.moveNew = function() {
+//        if(this.movingL && this.doggo.body.x > this.xBoundL) { //if going 
+//            this.doggo.animations.play("runL");
+//            this.doggo.body.velocity.x = -300;
+//        } else if(!this.movingL && this.doggo.body.x < this.xBoundR) {
+//            this.doggo.animations.play("runR");
+//            this.doggo.body.velocity.x = 300;
+//        } else {
+//            if(this.timerCanRun) {
+//                this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 1, this.endTimer, this);
+//                this.timer.start();
+//                this.timerCanRun = false;
+//            }
+//            if(this.timer.running) {
+//                this.doggo.body.velocity.x = 0;
+//                this.doggo.animations.stop();
+//                if(this.movingL) {
+//                    console.log("playingR");
+//                    this.doggo.animations.play("returnToRestR");
+//                } else {
+//                    console.log("playingL");
+//                    this.doggo.animations.play("returnToRestL");
+//                }
+//                
+//            } else {
+//                this.movingL = !this.movingL;
+//                this.timerCanRun = true;
+//                console.log("here boi");
+//            }
+//            //console.log("here");
+//        }
+//    }
+//    
+//    this.reform = function() {
+//        this.doggo.body.velocity.x = 0;
+//        if(this.hasTransformed) {
+//            if(this.movingL) {
+//                this.doggo.animations.play("reformL");
+//                this.reformL.onComplete.add(this.transformed, this);
+//            } else {
+//                this.doggo.animations.play("reformR");
+//                this.reformR.onComplete.add(this.transformed, this);
+//            }
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
+//    
+//    this.leftBound = function() {
+//        return this.xBoundL;
+//    }
+//    this.rightBound = function() {
+//        return this.xBoundR;
+//    }
+//    
+//    this.update = function() {
+//        game.physics.arcade.collide(this.doggo, stone_platforms);
+//        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms) + " check1 "); //true ch1 false ch2
+//        //console.log(game.physics.arcade.overlap(this.doggo.doggoLedgeChecker, stone_platforms) + " check2");
+//    }
+//}
 
 var image; //background
 var attackButton; // F to attack
@@ -316,7 +316,7 @@ function c_0() {
 
     game.camera.follow(player);
 
-    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
+//    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     moan = game.add.audio('moan');
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     
@@ -341,7 +341,7 @@ var hitPlatform = false; //if sam has hit platform
 this.jumpingAllowed = true;
 var hitSpikes = false;
 var doggoArray = [];
-var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
+//var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
 var enemiesSpawned = false;
 var map;
 var stone_platforms;
@@ -414,46 +414,46 @@ function u_0() {
     }
     
     
-    //reading data for enemy spawn points
-    if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
-        if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
-            //once player walks a certain distance before the enemy spawn, enemy spawns
-            if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 2) {
-                enemiesSpawned = true;
-                doggoArray.push(new Doggo(game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].directionIsL, this.enemyLocData.enemySpawnLoc[enemyLocIndex].xBoundL, this.enemyLocData.enemySpawnLoc[enemyLocIndex].xBoundR));
-            }
-            lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
-            enemyLocIndex++;
-        }
-    }
+//    //reading data for enemy spawn points
+//    if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
+//        if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
+//            //once player walks a certain distance before the enemy spawn, enemy spawns
+//            if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 2) {
+//                enemiesSpawned = true;
+//                doggoArray.push(new Doggo(game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].directionIsL, this.enemyLocData.enemySpawnLoc[enemyLocIndex].xBoundL, this.enemyLocData.enemySpawnLoc[enemyLocIndex].xBoundR));
+//            }
+//            lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
+//            enemyLocIndex++;
+//        }
+//    }
     
-    //run checks for doggo
-    for(var i = 0; i < doggoArray.length; i++) {
-//        console.log("new check: " + game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
-        doggoArray[i].update();
-        if(player.x > doggoArray[i].leftBound() && player.x < doggoArray[i].rightBound()) {//&& player.body.onFloor()) { //if player in bounds of doggo and touching platform
-            if(doggoArray[i].transform()) { //if dog has transformed, move
-                doggoArray[i].moveNew();
-                //console.log(game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
-            }
-        } else if(player.x < doggoArray[i].leftBound() || player.x > doggoArray[i].rightBound()) { //player is out of bounds, so change back
-            doggoArray[i].reform();
-        }
-        
-        if(playerVulnerable && game.physics.arcade.overlap(doggoArray[i].doggo, player)) {
-            moan.play();
-            pHealth -= 5; //remove 5 from player's health
-            playerVulnerable = false; //give player i frames
-            if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
-                if(doggoArray[i].movingL) {
-                    player.animations.play("pFlinchToL");
-                } else {
-                    player.animations.play("pFlinchToR");
-                }
-            }
-        }
-        
-    }
+//    //run checks for doggo
+//    for(var i = 0; i < doggoArray.length; i++) {
+////        console.log("new check: " + game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
+//        doggoArray[i].update();
+//        if(player.x > doggoArray[i].leftBound() && player.x < doggoArray[i].rightBound()) {//&& player.body.onFloor()) { //if player in bounds of doggo and touching platform
+//            if(doggoArray[i].transform()) { //if dog has transformed, move
+//                doggoArray[i].moveNew();
+//                //console.log(game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
+//            }
+//        } else if(player.x < doggoArray[i].leftBound() || player.x > doggoArray[i].rightBound()) { //player is out of bounds, so change back
+//            doggoArray[i].reform();
+//        }
+//        
+//        if(playerVulnerable && game.physics.arcade.overlap(doggoArray[i].doggo, player)) {
+//            moan.play();
+//            pHealth -= 5; //remove 5 from player's health
+//            playerVulnerable = false; //give player i frames
+//            if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+//                if(doggoArray[i].movingL) {
+//                    player.animations.play("pFlinchToL");
+//                } else {
+//                    player.animations.play("pFlinchToR");
+//                }
+//            }
+//        }
+//        
+//    }
     
     
     

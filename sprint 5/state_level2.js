@@ -52,7 +52,181 @@ function p2() {
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy2.png', 500, 315);
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
     game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
-    this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
+    this.load.text('enemySpawnLoc0', 'assets/EnemySpawn0.json');
+    game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
+}
+Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
+    this.doggo = game.add.sprite(x, y, 'dog');
+    this.doggo.scale.setTo(.35, .35);
+    this.doggo.anchor.setTo(.5, .5);
+    game.physics.enable(this.doggo, Phaser.Physics.ARCADE);
+    
+    //gravity of doggo
+    this.doggo.body.bounce.y = 0.2;
+    this.doggo.body.gravity.y = 1000;
+    this.doggo.body.collideWorldBounds = true;    
+    
+    //doggo animations
+    this.pantL = this.doggo.animations.add("pantL",[0, 1], 4, true);
+    this.pantR = this.doggo.animations.add("pantR",[10, 11], 4, true);
+    this.runL = this.doggo.animations.add("runL", [5, 6, 7, 8, 9], 15, true);
+    this.runR = this.doggo.animations.add("runR", [15, 16, 17, 18, 19], 15, true);
+    this.transformL = this.doggo.animations.add("transformL", [0, 2, 3, 4], 15, false);
+    this.reformL = this.doggo.animations.add("reformL", [4, 3, 2, 0], 15, false);
+    this.transformR = this.doggo.animations.add("transformR", [10, 12, 13, 14], 15, false);
+    this.reformR = this.doggo.animations.add("reformR", [14, 13, 12, 10], 15, false);
+    this.returnToRestL = this.doggo.animations.add("returnToRestL", [9, 8, 7, 6, 5, 4], 15, false);
+    this.returnToRestR = this.doggo.animations.add("returnToRestR", [19, 18, 17, 16, 15, 14], 15, false);
+    
+    //transferring passed in left and right bounds
+    this.xBoundL = xBoundL;
+    this.xBoundR = xBoundR;
+    this.hasTranformed = false;
+    
+    //ledge checker is a hitbox of the dog that is for the purposes of edge detection. Not affiliated with doggo's damage output
+    this.ledgeChecker = game.add.group();
+    this.ledgeChecker.enableBody = true;
+    this.doggo.addChild(this.ledgeChecker);
+    this.doggoLedgeChecker = this.ledgeChecker.create(0, 0, null);
+    this.doggo.body.setSize(150, 90, 100, 160);
+    this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
+    game.physics.arcade.enable(this.ledgeChecker);
+    
+    //tiemr stuff
+    this.timer = game.time.create();
+    // Create a delayed event 1m and 30s from now
+    this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
+    this.timerCanRun = true;
+    
+    //this.doggoLedgeChecker.body.collideWorldBounds = true;   
+    //game.physics.enable(this.doggoLedgeChecker, Phaser.Physics.ARCADE);
+    this.hitPlatform = false;
+    
+    this.movingL = goingL;
+    
+    this.pant = function() {
+        if(this.movingL) {
+            this.doggo.animations.play("transformL");
+        } else {
+            this.doggo.animations.play("transformR");
+        }
+    }
+    
+    this.transformed = function() {
+        this.hasTransformed = !this.hasTransformed;
+    }
+    
+    //transforming animation
+    this.transform = function() {
+        if(!this.hasTransformed) {
+            if(this.movingL) {
+                this.doggo.animations.play("transformL");
+                this.transformL.onComplete.add(this.transformed, this);
+            } else {
+                this.doggo.animations.play("transformR");
+                this.transformR.onComplete.add(this.transformed, this);
+            }
+            return false; //the animation finished
+        } else {
+            return true;
+        }
+        
+    }
+    
+    //to be used instead of move new when debugged
+    this.move = function() {
+        //console.log(game.physics.arcade.overlap(this.ledgeChecker, platforms));
+        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms));
+        //console.log((this.doggoLedgeChecker.body.onFloor() || this.doggoLedgeChecker.body.touching.down));
+        //console.log(this.doggoLedgeChecker.body.touching.down);
+        //console.log(game.physics.arcade.overlap(this.doggo.ledgeChecker, player));
+        this.hitPlatform = false;
+        game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms, function(){this.hitPlatform = true});
+        if(this.movingL && this.hitPlatform) { //if going 
+            //console.log("am repeating this")
+            this.doggo.animations.play("runL");
+            this.doggo.body.velocity.x = -300;
+            this.doggoLedgeChecker.body.setSize(5, 50, -60, -100);
+        } else if(!this.movingL && this.hitPlatform) {
+            this.doggo.animations.play("runR");
+            this.doggo.body.velocity.x = 300;
+            this.doggoLedgeChecker.body.setSize(5, 50, 100, -100);
+        } else {
+            this.movingL = !this.movingL;
+            //console.log("here");
+            if(this.movingL) {
+                this.doggoLedgeChecker.body.setSize(5, 50, -20, 0);
+            } else {
+                this.doggoLedgeChecker.body.setSize(5, 50, 100, 0);
+            }
+        }
+    }
+    
+    this.endTimer = function() {
+        this.timer.stop();
+        this.timer.destroy();
+        this.timer = game.time.create();
+        this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 30, this.endTimer, this);
+    }
+    
+    this.moveNew = function() {
+        if(this.movingL && this.doggo.body.x > this.xBoundL) { //if going 
+            this.doggo.animations.play("runL");
+            this.doggo.body.velocity.x = -300;
+        } else if(!this.movingL && this.doggo.body.x < this.xBoundR) {
+            this.doggo.animations.play("runR");
+            this.doggo.body.velocity.x = 300;
+        } else {
+            if(this.timerCanRun) {
+                this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 1, this.endTimer, this);
+                this.timer.start();
+                this.timerCanRun = false;
+            }
+            if(this.timer.running) {
+                this.doggo.body.velocity.x = 0;
+                this.doggo.animations.stop();
+                if(this.movingL) {
+                    this.doggo.animations.play("returnToRestR");
+                } else {
+                    this.doggo.animations.play("returnToRestL");
+                }
+                
+            } else {
+                this.movingL = !this.movingL;
+                this.timerCanRun = true;
+            }
+            //console.log("here");
+        }
+    }
+    
+    this.reform = function() {
+        this.doggo.body.velocity.x = 0;
+        if(this.hasTransformed) {
+            if(this.movingL) {
+                this.doggo.animations.play("reformL");
+                this.reformL.onComplete.add(this.transformed, this);
+            } else {
+                this.doggo.animations.play("reformR");
+                this.reformR.onComplete.add(this.transformed, this);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    this.leftBound = function() {
+        return this.xBoundL;
+    }
+    this.rightBound = function() {
+        return this.xBoundR;
+    }
+    
+    this.update = function() {
+        game.physics.arcade.collide(this.doggo, stone_platforms);
+        //console.log(game.physics.arcade.overlap(this.doggoLedgeChecker, stone_platforms) + " check1 "); //true ch1 false ch2
+        //console.log(game.physics.arcade.overlap(this.doggo.doggoLedgeChecker, stone_platforms) + " check2");
+    }
 }
 
 EnemySwordsman = function(index, game, x, y, dropType) {
@@ -213,7 +387,6 @@ EnemySwordsman = function(index, game, x, y, dropType) {
     
     //if swordsman is dead
     this.die = function() {
-        console.log("should be dead");
         this.swordsman.kill();
     };
 }
@@ -457,6 +630,8 @@ var pShurikenThrowAnimation;
 var pFlinchToL;
 var pFlinchToR;
 var tutorial_done=false;
+var doggoArray = [];
+
 function c2() {
     
     //sumoMusic.mute = true;
@@ -548,18 +723,21 @@ function c2() {
     //camera moves
     game.camera.follow(player);
     
-    //setting up JSON file to be read
-    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
+    //setting up JSON file to besh read
+    this.enemyLocData2 = JSON.parse(this.game.cache.getText('enemySpawnLoc0'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     stateVar = 2
     
+    
+    swordsmanArray = [];
+    shurikenThrowerArray = [];
 }
 
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
-var enemyLocIndex = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
-var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
-var shurikenThrowerArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+var enemyLocIndex2 = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
+//var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+//var shurikenThrowerArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
 var itemDropArray = []
 var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
@@ -577,7 +755,6 @@ function u2() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
-        console.log('Hitting spikes'); 
         pHealth = pHealth - 50;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
@@ -640,16 +817,19 @@ function u2() {
     }
     
     //reading data for enemy spawn points
-    if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
-        if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
+    if(this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x != -1) { //spawning enemies, check for array bounds
+        if(player.x >= this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x - 500 && this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x != lastEnemyX) {
             //once player walks a certain distance before the enemy spawn, enemy spawns
-            if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 0) {
-                swordsmanArray.push(new EnemySwordsman(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].drop));
-            } else if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].type == 1) {
-                shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex, game, this.enemyLocData.enemySpawnLoc[enemyLocIndex].x, this.enemyLocData.enemySpawnLoc[enemyLocIndex].y, this.enemyLocData.enemySpawnLoc[enemyLocIndex].drop));
+            if(this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].type == 0) {
+                swordsmanArray.push(new EnemySwordsman(enemyLocIndex2, game, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].y, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].drop));
+            } else if(this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].type == 1) {
+                shurikenThrowerArray.push(new EnemyShurikenThrower(enemyLocIndex2, game, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].y, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].drop));
+            } else if(this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].type == 2) {
+                enemiesSpawned = true;
+                doggoArray.push(new Doggo(game, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].y, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].directionIsL, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].xBoundL, this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].xBoundR));
             }
-            lastEnemyX = this.enemyLocData.enemySpawnLoc[enemyLocIndex].x;
-            enemyLocIndex++;
+            lastEnemyX = this.enemyLocData2.enemySpawnLoc[enemyLocIndex2].x;
+            enemyLocIndex2++;
         }
     }
     
@@ -760,7 +940,6 @@ function u2() {
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
                 moan.play();
-                console.log(shurikenThrowerArray[i].movingR());
                 if(shurikenThrowerArray[i].movingR()) {
                     player.animations.play("pFlinchToR");
                 } else {
@@ -834,6 +1013,35 @@ function u2() {
             itemDropArray.splice(i, 1);
         }
     }
+    
+        //run checks for doggo
+    for(var i = 0; i < doggoArray.length; i++) {
+//        console.log("new check: " + game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
+        doggoArray[i].update();
+        if(player.x > doggoArray[i].leftBound() && player.x < doggoArray[i].rightBound()) {//&& player.body.onFloor()) { //if player in bounds of doggo and touching platform
+            if(doggoArray[i].transform()) { //if dog has transformed, move
+                doggoArray[i].moveNew();
+                //console.log(game.physics.arcade.overlap(doggoArray[i].doggoLedgeChecker, stone_platforms));
+            }
+        } else if(player.x < doggoArray[i].leftBound() || player.x > doggoArray[i].rightBound()) { //player is out of bounds, so change back
+            doggoArray[i].reform();
+        }
+        
+        if(playerVulnerable && game.physics.arcade.overlap(doggoArray[i].doggo, player)) {
+            moan.play();
+            pHealth -= 5; //remove 5 from player's health
+            playerVulnerable = false; //give player i frames
+            if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+                if(doggoArray[i].movingL) {
+                    player.animations.play("pFlinchToL");
+                } else {
+                    player.animations.play("pFlinchToR");
+                }
+            }
+        }
+        
+    }
+    
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later

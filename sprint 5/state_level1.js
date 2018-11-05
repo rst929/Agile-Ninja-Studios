@@ -342,9 +342,10 @@ EnemyShurikenThrower = function(index, game, x, y, dropType) {
             }
         }
         for(var i = 0; i < this.enemyShurikenArray.length; i++) {
-            this.enemyShurikenArray[i].updateShuriken();
             if(this.enemyShurikenArray[i].checkForDespawn()) {
                 this.enemyShurikenArray.splice(i, 1);
+            } else {
+                this.enemyShurikenArray[i].updateShuriken();
             }
         }
     };
@@ -425,6 +426,7 @@ Shuriken = function(game, x, y, goLeft) {
             this.shuriken.destroy();
             return true;
         }
+        
         return false; //false when shuriken not destroyed
     }
 }
@@ -624,9 +626,10 @@ function u1() {
     
     //update player's shurikens
     for(var i = 0; i < playerShurikens.length; i++) {
-        playerShurikens[i].updateShuriken();
         if(playerShurikens[i].checkForDespawn()) {
             playerShurikens.splice(i, 1);
+        } else {
+            playerShurikens[i].updateShuriken();
         }
     }
     //release flag-key for player's shurikens, so that they don't shoot rapid fire
@@ -700,6 +703,8 @@ function u1() {
         //swordsman death check by shurikens
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
+                playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                playerShurikens.splice(j, 1);
                 if(swordsmanArray[i].attacked(movingRight)) {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
@@ -756,6 +761,8 @@ function u1() {
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
+                playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                playerShurikens.splice(j, 1);
                 if(shurikenThrowerArray[i].attacked(movingRight)) {
                     if(shurikenThrowerArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
