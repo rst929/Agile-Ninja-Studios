@@ -26,7 +26,7 @@ function p_tut() {
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
     
-    game.load.image("boxBack", "assets/blankDialogue.png");
+    game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
 }
 
@@ -38,21 +38,27 @@ var sumoMusic; //boss music
 var instructions; //game instructions'
 var tutorial_done=false;
 
-function testMessageBox() {
-        //call this line of code when you want to show the message box
-        //message, width and height
-        this.showMessageBox("oh jeez I have got to get out of this place! maybe I can slash the door?");
-    }
-    //
-    //w=width
-    //h=height
-    //
-    function showMessageBox(text, w = 350, h = 150) {
+
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
             this.msgBox.destroy();
         }
+    
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+    
+        this.checkForDespawn = function() {
+            return spaceBar.isDown
+        }
+        
+        this.hideBox = function() {
+    	   //destroy the box when the button is pressed
+            this.msgBox.destroy();
+        }
+    
+        
         //make a group to hold all the elements
         var msgBox = game.add.group();
         //make the back of the message box
@@ -91,27 +97,24 @@ function testMessageBox() {
         //set the message box in the center of the screen
         //msgBox.x = game.width / 2 - msgBox.width / 2;
         //msgBox.y = game.height / 2 - msgBox.height / 2
-        msgBox.x = 170
-        msgBox.y = 170
+        msgBox.x = x
+        msgBox.y = y
         
         //set the close button
         //in the center horizontally
         //and near the bottom of the box vertically
-        closeButton.x = msgBox.x + 141;
+        closeButton.x = msgBox.x + 40;
         closeButton.y = msgBox.y - 155;
         
         //
         //set the text in the middle of the message box
-        text1.x = msgBox.x - 140;
-        text1.y = 15;
+        text1.x = msgBox.x;
+        text1.y = msgBox.y-10;
         //make a state reference to the messsage box
         this.msgBox = msgBox;
     }
-    
-function hideBox() {
-    	//destroy the box when the button is pressed
-        this.msgBox.destroy();
-}
+
+var msgBox;
 
 function c_tut() {
     //game.state.restart(true,true);
@@ -197,7 +200,7 @@ function c_tut() {
     // STARFOX TEST CODE STARTS HERE: https://phasergames.com/adding-message-box-phaser-games/
     //create a test button to launch the message box
     
-    testMessageBox();
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
     
 
 }
@@ -206,6 +209,7 @@ var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var dHealth = 5; //player health
 var movingRight=true;
+var boxGone = false;
 
 function u_tut() {
     
@@ -269,6 +273,11 @@ function u_tut() {
         tutorial_done=false;
         game.state.start('state_level0')
         //game.state.start('state_level1')
+    }
+    
+    if (msgBox1.checkForDespawn()){
+        msgBox1.hideBox()
+        boxGone = true;
     }
 
 }

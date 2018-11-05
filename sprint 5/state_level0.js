@@ -5,8 +5,6 @@ var st_lev0 = {
     render: r_0
 }
 
-//  The Google WebFont Loader will look for this object, so create it before loading the script.
-
 
 function p_0() {
     game.load.audio('moan', 'assets/audio/pain.mp3');
