@@ -357,9 +357,10 @@ EnemyShurikenThrower = function(index, game, x, y, dropType) {
             }
         }
         for(var i = 0; i < this.enemyShurikenArray.length; i++) {
-            this.enemyShurikenArray[i].updateShuriken();
             if(this.enemyShurikenArray[i].checkForDespawn()) {
                 this.enemyShurikenArray.splice(i, 1);
+            } else {
+                this.enemyShurikenArray[i].updateShuriken();
             }
         }
     };
@@ -440,6 +441,7 @@ Shuriken = function(game, x, y, goLeft) {
             this.shuriken.destroy();
             return true;
         }
+        
         return false; //false when shuriken not destroyed
     }
 }
@@ -717,7 +719,7 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
                 playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
-                playerShurikens.splice(i, 1);
+                playerShurikens.splice(j, 1);
                 if(swordsmanArray[i].attacked(movingRight)) {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
@@ -775,7 +777,7 @@ function u1() {
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
                 playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
-                playerShurikens.splice(i, 1);
+                playerShurikens.splice(j, 1);
                 if(shurikenThrowerArray[i].attacked(movingRight)) {
                     if(shurikenThrowerArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
