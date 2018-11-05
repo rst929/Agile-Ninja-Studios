@@ -715,6 +715,8 @@ function u1() {
         //swordsman death check by shurikens
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(swordsmanArray[i].swordsman, playerShurikens[j].shuriken)) {
+                playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                playerShurikens.splice(i, 1);
                 if(swordsmanArray[i].attacked(movingRight)) {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
@@ -771,6 +773,8 @@ function u1() {
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         for(var j = 0; j < playerShurikens.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].shurikenThrower, playerShurikens[j].shuriken)) {
+                playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                playerShurikens.splice(i, 1);
                 if(shurikenThrowerArray[i].attacked(movingRight)) {
                     if(shurikenThrowerArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
