@@ -33,7 +33,12 @@ function p_0() {
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn0.json');
 
-}
+    game.load.image("boxBack", "assets/blankbox.png");
+    game.load.image("closeButton", "assets/xbutton.png")
+    }
+        
+        
+    
 //x, y = spawn points
 //goingL = which way the doggo should point
 //xBounds = how far the dog can run
@@ -270,10 +275,6 @@ function c_0() {
     
     spikes = game.add.group();
     spikes.enableBody = true;
-    //LOOK HER
-    //HERR
-    // RIGHT HERE
-    //stone
     
     // The player and its settings
     player = game.add.sprite(100, game.world.height - 120, 'sam');
@@ -320,6 +321,18 @@ function c_0() {
     this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
     moan = game.add.audio('moan');
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
+    
+    // STARFOX TEST CODE STARTS HERE: https://phasergames.com/adding-message-box-phaser-games/
+    //create a test button to launch the message box
+    
+    /*var buttonTest= game.add.sprite(game.width/2,game.height/2,"boxBack");
+    buttonTest.anchor.set(0.5,0.5);
+    buttonTest.inputEnabled=true;
+    testMessageBox();
+    */
+    
+    
+    
 }
 
 var pHealth = 100; //player health

@@ -52,7 +52,11 @@ function p1() {
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
     game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
+    
+    game.load.image("boxBack", "assets/blankbox.png");
+    game.load.image("closeButton", "assets/xbutton.png")
 }
+
 
 EnemySwordsman = function(index, game, x, y, dropType) {
     
@@ -541,6 +545,7 @@ function c1() {
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     stateVar = 2
     moan = game.add.audio('moan');
+
     
 }
 

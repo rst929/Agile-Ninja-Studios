@@ -25,6 +25,9 @@ function p_tut() {
     
 	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
+    
+    game.load.image("boxBack", "assets/blankDialogue.png");
+    game.load.image("closeButton", "assets/xbutton.png")
 }
 
 var image; //background
@@ -34,6 +37,81 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
 var tutorial_done=false;
+
+function testMessageBox() {
+        //call this line of code when you want to show the message box
+        //message, width and height
+        this.showMessageBox("oh jeez I have got to get out of this place! maybe I can slash the door?");
+    }
+    //
+    //w=width
+    //h=height
+    //
+    function showMessageBox(text, w = 350, h = 150) {
+    	//just in case the message box already exists
+    	//destroy it
+        if (this.msgBox) {
+            this.msgBox.destroy();
+        }
+        //make a group to hold all the elements
+        var msgBox = game.add.group();
+        //make the back of the message box
+        var back = game.add.sprite(0, 0, "boxBack");
+        //make the close button
+        var closeButton = game.add.sprite(0, 0, "closeButton");
+        //make a text field
+        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        //set the textfeild to wrap if the text is too long
+        text1.wordWrap = true;
+        //make the width of the wrap 90% of the width 
+        //of the message box
+        text1.wordWrapWidth = w * .8;
+        //
+        //
+        //set the width and height passed
+        //in the parameters
+        back.width = w;
+        back.height = h;
+        //
+        //
+        //
+        //add the elements to the group
+        msgBox.add(back);
+        msgBox.add(closeButton);
+        msgBox.add(text1);
+        //
+        
+        closeButton.scale.setTo(.05,.05);
+        //enable the button for input
+        closeButton.inputEnabled = true;
+        //add a listener to destroy the box when the button is pressed
+        closeButton.events.onInputDown.add(this.hideBox, this);
+        //
+        //
+        //set the message box in the center of the screen
+        //msgBox.x = game.width / 2 - msgBox.width / 2;
+        //msgBox.y = game.height / 2 - msgBox.height / 2
+        msgBox.x = 170
+        msgBox.y = 170
+        
+        //set the close button
+        //in the center horizontally
+        //and near the bottom of the box vertically
+        closeButton.x = msgBox.x + 141;
+        closeButton.y = msgBox.y - 155;
+        
+        //
+        //set the text in the middle of the message box
+        text1.x = msgBox.x - 140;
+        text1.y = 15;
+        //make a state reference to the messsage box
+        this.msgBox = msgBox;
+    }
+    
+function hideBox() {
+    	//destroy the box when the button is pressed
+        this.msgBox.destroy();
+}
 
 function c_tut() {
     //game.state.restart(true,true);
@@ -114,6 +192,13 @@ function c_tut() {
     
 
     game.camera.follow(player);
+    
+    
+    // STARFOX TEST CODE STARTS HERE: https://phasergames.com/adding-message-box-phaser-games/
+    //create a test button to launch the message box
+    
+    testMessageBox();
+    
 
 }
 

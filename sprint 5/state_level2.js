@@ -681,7 +681,7 @@ function u2() {
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
         door.kill();
-        open = game.add.sprite(4498, game.world.height-437, 'open_door');
+        open = game.add.sprite(4538, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
