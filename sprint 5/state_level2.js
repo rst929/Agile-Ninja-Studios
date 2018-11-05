@@ -723,20 +723,21 @@ function c2() {
     //camera moves
     game.camera.follow(player);
     
-    //setting up JSON file to be read
+    //setting up JSON file to besh read
     this.enemyLocData2 = JSON.parse(this.game.cache.getText('enemySpawnLoc0'));
     game.time.events.loop(Phaser.Timer.SECOND * .5, makePlayerVulnerable, this);
     stateVar = 2
     
     
-    
+    swordsmanArray = [];
+    shurikenThrowerArray = [];
 }
 
 var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var enemyLocIndex2 = 0; //index variable for keeping track of enemy json file (which enemy that needs to spawn)
-var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
-var shurikenThrowerArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+//var swordsmanArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
+//var shurikenThrowerArray = []; //array that starts out empty here, but later holds all the enemy objects. I.e. 
 var itemDropArray = []
 var hitPlatform = false; //if sam has hit platform
 var lastEnemyX = 0; //not necessary now, but to be used later on to possibly deal with kill attack bug
@@ -1041,7 +1042,6 @@ function u2() {
         
     }
     
-    console.log(player.x);
 }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
