@@ -5,8 +5,42 @@ var st_tut = {
     render: r_tut
 }
 
+var textNotCreated = true;
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
+WebFontConfig = {
 
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { 
+        if (this.boxGone){
+            game.time.events.add(Phaser.Timer.SECOND/10, createText, this); 
+            console.log("Text created in webfontconfig")
+        }
+    },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
+    }
+};
+
+function createText() {
+
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions2.font = 'Permanent Marker';
+    instruction3 = game.add.text(38, 92, 'f to open door', {fontSize: "22px", fill:"#fff"});
+    instruction3.font= 'Permanent Marker';
+    instructions.font = 'Permanent Marker';
+    
+    textNotCreated = false;
+}
 
 function p_tut() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -39,6 +73,7 @@ var instructions; //game instructions'
 var tutorial_done=false;
 
 
+
 showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
@@ -56,6 +91,7 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.hideBox = function() {
     	   //destroy the box when the button is pressed
             this.msgBox.destroy();
+            this.boxGone = false
         }
     
         
@@ -115,6 +151,7 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
     }
 
 var msgBox;
+this.boxGone = false;
 
 function c_tut() {
     //game.state.restart(true,true);
@@ -209,9 +246,17 @@ var pHealth = 100; //player health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var dHealth = 5; //player health
 var movingRight=true;
-var boxGone = false;
 
 function u_tut() {
+    
+    if (this.boxGone){
+        //console.log("Creating text in u_0")
+        //console.log(textNotCreated)
+        if (textNotCreated){
+            createText();
+            textNotCreated = false;
+        }
+    }
     
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
@@ -277,7 +322,7 @@ function u_tut() {
     
     if (msgBox1.checkForDespawn()){
         msgBox1.hideBox()
-        boxGone = true;
+        this.boxGone = true;
     }
 
 }

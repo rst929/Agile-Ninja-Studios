@@ -33,6 +33,8 @@ function p_0() {
 
     game.load.image("boxBack", "assets/blankbox.png");
     game.load.image("closeButton", "assets/xbutton.png")
+    console.log("state_level0");
+
 }
         
         
@@ -348,7 +350,10 @@ var stone_platforms;
 var background;
 var spikes_layer;
 
+
+
 function u_0() {
+    
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
