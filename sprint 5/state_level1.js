@@ -639,9 +639,10 @@ function u1() {
     
     //update player's shurikens
     for(var i = 0; i < playerShurikens.length; i++) {
-        playerShurikens[i].updateShuriken();
         if(playerShurikens[i].checkForDespawn()) {
             playerShurikens.splice(i, 1);
+        } else {
+            playerShurikens[i].updateShuriken();
         }
     }
     //release flag-key for player's shurikens, so that they don't shoot rapid fire
