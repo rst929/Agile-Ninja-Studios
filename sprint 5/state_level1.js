@@ -7,6 +7,21 @@ var st_lev1 = {
 
 var stateVar = 1
 
+//  The Google WebFont Loader will look for this object, so create it before loading the script.
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND/10, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
+    }
+
+};
+
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
     game.load.audio('moan', 'assets/audio/pain.mp3');
@@ -853,21 +868,17 @@ function movePRight() {
 function makePlayerVulnerable() {
     playerVulnerable = true;
 }
-r_tut
+
 function createText() {
 
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#e3e9f7' });
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
     
-    instructions = game.add.text(38,38, 'use arrow keys to move and up to jump', {fontSize: '22px', fill:'#fff'});
-    instructions.stroke = '#000000'; instructions.strokeThickess =40;
-    
-    instructions2 = game.add.text(38,62, 'press f to use the sword and open doors', {fontSize: '22px', fill:'#fff', stroke: '#000000', strokeThinkess:6});
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
     instructions2.font = 'Permanent Marker';
-    instruction3 = game.add.text(38, 86, 'press d to throw shurikens when available', {fontSize: "22px", fill:"#fff", stroke: '#000000', strokeThinkess:6});
-    instruction3.font= 'Permanent Marker';
     instructions.font = 'Permanent Marker';
 
 }
