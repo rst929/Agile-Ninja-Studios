@@ -13,7 +13,12 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND/10, createText, this); },
+    active: function() { 
+        if (this.boxGone){
+            game.time.events.add(Phaser.Timer.SECOND/10, createText, this); 
+            console.log("Text created in webfontconfig")
+        }
+    },
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
@@ -54,6 +59,8 @@ function p2() {
     game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
     this.load.text('enemySpawnLoc0', 'assets/EnemySpawn0.json');
     game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
+    console.log("state_level2");
+
 }
 Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
     this.doggo = game.add.sprite(x, y, 'dog');
@@ -664,7 +671,11 @@ function c2() {
     spikes_layer.resizeWorld()
     
     //add door
+<<<<<<< HEAD
     door = game.add.sprite(4600, game.world.height-437, 'closed_door');
+=======
+    door = game.add.sprite(4538, game.world.height-437, 'closed_door');
+>>>>>>> 80998718d27da734322af938684018e80535c981
     door.scale.setTo(.23, .23);
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
@@ -751,6 +762,9 @@ var hitSpikes = false;
 
 
 function u2() {
+    if (this.boxGone){
+        createText()
+    }
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){

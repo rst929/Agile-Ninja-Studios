@@ -54,7 +54,9 @@ function p1() {
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
     
     game.load.image("boxBack", "assets/blankbox.png");
-    game.load.image("closeButton", "assets/xbutton.png")
+    game.load.image("closeButton", "assets/xbutton.png");
+    console.log("state_level1");
+
 }
 
 
