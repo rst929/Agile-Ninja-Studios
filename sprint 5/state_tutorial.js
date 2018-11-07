@@ -12,12 +12,13 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { 
+    /*active: function() { 
         if (this.boxGone){
             game.time.events.add(Phaser.Timer.SECOND/10, createText, this); 
             console.log("Text created in webfontconfig")
         }
     },
+    */
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
@@ -250,11 +251,15 @@ var movingRight=true;
 function u_tut() {
     
     if (this.boxGone){
+        console.log(this.boxGone);
         //console.log("Creating text in u_0")
         //console.log(textNotCreated)
+        
         if (textNotCreated){
             createText();
             textNotCreated = false;
+            
+            console.log("Text created in update")
         }
     }
     
