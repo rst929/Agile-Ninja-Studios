@@ -5,6 +5,99 @@ var st1 = {
     render: r1
 }
 
+//textbox code
+var textNotCreated1 = true;
+var msgBox;
+this.boxGone1 = false;
+
+//textbox code
+function createText() {
+
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    textNotCreated1 = false;
+}
+
+//textbox code
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+    	//just in case the message box already exists
+    	//destroy it
+        if (this.msgBox) {
+            this.msgBox.destroy();
+        }
+    
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+    
+        this.checkForDespawn = function() {
+            return spaceBar.isDown
+        }
+        
+        this.hideBox = function() {
+    	   //destroy the box when the button is pressed
+            this.msgBox.destroy();
+            this.boxGone1 = false
+        }
+    
+        
+        //make a group to hold all the elements
+        var msgBox = game.add.group();
+        //make the back of the message box
+        var back = game.add.sprite(0, 0, "boxBack");
+        //make the close button
+        var closeButton = game.add.sprite(0, 0, "closeButton");
+        //make a text field
+        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        //set the textfeild to wrap if the text is too long
+        text1.wordWrap = true;
+        //make the width of the wrap 90% of the width 
+        //of the message box
+        text1.wordWrapWidth = w * .8;
+        //
+        //
+        //set the width and height passed
+        //in the parameters
+        back.width = w;
+        back.height = h;
+        //
+        //
+        //
+        //add the elements to the group
+        msgBox.add(back);
+        msgBox.add(closeButton);
+        msgBox.add(text1);
+        //
+        
+        closeButton.scale.setTo(.05,.05);
+        //enable the button for input
+        closeButton.inputEnabled = true;
+        //add a listener to destroy the box when the button is pressed
+        closeButton.events.onInputDown.add(this.hideBox, this);
+        //
+        //
+        //set the message box in the center of the screen
+        //msgBox.x = game.width / 2 - msgBox.width / 2;
+        //msgBox.y = game.height / 2 - msgBox.height / 2
+        msgBox.x = x
+        msgBox.y = y
+        
+        //set the close button
+        //in the center horizontally
+        //and near the bottom of the box vertically
+        closeButton.x = msgBox.x + 40;
+        closeButton.y = msgBox.y - 155;
+        
+        //
+        //set the text in the middle of the message box
+        text1.x = msgBox.x;
+        text1.y = msgBox.y-10;
+        //make a state reference to the messsage box
+        this.msgBox = msgBox;
+    }
+
 function p1() {
     game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -16,6 +109,10 @@ function p1() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
+    
+    game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    game.load.image("boxBack", "assets/textboxnew.png");
+    game.load.image("closeButton", "assets/xbutton.png")
 }
 
 var image; //background
@@ -26,6 +123,7 @@ var sumoMusic; //boss music
 var moan;
 var pFlinchToL;
 var pFlinchToR;
+
 function c1() {
     
     game.world.setBounds(0, 0, 800, 416);
@@ -117,6 +215,8 @@ function c1() {
     
     game.camera.follow(player);
 
+    textNotCreated1 = true;
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
 }
 
 var pHealth = 100; //player health
@@ -126,6 +226,26 @@ var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
 
 function u1() {
+    //textbox code
+    if (this.boxGone1){
+        //console.log("Creating text in u_0")
+        //console.log(textNotCreated1)
+        //console.log(textNotCreated1);
+        if (textNotCreated1){
+            createText();
+            textNotCreated1 = false;
+            
+            console.log("Text created in update")
+        }
+    }
+    
+    //TEXTBOXCODE
+    if (msgBox1.checkForDespawn()){
+        msgBox1.hideBox()
+        this.boxGone1 = true;
+        console.log(this.boxGone1);
+    }
+    
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check

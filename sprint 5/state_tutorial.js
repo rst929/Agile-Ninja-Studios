@@ -5,6 +5,7 @@ var st_tut = {
     render: r_tut
 }
 
+//textbox code
 var textNotCreated = true;
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 WebFontConfig = {
@@ -12,21 +13,16 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    /*active: function() { 
-        if (this.boxGone){
-            game.time.events.add(Phaser.Timer.SECOND/10, createText, this); 
-            console.log("Text created in webfontconfig")
-        }
-    },
-    */
-
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
       families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
     }
 };
 
-function createText() {
+//textbox code
+createText = function() {
+    
+    console.log("Text instructions, health created");
 
     playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
 
@@ -36,8 +32,6 @@ function createText() {
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
     instructions2.font = 'Permanent Marker';
-    instruction3 = game.add.text(38, 92, 'f to open door', {fontSize: "22px", fill:"#fff"});
-    instruction3.font= 'Permanent Marker';
     instructions.font = 'Permanent Marker';
     
     textNotCreated = false;
@@ -58,9 +52,9 @@ function p_tut() {
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('closed_door', 'assets/closed_door.png');
     
-	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-    
+    //textbox code
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
 }
@@ -74,8 +68,8 @@ var instructions; //game instructions'
 var tutorial_done=false;
 
 
-
-showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+//textbox code
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 0) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
@@ -151,10 +145,12 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.msgBox = msgBox;
     }
 
+//textbox code
 var msgBox;
 this.boxGone = false;
 
 function c_tut() {
+    textNotCreated = true;
     //game.state.restart(true,true);
     
     //  Physics
@@ -237,8 +233,8 @@ function c_tut() {
     
     // STARFOX TEST CODE STARTS HERE: https://phasergames.com/adding-message-box-phaser-games/
     //create a test button to launch the message box
-    
-    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
+    //textbox code
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)",475,150,25,40);
     
 
 }
@@ -250,15 +246,16 @@ var movingRight=true;
 
 function u_tut() {
     
+    
+    //textbox code
     if (this.boxGone){
-        console.log(this.boxGone);
+        //console.log(this.boxGone);
         //console.log("Creating text in u_0")
         //console.log(textNotCreated)
         
         if (textNotCreated){
             createText();
             textNotCreated = false;
-            
             console.log("Text created in update")
         }
     }
@@ -325,6 +322,7 @@ function u_tut() {
         //game.state.start('state_level1')
     }
     
+    //TEXTBOXCODE
     if (msgBox1.checkForDespawn()){
         msgBox1.hideBox()
         this.boxGone = true;
