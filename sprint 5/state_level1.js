@@ -788,10 +788,8 @@ function u1() {
     if(!throwButton.isDown) {
         canThrow = true;
     }
-<<<<<<< HEAD
     
     playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
-=======
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
@@ -800,7 +798,6 @@ function u1() {
         hitPlatform = false;
     }
     playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
->>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -908,11 +905,8 @@ function u1() {
                         player.animations.play("pFlinchToL"); 
                     }
                 }
-<<<<<<< HEAD
-=======
                 pHealth -= 10;
                 healthBar.width = (pHealth/100)*200;
->>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
                 playerVulnerable = false;
                 
             }

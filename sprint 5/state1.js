@@ -123,11 +123,8 @@ var sumoMusic; //boss music
 var moan;
 var pFlinchToL;
 var pFlinchToR;
-<<<<<<< HEAD
 var pFlinchToLD;
-=======
 
->>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
 function c1() {
     
     game.world.setBounds(0, 0, 800, 416);

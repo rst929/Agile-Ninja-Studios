@@ -753,10 +753,6 @@ function c2() {
     spikes_layer.resizeWorld()
     
     //add door
-<<<<<<< HEAD
-=======
-
->>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
     door = game.add.sprite(4600, game.world.height-437, 'closed_door');
     door = game.add.sprite(4538, game.world.height-437, 'closed_door');
     door.scale.setTo(.23, .23);
