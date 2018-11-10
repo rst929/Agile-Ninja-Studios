@@ -28,7 +28,7 @@ function createText() {
 }
 
 //textbox code
-showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+showMessageBox1 = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
@@ -45,18 +45,21 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.hideBox = function() {
     	   //destroy the box when the button is pressed
             this.msgBox.destroy();
-            this.boxGone2 = false
+            this.boxGone = false
         }
     
         
         //make a group to hold all the elements
         var msgBox = game.add.group();
-        //make the back of the message box
+    
+        //make the back of the message box    
         var back = game.add.sprite(0, 0, "boxBack");
         //make the close button
         var closeButton = game.add.sprite(0, 0, "closeButton");
         //make a text field
-        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'21px'});
+        
+        text1.font = 'Inconsolata';
         //set the textfeild to wrap if the text is too long
         text1.wordWrap = true;
         //make the width of the wrap 90% of the width 
@@ -71,11 +74,14 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         //
         //
         //
+    
         //add the elements to the group
         msgBox.add(back);
         msgBox.add(closeButton);
         msgBox.add(text1);
-        //
+        profile = game.add.sprite(0,0,'headshot');
+        msgBox.add(profile);
+        profile.scale.setTo(.14,.14);
         
         closeButton.scale.setTo(.05,.05);
         //enable the button for input
@@ -90,6 +96,9 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         msgBox.x = x
         msgBox.y = y
         
+        profile.x = msgBox.x + 2;
+        profile.y = msgBox.y - 7;
+    
         //set the close button
         //in the center horizontally
         //and near the bottom of the box vertically
@@ -98,12 +107,11 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         
         //
         //set the text in the middle of the message box
-        text1.x = msgBox.x;
+        text1.x = msgBox.x+58;
         text1.y = msgBox.y-10;
         //make a state reference to the messsage box
         this.msgBox = msgBox;
     }
-
 
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -637,7 +645,7 @@ function c1() {
     stateVar = 2
     moan = game.add.audio('moan');
 
-    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
+    msgBox1 = new showMessageBox1("Are those footsteps? Here's hoping the puracebo works as advertised... (press spacebar)");
     
 }
 

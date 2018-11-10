@@ -1,3 +1,25 @@
+importing and image position
+
+////in preload
+game.load.image('headshot', 'assets/playerHeadshot.png')
+
+
+////after showMessageBox, before "msgBox.add(back)"
+profile = game.add.sprite(0,0,'headshot');
+msgBox.add(profile);
+profile.scale.setTo(.16,.16);
+
+
+////after msgBox.y = y
+
+
+
+
+
+
+
+
+
 1. Copy this code
 2. Change textNotCreated to reflect state level
 3. Change boxGone to reflect state level
