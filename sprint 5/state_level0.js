@@ -12,7 +12,7 @@ function p_0() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
