@@ -5,6 +5,106 @@ var st_lev0 = {
     render: r_0
 }
 
+var varState = 0;
+    
+//textbox code
+var textNotCreated1 = true;
+this.boxGone1 = false;
+
+//textbox code
+function createText() {
+
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions2.font = 'Permanent Marker';
+    instructions.font = 'Permanent Marker';
+    
+    textNotCreated1 = false;
+}
+
+
+//textbox code
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+    	//just in case the message box already exists
+    	//destroy it
+        if (this.msgBox) {
+            this.msgBox.destroy();
+        }
+    
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+    
+        this.checkForDespawn = function() {
+            return spaceBar.isDown
+        }
+        
+        this.hideBox = function() {
+    	   //destroy the box when the button is pressed
+            this.msgBox.destroy();
+            this.boxGone1 = false
+        }
+    
+        
+        //make a group to hold all the elements
+        var msgBox = game.add.group();
+        //make the back of the message box
+        var back = game.add.sprite(0, 0, "boxBack");
+        //make the close button
+        var closeButton = game.add.sprite(0, 0, "closeButton");
+        //make a text field
+        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        //set the textfeild to wrap if the text is too long
+        text1.wordWrap = true;
+        //make the width of the wrap 90% of the width 
+        //of the message box
+        text1.wordWrapWidth = w * .8;
+        //
+        //
+        //set the width and height passed
+        //in the parameters
+        back.width = w;
+        back.height = h;
+        //
+        //
+        //
+        //add the elements to the group
+        msgBox.add(back);
+        msgBox.add(closeButton);
+        msgBox.add(text1);
+        //
+        
+        closeButton.scale.setTo(.05,.05);
+        //enable the button for input
+        closeButton.inputEnabled = true;
+        //add a listener to destroy the box when the button is pressed
+        closeButton.events.onInputDown.add(this.hideBox, this);
+        //
+        //
+        //set the message box in the center of the screen
+        //msgBox.x = game.width / 2 - msgBox.width / 2;
+        //msgBox.y = game.height / 2 - msgBox.height / 2
+        msgBox.x = x
+        msgBox.y = y
+        
+        //set the close button
+        //in the center horizontally
+        //and near the bottom of the box vertically
+        closeButton.x = msgBox.x + 40;
+        closeButton.y = msgBox.y - 155;
+        
+        //
+        //set the text in the middle of the message box
+        text1.x = msgBox.x;
+        text1.y = msgBox.y-10;
+        //make a state reference to the messsage box
+        this.msgBox = msgBox;
+    }
+
 
 function p_0() {
     game.load.audio('moan', 'assets/audio/pain.mp3');
@@ -28,10 +128,12 @@ function p_0() {
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png');
     //game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
 
-	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+	
     //this.load.text('enemySpawnLoc', 'assets/EnemySpawn0.json');
 
-    game.load.image("boxBack", "assets/blankbox.png");
+    //textbox code
+    game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
     console.log("state_level0");
 
@@ -231,7 +333,11 @@ var lastEnemyX = 0; //not necessary now, but to be used later on to possibly dea
 var moan;
 var pFlinchToL, pFlinchToR;
 
+
+var msgBox;
+
 function c_0() {
+    textNotCreated1 = true;
     //  Physics
     game.world.setBounds(0, 0, 800, 416);
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -315,7 +421,15 @@ function c_0() {
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
 
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     game.camera.follow(player);
 
 //    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
@@ -331,6 +445,8 @@ function c_0() {
     testMessageBox();
     */
     
+
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
     
     
 }
@@ -353,11 +469,12 @@ var spikes_layer;
 
 
 function u_0() {
-    
+        
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
         pHealth = pHealth - 50;
+        healthBar.width = (pHealth/100)*200;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
@@ -410,7 +527,7 @@ function u_0() {
         if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
             player.body.velocity.y = -700;
         }
-        playerHealth.text = "Sam HP: " + pHealth;
+        //playerHealth.text = "Sam HP: " + pHealth;
     
         if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
             player.body.velocity.y = -700;
@@ -419,7 +536,58 @@ function u_0() {
     }
     
     
-//    //reading data for enemy spawn points
+
+    
+    
+    //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
+    var tutorial_done = false
+
+    //if player has no health, go to game over state
+    if(pHealth <= 0) {
+        game.state.start('state2');
+    }
+    
+    if(dHealth <= 0) { // victory
+        door.kill();
+        open = game.add.sprite(2239, game.world.height -437, 'open_door');
+        open.scale.setTo(.23,.23);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
+    } 
+    if(game.physics.arcade.overlap(player, open)){
+           var tutorial_done = true
+    } // Overlap with player and door
+    
+    //spawn doggo
+    
+    
+    //change once tutorial is completed
+    if(tutorial_done){
+        tutorial_done=false;
+        game.state.start('state_level1')
+    }
+
+    //textbox code
+    if (this.boxGone1){
+        //console.log("Creating text in u_0")
+        //console.log(textNotCreated1)
+        //console.log(textNotCreated1);
+        if (textNotCreated1){
+            createText();
+            textNotCreated1 = false;
+            
+            console.log("Text created in update")
+        }
+    }
+    
+    //TEXTBOXCODE
+    if (msgBox1.checkForDespawn()){
+        msgBox1.hideBox()
+        this.boxGone1 = true;
+        console.log(this.boxGone1);
+    }
+    
+    //    //reading data for enemy spawn points
 //    if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
 //        if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
 //            //once player walks a certain distance before the enemy spawn, enemy spawns
@@ -461,35 +629,6 @@ function u_0() {
 //    }
     
     
-    
-    //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
-    var tutorial_done = false
-
-    //if player has no health, go to game over state
-    if(pHealth <= 0) {
-        game.state.start('state2');
-    }
-    
-    if(dHealth <= 0) { // victory
-        door.kill();
-        open = game.add.sprite(2239, game.world.height -437, 'open_door');
-        open.scale.setTo(.23,.23);
-        game.physics.enable(open, Phaser.Physics.ARCADE);
-        open.body.immovable = true;
-    } 
-    if(game.physics.arcade.overlap(player, open)){
-           var tutorial_done = true
-    } // Overlap with player and door
-    
-    //spawn doggo
-    
-    
-    //change once tutorial is completed
-    if(tutorial_done){
-        tutorial_done=false;
-        game.state.start('state_level1')
-    }
-
 }
 
 function r_0() {

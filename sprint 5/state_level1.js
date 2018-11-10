@@ -6,21 +6,104 @@ var st_lev1 = {
 }
 
 var stateVar = 1
+//textbox code
+var textNotCreated2 = true;
+var msgBox;
+this.boxGone2 = false;
 
-//  The Google WebFont Loader will look for this object, so create it before loading the script.
-WebFontConfig = {
+//textbox code
+function createText() {
 
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND/10, createText, this); },
+    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
 
-    //  The Google Fonts we want to load (specify as many as you like in the array)
-    google: {
-      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions2.font = 'Permanent Marker';
+    instructions.font = 'Permanent Marker';
+    
+    textNotCreated2 = false;
+}
+
+//textbox code
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+    	//just in case the message box already exists
+    	//destroy it
+        if (this.msgBox) {
+            this.msgBox.destroy();
+        }
+    
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+    
+        this.checkForDespawn = function() {
+            return spaceBar.isDown
+        }
+        
+        this.hideBox = function() {
+    	   //destroy the box when the button is pressed
+            this.msgBox.destroy();
+            this.boxGone2 = false
+        }
+    
+        
+        //make a group to hold all the elements
+        var msgBox = game.add.group();
+        //make the back of the message box
+        var back = game.add.sprite(0, 0, "boxBack");
+        //make the close button
+        var closeButton = game.add.sprite(0, 0, "closeButton");
+        //make a text field
+        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        //set the textfeild to wrap if the text is too long
+        text1.wordWrap = true;
+        //make the width of the wrap 90% of the width 
+        //of the message box
+        text1.wordWrapWidth = w * .8;
+        //
+        //
+        //set the width and height passed
+        //in the parameters
+        back.width = w;
+        back.height = h;
+        //
+        //
+        //
+        //add the elements to the group
+        msgBox.add(back);
+        msgBox.add(closeButton);
+        msgBox.add(text1);
+        //
+        
+        closeButton.scale.setTo(.05,.05);
+        //enable the button for input
+        closeButton.inputEnabled = true;
+        //add a listener to destroy the box when the button is pressed
+        closeButton.events.onInputDown.add(this.hideBox, this);
+        //
+        //
+        //set the message box in the center of the screen
+        //msgBox.x = game.width / 2 - msgBox.width / 2;
+        //msgBox.y = game.height / 2 - msgBox.height / 2
+        msgBox.x = x
+        msgBox.y = y
+        
+        //set the close button
+        //in the center horizontally
+        //and near the bottom of the box vertically
+        closeButton.x = msgBox.x + 40;
+        closeButton.y = msgBox.y - 155;
+        
+        //
+        //set the text in the middle of the message box
+        text1.x = msgBox.x;
+        text1.y = msgBox.y-10;
+        //make a state reference to the messsage box
+        this.msgBox = msgBox;
     }
 
-};
 
 function p1() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -53,8 +136,11 @@ function p1() {
     game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
     
-    game.load.image("boxBack", "assets/blankbox.png");
-    game.load.image("closeButton", "assets/xbutton.png");
+    //textbox code
+    game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    game.load.image("boxBack", "assets/textboxnew.png");
+    game.load.image("closeButton", "assets/xbutton.png")
+    
     console.log("state_level1");
 
 }
@@ -466,7 +552,8 @@ var tutorial_done = false;
 var moan;
 
 function c1() {
-    
+    textNotCreated2 = true;
+
     //sumoMusic.mute = true;
 
     game.world.setBounds(0, 0, 2400, 416);
@@ -541,7 +628,15 @@ function c1() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
+
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     //camera moves
     game.camera.follow(player);
     
@@ -551,6 +646,7 @@ function c1() {
     stateVar = 2
     moan = game.add.audio('moan');
 
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
     
 }
 
@@ -569,6 +665,29 @@ var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
 
 function u1() {
+    
+    //textbox code
+    if (this.boxGone2){
+        //console.log("Creating text in u_0")
+        //console.log(textNotCreated2)
+        //console.log(textNotCreated2);
+        if (textNotCreated2){
+            createText();
+            textNotCreated2 = false;
+            
+            console.log("Text created in update")
+        }
+    }
+    
+    //TEXTBOXCODE
+    
+    if (msgBox1.checkForDespawn()){
+        msgBox1.hideBox()
+        this.boxGone2 = true;
+        console.log(this.boxGone2);
+    }
+
+    
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
@@ -669,8 +788,19 @@ function u1() {
     if(!throwButton.isDown) {
         canThrow = true;
     }
+<<<<<<< HEAD
     
     playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+=======
+
+    //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
+    //  Allow the player to jump if they are touching the ground.
+    if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
+        player.body.velocity.y = -700;
+        hitPlatform = false;
+    }
+    playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+>>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -699,6 +829,7 @@ function u1() {
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
             console.log(pHealth);
             if(swordsmanArray[i].movingR()) {
@@ -777,6 +908,11 @@ function u1() {
                         player.animations.play("pFlinchToL"); 
                     }
                 }
+<<<<<<< HEAD
+=======
+                pHealth -= 10;
+                healthBar.width = (pHealth/100)*200;
+>>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
                 playerVulnerable = false;
                 
             }
@@ -889,18 +1025,4 @@ function movePRight() {
 
 function makePlayerVulnerable() {
     playerVulnerable = true;
-}
-
-function createText() {
-
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
-
-	playerHealth.font = 'Revalia';
-    playerHealth.fixedToCamera=true;
-    
-    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
-    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
-    instructions2.font = 'Permanent Marker';
-    instructions.font = 'Permanent Marker';
-
 }

@@ -6,26 +6,105 @@ var st_lev2 = {
 }
 
 var stateVar = 2
+//textbox code
+var textNotCreated1 = true;
+var msgBox;
+this.boxGone1 = false;
 
-//  The Google WebFont Loader will look for this object, so create it before loading the script.
-WebFontConfig = {
+//textbox code
+function createText() {
 
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { 
-        if (this.boxGone){
-            game.time.events.add(Phaser.Timer.SECOND/10, createText, this); 
-            console.log("Text created in webfontconfig")
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
+
+	playerHealth.font = 'Revalia';
+    playerHealth.fixedToCamera=true;
+    
+    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
+    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions2.font = 'Permanent Marker';
+    instructions.font = 'Permanent Marker';
+
+    textNotCreated1 = false;
+}
+
+
+
+//textbox code
+showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+    	//just in case the message box already exists
+    	//destroy it
+        if (this.msgBox) {
+            this.msgBox.destroy();
         }
-    },
-
-    //  The Google Fonts we want to load (specify as many as you like in the array)
-    google: {
-      families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato']
+    
+        spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+    
+        this.checkForDespawn = function() {
+            return spaceBar.isDown
+        }
+        
+        this.hideBox = function() {
+    	   //destroy the box when the button is pressed
+            this.msgBox.destroy();
+            this.boxGone1 = false
+        }
+    
+        
+        //make a group to hold all the elements
+        var msgBox = game.add.group();
+        //make the back of the message box
+        var back = game.add.sprite(0, 0, "boxBack");
+        //make the close button
+        var closeButton = game.add.sprite(0, 0, "closeButton");
+        //make a text field
+        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        //set the textfeild to wrap if the text is too long
+        text1.wordWrap = true;
+        //make the width of the wrap 90% of the width 
+        //of the message box
+        text1.wordWrapWidth = w * .8;
+        //
+        //
+        //set the width and height passed
+        //in the parameters
+        back.width = w;
+        back.height = h;
+        //
+        //
+        //
+        //add the elements to the group
+        msgBox.add(back);
+        msgBox.add(closeButton);
+        msgBox.add(text1);
+        //
+        
+        closeButton.scale.setTo(.05,.05);
+        //enable the button for input
+        closeButton.inputEnabled = true;
+        //add a listener to destroy the box when the button is pressed
+        closeButton.events.onInputDown.add(this.hideBox, this);
+        //
+        //
+        //set the message box in the center of the screen
+        //msgBox.x = game.width / 2 - msgBox.width / 2;
+        //msgBox.y = game.height / 2 - msgBox.height / 2
+        msgBox.x = x
+        msgBox.y = y
+        
+        //set the close button
+        //in the center horizontally
+        //and near the bottom of the box vertically
+        closeButton.x = msgBox.x + 40;
+        closeButton.y = msgBox.y - 155;
+        
+        //
+        //set the text in the middle of the message box
+        text1.x = msgBox.x;
+        text1.y = msgBox.y-10;
+        //make a state reference to the messsage box
+        this.msgBox = msgBox;
     }
-
-};
 
 function p2() {
     //game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -48,9 +127,6 @@ function p2() {
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
     
-    //  Load the Google WebFont Loader script
-
-	game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     
     //game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 213, 116); //fixed version
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 639/3, 692/6); //fixed version
@@ -60,6 +136,12 @@ function p2() {
     this.load.text('enemySpawnLoc0', 'assets/EnemySpawn0.json');
     game.load.spritesheet('dog', 'assets/Doggo.png', 375, 375);
     console.log("state_level2");
+    
+        //textbox code
+    game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    game.load.image("boxBack", "assets/textboxnew.png");
+    game.load.image("closeButton", "assets/xbutton.png")
+
 
 }
 Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
@@ -671,6 +753,10 @@ function c2() {
     spikes_layer.resizeWorld()
     
     //add door
+<<<<<<< HEAD
+=======
+
+>>>>>>> bac801756620d03d1e2ba7bffd5d0931adb40607
     door = game.add.sprite(4600, game.world.height-437, 'closed_door');
     door = game.add.sprite(4538, game.world.height-437, 'closed_door');
     door.scale.setTo(.23, .23);
@@ -729,7 +815,15 @@ function c2() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
+
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     //camera moves
     game.camera.follow(player);
     
@@ -741,6 +835,9 @@ function c2() {
     
     swordsmanArray = [];
     shurikenThrowerArray = [];
+    
+    textNotCreated1 = true;
+    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
 }
 
 var pHealth = 100; //player health
@@ -761,14 +858,40 @@ var hitSpikes = false;
 
 
 function u2() {
+    
+    
+    //textbox code
+    if (this.boxGone1){
+        //console.log("Creating text in u_0")
+        //console.log(textNotCreated1)
+        //console.log(textNotCreated1);
+        if (textNotCreated1){
+            createText();
+            textNotCreated1 = false;
+            
+            console.log("Text created in update")
+        }
+    }
+    
+    //TEXTBOXCODE
+    if (msgBox1.checkForDespawn()){
+        msgBox1.hideBox()
+        this.boxGone1 = true;
+        console.log(this.boxGone1);
+    }
+
+    
+    /*
     if (this.boxGone){
         createText()
     }
+    */
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
         pHealth = pHealth - 50;
+        healthBar.width = (pHealth/100)*200;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
@@ -877,7 +1000,8 @@ function u2() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -921,6 +1045,7 @@ function u2() {
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
         }
         
@@ -985,6 +1110,7 @@ function u2() {
                     }
                 }
                 pHealth -= 10;
+                healthBar.width = (pHealth/100)*200;
                 playerVulnerable = false;
                 
             }
@@ -1071,6 +1197,7 @@ function u2() {
         if(playerVulnerable && game.physics.arcade.overlap(doggoArray[i].doggo, player)) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
             if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
                 if(doggoArray[i].movingL) {
