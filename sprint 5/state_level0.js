@@ -14,7 +14,7 @@ this.boxGone1 = false;
 //textbox code
 function createText() {
 
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -120,7 +120,7 @@ function p_0() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -341,6 +341,7 @@ var lastEnemyX = 0; //not necessary now, but to be used later on to possibly dea
 var moan;
 var pFlinchToL, pFlinchToR;
 
+
 var msgBox;
 
 function c_0() {
@@ -428,7 +429,15 @@ function c_0() {
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
     
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
 
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     game.camera.follow(player);
 
 //    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));
@@ -473,6 +482,7 @@ function u_0() {
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
         pHealth = pHealth - 50;
+        healthBar.width = (pHealth/100)*200;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
@@ -525,7 +535,7 @@ function u_0() {
         if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
             player.body.velocity.y = -700;
         }
-        playerHealth.text = "Sam HP: " + pHealth;
+        //playerHealth.text = "Sam HP: " + pHealth;
     
         if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
             player.body.velocity.y = -700;

@@ -119,7 +119,7 @@ function p1() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -463,7 +463,6 @@ EnemyShurikenThrower = function(index, game, x, y, dropType) {
     
     //if shurikenThrower is dead
     this.die = function() {
-        console.log("should be dead");
         this.shurikenThrower.kill();
     };
     
@@ -555,9 +554,9 @@ var map;
 var background;
 var hitbox;
 var pShurikenThrowAnimation;
-var pFlinchToL;
-var pFlinchToR;
-var tutorial_done=false;
+var pFlinchToL, pFlinchToR;
+var pFlinchToLD, pFlinchToRD;
+var tutorial_done = false;
 var moan;
 
 function c1() {
@@ -630,12 +629,22 @@ function c1() {
     pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
+    pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
+    pFlinchToRD = player.animations.add('pFlinchToRD', [24, 25, 26, 27, 27, 27, 26, 25, 24, 35, 36, 37, 38, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41], 15, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
+
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     //camera moves
     game.camera.follow(player);
     
@@ -700,10 +709,18 @@ function u1() {
     
     //add the sound effect 
     //movement tree for player
-    if(pFlinchToL.isPlaying) {
-        player.body.velocity.x = -100;
-    } else if (pFlinchToR.isPlaying) {
-        player.body.velocity.x = 100;
+    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = -100;
+        } else {
+            player.body.velocity.x = 0;
+        }
+    } else if (pFlinchToR.isPlaying || pFlinchToRD.isPlaying) {
+        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
+            player.body.velocity.x = 100;
+        } else {
+            player.body.velocity.x = 0;
+        }
     } else {
         if (cursors.left.isDown) {
             movePLeft();
@@ -744,6 +761,13 @@ function u1() {
             }
             player.body.velocity.x = 0;
         }
+        
+        //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
+        //  Allow the player to jump if they are touching the ground.
+        if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
+            player.body.velocity.y = -700;
+            hitPlatform = false;
+        }
     }
     
     //reading data for enemy spawn points
@@ -772,6 +796,8 @@ function u1() {
     if(!throwButton.isDown) {
         canThrow = true;
     }
+    
+    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
@@ -779,7 +805,7 @@ function u1() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -805,17 +831,25 @@ function u1() {
            onScreenEnemy = true;
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
-            if(swordsmanArray[i].movingR()) {
-                player.animations.play("pFlinchToR");
-            } else {
-                player.animations.play("pFlinchToL");
-            }
-        }
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
+            console.log(pHealth);
+            if(swordsmanArray[i].movingR()) {
+                if(pHealth <= 0) {
+                    player.animations.play("pFlinchToRD");
+                } else {
+                    player.animations.play("pFlinchToR");
+                }
+            } else {
+                if(pHealth <= 0) {
+                    player.animations.play("pFlinchToLD");
+                } else {
+                    player.animations.play("pFlinchToL");
+                }
+            }
         }
         
         //swordsman death check if attackbutton is pressed
@@ -865,13 +899,22 @@ function u1() {
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
             if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
                 moan.play();
-                console.log(shurikenThrowerArray[i].movingR());
+                pHealth -= 10;
                 if(shurikenThrowerArray[i].movingR()) {
-                    player.animations.play("pFlinchToR");
+                    if(pHealth <= 0) {
+                        player.animations.play("pFlinchToRD");
+                    } else {
+                        player.animations.play("pFlinchToR");
+                    }
                 } else {
-                    player.animations.play("pFlinchToL");
+                    if(pHealth <= 0) {
+                        player.animations.play("pFlinchToLD");
+                    } else {
+                        player.animations.play("pFlinchToL"); 
+                    }
                 }
                 pHealth -= 10;
+                healthBar.width = (pHealth/100)*200;
                 playerVulnerable = false;
                 
             }
@@ -910,10 +953,8 @@ function u1() {
             }
         }
     }
-    
-    
     //if player has no health, go to game over state
-    if(pHealth <= 0) {
+    if(pHealth <= 0 && !pFlinchToLD.isPlaying && !pFlinchToRD.isPlaying) {
         game.state.start('state2');
     }
     
