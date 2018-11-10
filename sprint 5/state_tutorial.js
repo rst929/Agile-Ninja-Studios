@@ -157,11 +157,8 @@ showMessageBox_tut = function(text, w = 475, h = 150, x = 33, y = 0) {
     }
 
 //textbox code
-<<<<<<< HEAD
-=======
 var msgBox;
 var healthBar;
->>>>>>> cc843b9f07fcc58e3478293e03b238eee6f609b8
 this.boxGone = false;
 
 function c_tut() {

@@ -143,6 +143,7 @@ function p_0() {
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
+    game.load.image('headshot', 'assets/playerHeadshot.png')
     console.log("state_level0");
 
 }
