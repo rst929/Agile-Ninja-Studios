@@ -13,7 +13,7 @@ this.boxGone1 = false;
 //textbox code
 function createText() {
 
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -202,7 +202,7 @@ function c1() {
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
-    playerHealth = game.add.text(38, 2, 'Your Health: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38, 2, '', { fontSize: '32px', fill: '#fff' });
     playerHealth.font = 'Revalia';
     bossHealth = game.add.text(500,2, 'Boss Health: 100', { fontSize: '32px', fill: '#fff' });
     bossHealth.font = 'Revalia';
@@ -212,7 +212,15 @@ function c1() {
     
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
-    
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
+
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     game.camera.follow(player);
 
     textNotCreated1 = true;
@@ -287,7 +295,7 @@ function u1() {
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -700;
     }
-    playerHealth.text = "Sam HP: " + pHealth;
+    //playerHealth.text = "Sam HP: " + pHealth;
     bossHealth.text = "Boss HP: " + bHealth;
     
     //if wave is alive, send it to the left offscreen and check if it hits player
@@ -368,6 +376,7 @@ function waveSpawn() {
 
 function pDamage(amount) {
     pHealth -= amount;
+    healthBar.width = (pHealth/100)*200;
 }
 
 function makeSumoVulnerable() {

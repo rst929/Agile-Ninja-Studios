@@ -24,7 +24,7 @@ createText = function() {
     
     console.log("Text instructions, health created");
 
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -147,6 +147,7 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 0) {
 
 //textbox code
 var msgBox;
+var healthBar;
 this.boxGone = false;
 
 function c_tut() {
@@ -227,7 +228,15 @@ function c_tut() {
     sumoMusic = game.add.audio('sumoMusic');
     sumoMusic.play();
     
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
 
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     game.camera.follow(player);
     
     

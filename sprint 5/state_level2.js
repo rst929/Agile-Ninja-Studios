@@ -14,7 +14,7 @@ this.boxGone1 = false;
 //textbox code
 function createText() {
 
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -810,7 +810,15 @@ function c2() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
     attackButton.onDown.add(swordAttack)
     throwButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    
+    var bmd = game.add.bitmapData(200,40);
+             bmd.ctx.beginPath();
+             bmd.ctx.rect(0,0,180,30);
+             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fill();
+
+             healthBar = game.add.sprite(38,2,bmd);
+    healthBar.width=(pHealth/100)*200
+    healthBar.fixedToCamera=true;
     //camera moves
     game.camera.follow(player);
     
@@ -878,6 +886,7 @@ function u2() {
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
         pHealth = pHealth - 50;
+        healthBar.width = (pHealth/100)*200;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
@@ -978,7 +987,8 @@ function u2() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+
     
     var tutorial_done = false
     if(game.physics.arcade.collide(hitbox,door)) {
@@ -1014,6 +1024,7 @@ function u2() {
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
         }
         
@@ -1070,6 +1081,7 @@ function u2() {
                     player.animations.play("pFlinchToL");
                 }
                 pHealth -= 10;
+                healthBar.width = (pHealth/100)*200;
                 playerVulnerable = false;
                 
             }
@@ -1156,6 +1168,7 @@ function u2() {
         if(playerVulnerable && game.physics.arcade.overlap(doggoArray[i].doggo, player)) {
             moan.play();
             pHealth -= 5; //remove 5 from player's health
+            healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
             if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
                 if(doggoArray[i].movingL) {
