@@ -136,7 +136,7 @@ function p2() {
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
     
-    
+    game.load.image('healthbar', 'assets/Healthbars.png');
     //game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 213, 116); //fixed version
     game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 639/3, 692/6); //fixed version
     game.load.spritesheet('shurikenThrower', 'assets/blue_enemy2.png', 500, 315);
@@ -846,12 +846,16 @@ function c2() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fillStyle = '#008000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
+    healthbarformat=game.add.sprite(38,2,"healthbar");
+    healthbarformat.height=healthBar.height-3;
+    healthbarformat.width=182;
+    healthbarformat.fixedToCamera=true;
 
     //camera moves
     game.camera.follow(player);

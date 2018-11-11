@@ -129,7 +129,7 @@ function p_0() {
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('closed_door', 'assets/closed_door.png');
-    
+    game.load.image('healthbar', 'assets/Healthbars.png');
     game.load.tilemap('castle_map','assets/tilemap/castle2.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
@@ -433,12 +433,16 @@ function c_0() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fillStyle = '#008000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
+    healthbarformat=game.add.sprite(38,2,"healthbar");
+    healthbarformat.height=healthBar.height-3;
+    healthbarformat.width=182;
+    healthbarformat.fixedToCamera=true;
     game.camera.follow(player);
 
 //    this.enemyLocData = JSON.parse(this.game.cache.getText('enemySpawnLoc'));

@@ -51,6 +51,7 @@ function p_tut() {
     game.load.image('wave', 'assets/Wave smash.png')
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('open_door', 'assets/open_door.png');
+    game.load.image('healthbar', 'assets/Healthbars.png');
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('headshot', 'assets/playerHeadshot.png')
     
@@ -242,12 +243,16 @@ function c_tut() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fillStyle = '#008000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
+    healthbarformat=game.add.sprite(38,2,"healthbar");
+    healthbarformat.height=healthBar.height-3;
+    healthbarformat.width=182;
+    healthbarformat.fixedToCamera=true;
     game.camera.follow(player);
     
     

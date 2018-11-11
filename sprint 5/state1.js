@@ -118,7 +118,7 @@ function p1() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
-    
+    game.load.image('healthbar', 'assets/Healthbars.png');
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
@@ -218,7 +218,7 @@ function c1() {
     attackButton.onDown.add(swordAttack)
     playerHealth = game.add.text(38, 2, '', { fontSize: '32px', fill: '#fff' });
     playerHealth.font = 'Revalia';
-    bossHealth = game.add.text(500,2, 'Boss Health: 100', { fontSize: '32px', fill: '#fff' });
+    bossHealth = game.add.text(500,2, '', { fontSize: '32px', fill: '#fff' });
     bossHealth.font = 'Revalia';
     game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
@@ -226,17 +226,30 @@ function c1() {
     
     //sumoMusic = game.add.audio('sumoMusic');
     //sumoMusic.play();
+    //player healthbar
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#00685e';
+             bmd.ctx.fillStyle = '#008000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
+             bossHealth = game.add.sprite(500,2,bmd);
+    
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
+    healthbarformat=game.add.sprite(38,2,"healthbar");
+    healthbarformat.height=healthBar.height-3;
+    healthbarformat.width=182;
+    healthbarformat.fixedToCamera=true;
     game.camera.follow(player);
-
+    //boss healthbar
+    bossHealth.width = (bHealth/100)*200
+    bossHealth.fixedToCamera=true;
+    bossformat=game.add.sprite(500,2,"healthbar");
+    bossformat.height=bossHealth.height-3;
+    bossformat.width=182;
+    bossformat.fixedToCamera=true;
     textNotCreated1 = true;
     msgBox1 = new showMessageBox_1boss("HOLY SHITAKE MUSHROOM, HE'S HUGE! Why did they have the sumo block the door?!? (press spacebar)");
 }
@@ -315,7 +328,7 @@ function u1() {
         player.body.velocity.y = -700;
     }
     //playerHealth.text = "Sam HP: " + pHealth;
-    bossHealth.text = "Boss HP: " + bHealth;
+    //bossHealth.text = "Boss HP: " + bHealth;
     
     //if wave is alive, send it to the left offscreen and check if it hits player
     if(wave.alive) {
