@@ -134,6 +134,8 @@ var moan;
 var pFlinchToL;
 var pFlinchToR;
 var pFlinchToLD;
+var sumoHitboxes;
+var sumoInnerHitbox;
 
 function c1() {
     
@@ -161,14 +163,15 @@ function c1() {
     //  Make ground stable
     ground.body.immovable = true;
     
+    sumo = game.add.sprite(game.world.width - 300, game.world.height - 450, 'sumo');
+    sumo.scale.setTo(3,3);
+    
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
     player.scale.setTo(.09,.09);
 
-    sumo = game.add.sprite(game.world.width - 300, game.world.height - 450, 'sumo');
-    sumo.scale.setTo(3,3);
     
-        //create hitbox for sword
+    //create hitbox for sword
     hitbox = game.add.group();
     hitbox.enableBody = true;
     player.addChild(hitbox);
@@ -193,6 +196,13 @@ function c1() {
     sumo.body.gravity.y = 1000;
     sumo.body.collideWorldBounds = true;
     sumo.body.setSize(50, 75, 45, 24);
+    
+    sumoHitboxes = game.add.group();
+    sumoHitboxes.enableBody = true;
+    sumo.addChild(sumoHitboxes);
+    sumoInnerHitbox = sumoHitboxes.create(0, 0, null); // creating the hitbox itself
+    sumoInnerHitbox.body.setSize(100, 200, 185, 100); //hitbox parameters for sword (adjust these to work with sam's sprite)
+    game.physics.arcade.enable(sumoInnerHitbox); //so can be used for overlap
     
     //wave properties 
     wave = game.add.sprite(sumo.x, sumo.y, 'wave');
@@ -285,7 +295,7 @@ function u1() {
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check
     var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
-    var runIntoSumo = game.physics.arcade.overlap(player, sumo); // Overlap with player and sumo
+    var runIntoSumo = game.physics.arcade.overlap(player, sumoHitboxes); // Overlap with player and sumo
     moan = game.add.audio('moan');
     
     //movement tree for player
@@ -352,7 +362,7 @@ function u1() {
     //if player runs into sumo, damage him
     if(runIntoSumo) {
         if(playerVulnerable && !pFlinchToL.isPlaying) {
-            pDamage(10);
+            pDamage(3);
             if(pHealth <= 0) {
                 player.animations.play("pFlinchToLD");
             } else {
@@ -372,8 +382,8 @@ function u1() {
 }
 
 function r1() {
-    //game.debug.body(player);
-    //game.debug.body(sumo);
+    game.debug.body(sumoInnerHitbox);
+    game.debug.body(sumo);
 }
 
 
