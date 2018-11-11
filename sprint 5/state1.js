@@ -22,7 +22,7 @@ function createText() {
 }
 
 //textbox code
-showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+showMessageBox_1boss = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
@@ -45,12 +45,15 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         
         //make a group to hold all the elements
         var msgBox = game.add.group();
-        //make the back of the message box
+    
+        //make the back of the message box    
         var back = game.add.sprite(0, 0, "boxBack");
         //make the close button
         var closeButton = game.add.sprite(0, 0, "closeButton");
         //make a text field
-        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'28px'});
+        
+        text1.font = 'Inconsolata';
         //set the textfeild to wrap if the text is too long
         text1.wordWrap = true;
         //make the width of the wrap 90% of the width 
@@ -65,11 +68,14 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         //
         //
         //
+    
         //add the elements to the group
         msgBox.add(back);
         msgBox.add(closeButton);
         msgBox.add(text1);
-        //
+        profile = game.add.sprite(0,0,'headshot');
+        msgBox.add(profile);
+        profile.scale.setTo(.14,.14);
         
         closeButton.scale.setTo(.05,.05);
         //enable the button for input
@@ -84,6 +90,9 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         msgBox.x = x
         msgBox.y = y
         
+        profile.x = msgBox.x + 2;
+        profile.y = msgBox.y - 7;
+    
         //set the close button
         //in the center horizontally
         //and near the bottom of the box vertically
@@ -92,7 +101,7 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         
         //
         //set the text in the middle of the message box
-        text1.x = msgBox.x;
+        text1.x = msgBox.x+58;
         text1.y = msgBox.y-10;
         //make a state reference to the messsage box
         this.msgBox = msgBox;
@@ -104,7 +113,7 @@ function p1() {
     game.load.image('castle', 'assets/castle.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
@@ -113,6 +122,7 @@ function p1() {
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
+    game.load.image('headshot', 'assets/playerHeadshot.png')
 }
 
 var image; //background
@@ -123,6 +133,7 @@ var sumoMusic; //boss music
 var moan;
 var pFlinchToL;
 var pFlinchToR;
+var pFlinchToLD;
 
 function c1() {
     
@@ -197,6 +208,9 @@ function c1() {
     player.animations.add('attackR', [2, 3, 4], 10, true);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
+    pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
+    pFlinchToRD = player.animations.add('pFlinchToRD', [24, 25, 26, 27, 27, 27, 26, 25, 24, 35, 36, 37, 38, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41], 15, false);
+    
     sumo.animations.add('attack', [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 2, 1, 0], 20, false);
     
     cursors = game.input.keyboard.createCursorKeys();
@@ -224,7 +238,7 @@ function c1() {
     game.camera.follow(player);
 
     textNotCreated1 = true;
-    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
+    msgBox1 = new showMessageBox_1boss("HOLY SHITAKE MUSHROOM, HE'S HUGE! Why did they have the sumo block the door?!? (press spacebar)");
 }
 
 var pHealth = 100; //player health
@@ -260,10 +274,15 @@ function u1() {
     var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
     var runIntoSumo = game.physics.arcade.overlap(player, sumo); // Overlap with player and sumo
     moan = game.add.audio('moan');
+    
     //movement tree for player
-    if(pFlinchToL.isPlaying) {
-        player.body.velocity.x = -100;
-    }else   {
+    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = -100;
+        } else {
+            player.body.velocity.x = 0;
+        }
+    } else  {
         if (cursors.left.isDown) {
             movePLeft();
             //swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
@@ -304,10 +323,14 @@ function u1() {
         if(wave.x < -150) {
             wave.kill();
         } else {
-            if(game.physics.arcade.overlap(player, wave) && playerVulnerable && !pFlinchToL.isPlaying) {
-                player.animations.play("pFlinchToL");
-                moan.play();
+            if(game.physics.arcade.overlap(player, wave) && playerVulnerable && !pFlinchToL.isPlaying && !pFlinchToLD.isPlaying) {
                 pDamage(25);
+                if(pHealth <= 0) {
+                    player.animations.play("pFlinchToLD");
+                } else {
+                    player.animations.play("pFlinchToL");
+                }
+                moan.play();
                 playerVulnerable = false;
             }
         }
@@ -316,9 +339,13 @@ function u1() {
     //if player runs into sumo, damage him
     if(runIntoSumo) {
         if(playerVulnerable && !pFlinchToL.isPlaying) {
-            player.animations.play(pFlinchToL);
-            moan.play();
             pDamage(10);
+            if(pHealth <= 0) {
+                player.animations.play("pFlinchToLD");
+            } else {
+                player.animations.play("pFlinchToL");
+            }
+            moan.play();
             playerVulnerable = false;
         }
     }
@@ -326,7 +353,7 @@ function u1() {
     //check for winning/defeat conditions
     if(bHealth <= 0) { // victory
         game.state.start('state3');
-    } else if(pHealth <= 0) { // defeat
+    } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat
         game.state.start('state2');
     }
 }

@@ -30,7 +30,7 @@ function createText() {
 
 
 //textbox code
-showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+showMessageBox2 = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
@@ -47,18 +47,21 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.hideBox = function() {
     	   //destroy the box when the button is pressed
             this.msgBox.destroy();
-            this.boxGone1 = false
+            this.boxGone = false
         }
     
         
         //make a group to hold all the elements
         var msgBox = game.add.group();
-        //make the back of the message box
+    
+        //make the back of the message box    
         var back = game.add.sprite(0, 0, "boxBack");
         //make the close button
         var closeButton = game.add.sprite(0, 0, "closeButton");
         //make a text field
-        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'21px'});
+        
+        text1.font = 'Inconsolata';
         //set the textfeild to wrap if the text is too long
         text1.wordWrap = true;
         //make the width of the wrap 90% of the width 
@@ -73,11 +76,14 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         //
         //
         //
+    
         //add the elements to the group
         msgBox.add(back);
         msgBox.add(closeButton);
         msgBox.add(text1);
-        //
+        profile = game.add.sprite(0,0,'headshot');
+        msgBox.add(profile);
+        profile.scale.setTo(.14,.14);
         
         closeButton.scale.setTo(.05,.05);
         //enable the button for input
@@ -92,6 +98,9 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         msgBox.x = x
         msgBox.y = y
         
+        profile.x = msgBox.x + 2;
+        profile.y = msgBox.y - 7;
+    
         //set the close button
         //in the center horizontally
         //and near the bottom of the box vertically
@@ -100,7 +109,7 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         
         //
         //set the text in the middle of the message box
-        text1.x = msgBox.x;
+        text1.x = msgBox.x+58;
         text1.y = msgBox.y-10;
         //make a state reference to the messsage box
         this.msgBox = msgBox;
@@ -112,7 +121,7 @@ function p2() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -141,6 +150,7 @@ function p2() {
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
+    game.load.image('headshot', 'assets/playerHeadshot.png')
 
 
 }
@@ -739,8 +749,8 @@ var map;
 var background;
 var hitbox;
 var pShurikenThrowAnimation;
-var pFlinchToL;
-var pFlinchToR;
+var pFlinchToL, pFlinchToR;
+var pFlinchToLD, pFlinchToRD;
 var tutorial_done=false;
 var doggoArray = [];
 
@@ -776,7 +786,6 @@ function c2() {
     spikes_layer.resizeWorld()
     
     //add door
-
     door = game.add.sprite(4600, game.world.height-437, 'closed_door');
     //door = game.add.sprite(4538, game.world.height-437, 'closed_door');
     door.scale.setTo(.23, .23);
@@ -827,6 +836,8 @@ function c2() {
     pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
+    pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
+    pFlinchToRD = player.animations.add('pFlinchToRD', [24, 25, 26, 27, 27, 27, 26, 25, 24, 35, 36, 37, 38, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41], 15, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
@@ -855,7 +866,7 @@ function c2() {
     shurikenThrowerArray = [];
     
     textNotCreated1 = true;
-    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
+    msgBox1 = new showMessageBox2("Wait... is that barking, or am I drunk? People, fine, but I could never hurt a dog! (press spacebar)");
 }
 
 var pHealth = 100; //player health
@@ -924,10 +935,18 @@ function u2() {
     //add the sound effect 
     moan=game.add.audio('moan');
     //movement tree for player
-    if(pFlinchToL.isPlaying) {
-        player.body.velocity.x = -100;
-    } else if (pFlinchToR.isPlaying) {
-        player.body.velocity.x = 100;
+    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = -100;
+        } else {
+            player.body.velocity.x = 0;
+        }
+    } else if (pFlinchToR.isPlaying || pFlinchToRD.isPlaying) {
+        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
+            player.body.velocity.x = 100;
+        } else {
+            player.body.velocity.x = 0;
+        }
     } else {
         if (cursors.left.isDown) {
             movePLeft();
@@ -1037,11 +1056,19 @@ function u2() {
            onScreenEnemy = true;
         }
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
-        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+        if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
             if(swordsmanArray[i].movingR()) {
-                player.animations.play("pFlinchToR");
+                if(pHealth <= 0) {
+                    player.animations.play("pFlinchToRD");
+                } else {
+                    player.animations.play("pFlinchToR");
+                }
             } else {
-                player.animations.play("pFlinchToL");
+                if(pHealth <= 0) {
+                    player.animations.play("pFlinchToLD");
+                } else {
+                    player.animations.play("pFlinchToL");
+                }
             }
         }
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack()) {
@@ -1102,12 +1129,20 @@ function u2() {
         
         shurikenThrowerArray[i].move(player.x); //updates movement tree and does bulk of work
         for(var j = 0; j < shurikenThrowerArray[i].enemyShurikenArray.length; j++) {
-            if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable) {
+            if(game.physics.arcade.overlap(shurikenThrowerArray[i].enemyShurikenArray[j].shuriken, player) && playerVulnerable && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
                 moan.play();
                 if(shurikenThrowerArray[i].movingR()) {
-                    player.animations.play("pFlinchToR");
+                    if(pHealth <= 0) {
+                        player.animations.play("pFlinchToRD");
+                    } else {
+                        player.animations.play("pFlinchToR");
+                    }
                 } else {
-                    player.animations.play("pFlinchToL");
+                    if(pHealth <= 0) {
+                        player.animations.play("pFlinchToLD");
+                    } else {
+                        player.animations.play("pFlinchToL");
+                    }
                 }
                 pHealth -= 10;
                 healthBar.width = (pHealth/100)*200;
@@ -1152,7 +1187,7 @@ function u2() {
     
     
     //if player has no health, go to game over state
-    if(pHealth <= 0) {
+    if(pHealth <= 0 && !pFlinchToLD.isPlaying && !pFlinchToRD.isPlaying) {
         game.state.start('state2');
     }
     
@@ -1203,7 +1238,7 @@ function u2() {
             pHealth -= 5; //remove 5 from player's health
             healthBar.width = (pHealth/100)*200;
             playerVulnerable = false; //give player i frames
-            if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying) {
+            if(!pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
                 if(doggoArray[i].movingL) {
                     player.animations.play("pFlinchToL");
                 } else {

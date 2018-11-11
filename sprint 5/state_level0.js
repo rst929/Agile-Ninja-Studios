@@ -29,7 +29,7 @@ function createText() {
 
 
 //textbox code
-showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
+showMessageBox0 = function(text, w = 475, h = 150, x = 33, y = 40) {
     	//just in case the message box already exists
     	//destroy it
         if (this.msgBox) {
@@ -46,23 +46,26 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.hideBox = function() {
     	   //destroy the box when the button is pressed
             this.msgBox.destroy();
-            this.boxGone1 = false
+            this.boxGone = false
         }
     
         
         //make a group to hold all the elements
         var msgBox = game.add.group();
-        //make the back of the message box
+    
+        //make the back of the message box    
         var back = game.add.sprite(0, 0, "boxBack");
         //make the close button
         var closeButton = game.add.sprite(0, 0, "closeButton");
         //make a text field
-        var text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'22px'});
+        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'21px'});
+        
+        text1.font = 'Inconsolata';
         //set the textfeild to wrap if the text is too long
         text1.wordWrap = true;
         //make the width of the wrap 90% of the width 
         //of the message box
-        text1.wordWrapWidth = w * .8;
+        text1.wordWrapWidth = w * .78;
         //
         //
         //set the width and height passed
@@ -72,11 +75,14 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         //
         //
         //
+    
         //add the elements to the group
         msgBox.add(back);
         msgBox.add(closeButton);
         msgBox.add(text1);
-        //
+        profile = game.add.sprite(0,0,'headshot');
+        msgBox.add(profile);
+        profile.scale.setTo(.14,.14);
         
         closeButton.scale.setTo(.05,.05);
         //enable the button for input
@@ -91,6 +97,9 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         msgBox.x = x
         msgBox.y = y
         
+        profile.x = msgBox.x + 2;
+        profile.y = msgBox.y - 7;
+    
         //set the close button
         //in the center horizontally
         //and near the bottom of the box vertically
@@ -99,12 +108,11 @@ showMessageBox = function(text, w = 475, h = 150, x = 33, y = 40) {
         
         //
         //set the text in the middle of the message box
-        text1.x = msgBox.x;
+        text1.x = msgBox.x+58;
         text1.y = msgBox.y-10;
         //make a state reference to the messsage box
         this.msgBox = msgBox;
     }
-
 
 function p_0() {
     game.load.audio('moan', 'assets/audio/pain.mp3');
@@ -112,7 +120,7 @@ function p_0() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new2.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -135,6 +143,7 @@ function p_0() {
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
+    game.load.image('headshot', 'assets/playerHeadshot.png')
     console.log("state_level0");
 
 }
@@ -446,7 +455,7 @@ function c_0() {
     */
     
 
-    msgBox1 = new showMessageBox("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)");
+    msgBox1 = new showMessageBox0("What are those, spikes?!? I thought having to jump to platforms was hard enough! (press spacebar)");
     
     
 }
