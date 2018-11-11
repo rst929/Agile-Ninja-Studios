@@ -121,7 +121,7 @@ function p2() {
     game.load.image('stone_flat', 'assets/stone_flat2.png')
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('open_door', 'assets/open_door.png');
-
+    game.load.spritesheet('heart', 'assets/heart.png', 135/3, 90);
     game.load.tilemap('castle_map','assets/tilemap/castle3.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
@@ -663,6 +663,29 @@ ItemDrop = function(game, name, x, y, time) {
     }
 }
 
+HeartDrop = function(game, name, x, y, time) {
+    this.drop = game.add.sprite(x, y, name);
+    this.drop.scale.setTo(.5, .5);
+    game.physics.enable(this.drop, Phaser.Physics.ARCADE);
+    this.drop.body.bounce.y = 0.2;
+    this.drop.body.gravity.y = 1000;
+    this.drop.body.collideWorldBounds = true;
+    this.drop.animations.add('heartfloating', [0, 1, 2, 3, 3, 2, 1, 0], 7, false);
+    this.drop.animations.play('heartfloating');
+    
+    this.despawnFromTime = function() {
+        
+    }
+    
+    this.myType = function() {
+        return name;
+    }
+    
+    this.update = function () {
+        game.physics.arcade.collide(this.drop, stone_platforms, function(){hitPlatform=true});
+    }
+}
+
 //SHURIKEN CLASS, USE THIS FOR ALL SHURIKENS IN GENERAL (Both sam and enemy)
 Shuriken = function(game, x, y, goLeft) {
     
@@ -755,11 +778,10 @@ function c2() {
     //add door
 
     door = game.add.sprite(4600, game.world.height-437, 'closed_door');
-    door = game.add.sprite(4538, game.world.height-437, 'closed_door');
+    //door = game.add.sprite(4538, game.world.height-437, 'closed_door');
     door.scale.setTo(.23, .23);
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
-    
     // The player and its settings
     player = game.add.sprite(50, game.world.height-130, 'sam');
     player.scale.setTo(.09,.09) //FIX SCALE HERE
@@ -819,6 +841,7 @@ function c2() {
              healthBar = game.add.sprite(38,2,bmd);
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
+
     //camera moves
     game.camera.follow(player);
     
@@ -1036,6 +1059,9 @@ function u2() {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
+                    if(swordsmanArray[i].myType() == 2) {
+                        itemDropArray.push(new HeartDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     if(swordsmanArray.length == 0) {
@@ -1054,6 +1080,9 @@ function u2() {
                 if(swordsmanArray[i].attacked(movingRight)) {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
+                    if(swordsmanArray[i].myType() == 2) {
+                        itemDropArray.push(new HeartDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
@@ -1146,6 +1175,10 @@ function u2() {
         if(game.physics.arcade.overlap(player, itemDropArray[i].drop)) {
             if(itemDropArray[i].myType() == "shurikenDrop") {
                 playerShurikenTotal += 3;
+            }
+            if(itemDropArray[i].myType() == "heart") {
+                pHealth += 10;
+                healthBar.width= (pHealth/100)*200;
             }
             itemDropArray[i].drop.destroy();
             itemDropArray.splice(i, 1);

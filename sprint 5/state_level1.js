@@ -827,6 +827,9 @@ function u1() {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
+                    if(swordsmanArray[i].myType() == 2) {
+                        itemDropArray.push(new ItemDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     if(swordsmanArray.length == 0) {
@@ -845,6 +848,9 @@ function u1() {
                 if(swordsmanArray[i].attacked(movingRight)) {
                     if(swordsmanArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
+                    }
+                    if(swordsmanArray[i].myType() == 2) {
+                        itemDropArray.push(new ItemDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
@@ -938,6 +944,10 @@ function u1() {
         if(game.physics.arcade.overlap(player, itemDropArray[i].drop)) {
             if(itemDropArray[i].myType() == "shurikenDrop") {
                 playerShurikenTotal += 3;
+            }
+            if(itemDropArray[i].myType() == "heart"){
+                pHealth +=10;
+                healthBar.width = (pHealth/100)*200
             }
             itemDropArray[i].drop.destroy();
             itemDropArray.splice(i, 1);
