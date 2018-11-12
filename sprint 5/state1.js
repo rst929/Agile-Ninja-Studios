@@ -320,6 +320,7 @@ function u1() {
             }
             if(swordHit && sumoVulnerable) { //hitbox check for sumo boss to take away health
                 bHealth -= 5;
+                bossHealth.width = (bHealth/100)*200
                 sumoVulnerable = false; 
             }
         } else {
