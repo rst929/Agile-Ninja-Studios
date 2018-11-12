@@ -827,7 +827,7 @@ function u1() {
     //change once tutorial is completed
     if(tutorial_done){
         tutorial_done=false;
-        game.state.start('state_level2')
+        game.state.start('state_level1')
         
     }
     var onScreenEnemy = false;
