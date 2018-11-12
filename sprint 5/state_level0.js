@@ -247,7 +247,7 @@ function c_0() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#008000';
+             bmd.ctx.fillStyle = '#FF0000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -388,7 +388,7 @@ function u_0() {
     if(tutorial_done){
         tutorial_done=false;
         //cheat code: start boss fight
-        game.state.start('state1');
+        game.state.start('state_level1');
         //game.state.start('state_level1')
     }
 

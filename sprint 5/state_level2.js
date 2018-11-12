@@ -680,7 +680,7 @@ HeartDrop = function(game, name, x, y, time) {
     this.drop.body.bounce.y = 0.2;
     this.drop.body.gravity.y = 1000;
     this.drop.body.collideWorldBounds = true;
-    this.drop.animations.add('heartfloating', [0, 1, 2, 3, 3, 2, 1, 0], 7, false);
+    this.drop.animations.add('heartfloating', [0, 1, 2, 3, 3, 2, 1, 0], 7, true);
     this.drop.animations.play('heartfloating');
     
     this.despawnFromTime = function() {
@@ -846,7 +846,7 @@ function c2() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#008000';
+             bmd.ctx.fillStyle = '#FF0000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);

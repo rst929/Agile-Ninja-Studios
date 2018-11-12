@@ -243,7 +243,7 @@ function c_tut() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#008000';
+             bmd.ctx.fillStyle = '#FF0000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
