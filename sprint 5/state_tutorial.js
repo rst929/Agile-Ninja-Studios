@@ -343,7 +343,7 @@ function u_tut() {
         //game.state.remove(game.state.curret);
         tutorial_done=false;
         game.state.start('state_level0')
-        //game.state.start('state_level1')
+        //game.state.start('state1')
     }
     
     //TEXTBOXCODE

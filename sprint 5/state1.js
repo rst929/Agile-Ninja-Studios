@@ -58,7 +58,7 @@ showMessageBox_1boss = function(text, w = 475, h = 150, x = 33, y = 40) {
         text1.wordWrap = true;
         //make the width of the wrap 90% of the width 
         //of the message box
-        text1.wordWrapWidth = w * .8;
+        text1.wordWrapWidth = w * .76;
         //
         //
         //set the width and height passed
