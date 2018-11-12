@@ -562,6 +562,7 @@ var tutorial_done = false;
 var moan;
 
 function c1() {
+    playerHealth = "";
     textNotCreated2 = true;
 
     //sumoMusic.mute = true;
@@ -641,7 +642,7 @@ function c1() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#008000';
+             bmd.ctx.fillStyle = '#FF0000';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -803,7 +804,7 @@ function u1() {
         canThrow = true;
     }
     
-    playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    //playerHealth.text = "Sam HP: " + pHealth + " | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
 
     //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
     //  Allow the player to jump if they are touching the ground.
@@ -814,7 +815,7 @@ function u1() {
     playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
     
     var tutorial_done = false
-    console.log(player.y - door.y);
+    //console.log(player.y - door.y);
     if(door.x - player.x <= 120 && player.y - door.y <= 180) {
         door.kill();
         open = game.add.sprite(2229, game.world.height-437, 'open_door');
