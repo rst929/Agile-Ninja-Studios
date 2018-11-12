@@ -1036,8 +1036,8 @@ function u2() {
     playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
 
     
-    var tutorial_done = false
-    if(game.physics.arcade.collide(hitbox,door)) {
+    var tutorial_done = false;
+    if(door.x - player.x <= 160) {
         door.kill();
         open = game.add.sprite(4538, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);

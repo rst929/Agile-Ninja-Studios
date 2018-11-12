@@ -814,7 +814,8 @@ function u1() {
     playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
     
     var tutorial_done = false
-    if(game.physics.arcade.collide(hitbox,door)) {
+    console.log(player.y - door.y);
+    if(door.x - player.x <= 120 && player.y - door.y <= 180) {
         door.kill();
         open = game.add.sprite(2229, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);
@@ -827,7 +828,7 @@ function u1() {
     //change once tutorial is completed
     if(tutorial_done){
         tutorial_done=false;
-        game.state.start('state_level1')
+        game.state.start('state_level2')
         
     }
     var onScreenEnemy = false;

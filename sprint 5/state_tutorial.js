@@ -259,7 +259,7 @@ function c_tut() {
     // STARFOX TEST CODE STARTS HERE: https://phasergames.com/adding-message-box-phaser-games/
     //create a test button to launch the message box
     //textbox code
-    msgBox1 = new showMessageBox_tut("Alright. Now that I have the Puracebo, I might as well use it to slash that door! (press spacebar)",475,150,25,40);
+    msgBox1 = new showMessageBox_tut("Welp... The Puracebo does feel pretty good in my hand. Might as well make a mad dash through that door! (press spacebar)",475,150,25,40);
     
 
 }
@@ -327,9 +327,8 @@ function u_tut() {
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
 
     var tutorial_done = false
-
     
-    if(dHealth <= 0) { // victory
+    if(door.x - player.x <= 160 && player.y - door.y <= 90) { // victory
         door.kill();
         open = game.add.sprite(660, game.world.height -470, 'open_door');
         open.scale.setTo(.23,.23);

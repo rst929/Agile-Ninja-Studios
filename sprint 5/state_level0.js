@@ -373,7 +373,7 @@ function u_0() {
         game.state.start('state2');
     }
     
-    if(dHealth <= 0) { // victory
+    if(door.x - player.x <= 190) { // victory
         door.kill();
         open = game.add.sprite(2239, game.world.height -437, 'open_door');
         open.scale.setTo(.23,.23);
@@ -387,6 +387,7 @@ function u_0() {
     //change once tutorial is completed
     if(tutorial_done){
         tutorial_done=false;
+        //cheat code: start boss fight
         game.state.start('state1');
         //game.state.start('state_level1')
     }

@@ -51,7 +51,7 @@ showMessageBox_1boss = function(text, w = 475, h = 150, x = 33, y = 40) {
         //make the close button
         var closeButton = game.add.sprite(0, 0, "closeButton");
         //make a text field
-        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'28px'});
+        text1 = game.add.text(0, 0, text, {fill:'#000', fontSize:'21px'});
         
         text1.font = 'Inconsolata';
         //set the textfeild to wrap if the text is too long
