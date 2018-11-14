@@ -130,7 +130,12 @@ function p_0() {
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('healthbar', 'assets/Healthbars.png');
-    game.load.tilemap('castle_map','assets/tilemap/castle2.json',null, Phaser.Tilemap.TILED_JSON);
+   
+    //new tile
+    game.load.tilemap('castle_map','assets/tilemap/tilemap8_spikes.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('purple_tile', 'assets/tilemap/stonetilepurple.png')
+    
+    
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png');
@@ -171,6 +176,10 @@ function c_0() {
     
     //creating map
     map = game.add.tilemap('castle_map');
+    
+    //new tile
+    map.addTilesetImage('stonetilepurple', 'purple_tile')
+    
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
     map.addTilesetImage('spikes3','spikes_tile');
@@ -183,7 +192,7 @@ function c_0() {
     
     
     map.setCollisionBetween(1, 300, true, 'Platforms'); //basically tells what possible positions in the json file to check for
-    map.setCollisionBetween(236,255,true, 'Spikes')
+    map.setCollisionBetween(235,255,true, 'Spikes')
     
     map.width=game.width;
     map.height=game.height+100;

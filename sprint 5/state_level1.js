@@ -130,7 +130,8 @@ function p1() {
     game.load.image('open_door', 'assets/open_door.png');
     game.load.image('healthbar', 'assets/Healthbars.png');
 
-    game.load.tilemap('castle_map','assets/tilemap/castle.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('castle_map','assets/tilemap/tilemap8_enemies.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('purple_tile', 'assets/tilemap/stonetilepurple.png')
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     
@@ -573,6 +574,9 @@ function c1() {
 
     //creating map
     map = game.add.tilemap('castle_map');
+    
+    //new tile
+    map.addTilesetImage('stonetilepurple', 'purple_tile')
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
     
