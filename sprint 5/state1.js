@@ -271,6 +271,15 @@ var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
 
 function u1() {
+    if (pHealth>100){
+        pHealth=100;
+        healthBar.width=200(pHealth/100);
+    }
+    if (pHealth<0){
+        pHealth=0;
+        healthBar.width=200(pHealth/100);
+    }
+    
     //textbox code
     if (this.boxGone1){
         //console.log("Creating text in u_0")

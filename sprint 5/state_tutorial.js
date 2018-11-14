@@ -270,7 +270,14 @@ var dHealth = 5; //player health
 var movingRight=true;
 
 function u_tut() {
-    
+    if (pHealth>100){
+        pHealth=100;
+        healthBar.width=200(pHealth/100);
+    }
+    if (pHealth<0){
+        pHealth=0;
+        healthBar.width=200(pHealth/100);
+    }
     
     //textbox code
     if (this.boxGone){
