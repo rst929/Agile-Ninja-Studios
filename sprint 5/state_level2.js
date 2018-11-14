@@ -131,7 +131,8 @@ function p2() {
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('open_door', 'assets/open_door.png');
     game.load.spritesheet('heart', 'assets/heart.png', 135/3, 90);
-    game.load.tilemap('castle_map','assets/tilemap/castle3.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('castle_map','assets/tilemap/tilemap8_dog.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('purple_tile', 'assets/tilemap/stonetilepurple.png')
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
     game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
@@ -764,6 +765,7 @@ function c2() {
 
     //creating map
     map = game.add.tilemap('castle_map');
+    map.addTilesetImage('stonetilepurple', 'purple_tile')
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
     map.addTilesetImage('spikes3','spikes_tile');
