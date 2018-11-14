@@ -116,6 +116,10 @@ function displayBackground(name) {
     image = game.add.sprite(100, 0, imageArray[name]);
     image.width = game.width - 225;
     image.height = game.height;
+    //name in ["surprisesam1", "surprisesam2", "surprisesam3"] this isn't working
+    if(name == "surprisesam1"){
+       image.height = image.height*1.8
+    }
     game.physics.enable(image, Phaser.Physics.ARCADE);
     instructions = game.add.sprite(360,345,'Skip and Continue');
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
