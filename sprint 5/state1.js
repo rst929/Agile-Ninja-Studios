@@ -251,7 +251,7 @@ function c1() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#00FF00';
+             bmd.ctx.fillStyle = '#FFFFFF';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -286,6 +286,24 @@ function u1() {
     if (this.tintChange){
         sumo.tint = 0xFFFFFF; // default tint
         this.tintChange = false;
+    }
+    if(pHealth>=75){
+        healthBar.tint=0x00FF00
+    }
+    if(pHealth>25 && pHealth<75){
+        healthBar.tint=0xFFDB01
+    }
+    if(pHealth<=25){
+        healthBar.tint=0xFF0000
+    }
+    if(bHealth>=75){
+        bossHealth.tint=0x00FF00
+    }
+    if(bHealth>25 && bHealth<75){
+        bossHealth.tint=0xFFDB01
+    }
+    if(bHealth<=25){
+        bossHealth.tint=0xFF0000
     }
     
     if (pHealth>100){
