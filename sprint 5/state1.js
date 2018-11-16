@@ -137,7 +137,18 @@ var pFlinchToLD;
 var sumoHitboxes;
 var sumoInnerHitbox;
 
+
+
 function c1() {
+    
+    this.changeTint = function(){
+        this.tintChange = true;
+    }
+    
+    this.tintChange = false;
+  
+    game.time.events.loop(Phaser.Timer.SECOND * .35, this.changeTint, this);
+
     
     game.world.setBounds(0, 0, 800, 416);
 
@@ -271,6 +282,12 @@ var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
 
 function u1() {
+    console.log(this.tintChange)
+    if (this.tintChange){
+        sumo.tint = 0xFFFFFF; // default tint
+        this.tintChange = false;
+    }
+    
     if (pHealth>100){
         pHealth=100;
         healthBar.width=200*(pHealth/100);
@@ -329,6 +346,7 @@ function u1() {
             }
             if(swordHit && sumoVulnerable) { //hitbox check for sumo boss to take away health
                 bHealth -= 5;
+                sumo.tint = 0xff0000;
                 bossHealth.width = (bHealth/100)*200
                 sumoVulnerable = false; 
             }
