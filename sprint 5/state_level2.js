@@ -131,11 +131,11 @@ function p2() {
     game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('open_door', 'assets/open_door.png');
     game.load.spritesheet('heart', 'assets/heart.png', 135/3, 90);
-    game.load.tilemap('castle_map','assets/tilemap/tilemap8_dog.json',null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('castle_map','assets/tilemap/tilemap9_dog.json',null, Phaser.Tilemap.TILED_JSON);
     game.load.image('purple_tile', 'assets/tilemap/stonetilepurple.png')
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
-    game.load.image('spikes_tile', 'assets/tilemap/spikes3.png')
+    game.load.image('spikes_tile', 'assets/tilemap/newSpikes1.png')
     
     game.load.image('healthbar', 'assets/Healthbars.png');
     //game.load.spritesheet('swordsman', 'assets/green_enemy_fix2.png', 213, 116); //fixed version
@@ -768,7 +768,7 @@ function c2() {
     map.addTilesetImage('stonetilepurple', 'purple_tile')
     map.addTilesetImage('stone_tile2','stone_tile')
     map.addTilesetImage('castle_background','castle_tile');
-    map.addTilesetImage('spikes3','spikes_tile');
+    map.addTilesetImage('newSpikes1','spikes_tile');
     
     //layers
     background = map.createLayer('Background');
@@ -778,7 +778,7 @@ function c2() {
     
     
     map.setCollisionBetween(1, 300, true, 'Platforms'); //basically tells what possible positions in the json file to check for
-    map.setCollisionBetween(236,255,true, 'Spikes')
+    map.setCollisionBetween(200,300,true, 'Spikes')
 
     
     map.width=game.width;
