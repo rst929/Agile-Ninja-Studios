@@ -18,7 +18,7 @@ function c2() {
     deathMusic = game.add.audio('deathMusic');
     deathMusic.play();
     game.stage.backgroundColor = '#000000'
-    var style = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+    var style = { font: "bold 40px Algerian", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
     gameOver = game.add.text(250, 150, 'GAME OVER', style);
     startover = game.add.text(250, 250, 'Press R to Start Over', style);
     console.log("WORKING2");
