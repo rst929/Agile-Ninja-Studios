@@ -243,7 +243,7 @@ function c_tut() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#FF0000';
+             bmd.ctx.fillStyle = '#00FF00';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -270,7 +270,14 @@ var dHealth = 5; //player health
 var movingRight=true;
 
 function u_tut() {
-    
+    if (pHealth>100){
+        pHealth=100;
+        healthBar.width=200*(pHealth/100);
+    }
+    if (pHealth<0){
+        pHealth=0;
+        healthBar.width=200*(pHealth/100);
+    }
     
     //textbox code
     if (this.boxGone){

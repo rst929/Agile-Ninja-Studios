@@ -63,7 +63,7 @@ function c0() {
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
     game.world.bringToTop(instructions);
     this.levelData = JSON.parse(this.game.cache.getText('barText'));
-    style = { font: "bold 32px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
+    style = { font: "bold 32px Bodoni MT Black", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 500 }; // text for dialogue
     
     // game.time.events.loop(Phaser.Timer.SECOND * 1.5, skipButtonActive, this);
     
@@ -80,9 +80,9 @@ function u0() {
             dialogue = game.add.text(110, 10, this.levelData.blackBackgroundText[index].text, style);
         } else if(active && this.levelData.goonDialogue.length > index2 + 1) {
             if(this.levelData.goonDialogue[index2].color == 1) { //black
-                style = { font: "bold 20px Arial", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+                style = { font: "bold 20px Bodoni MT Black", fill: "#000", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
             } else if(this.levelData.goonDialogue[index2].color == 0) { //white
-                style = { font: "bold 20px Arial", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
+                style = { font: "bold 20px Bodoni MT Black", fill: "#fff", align: 'left', wordWrap: true, wordWrapWidth: 420 }; // text for dialogue
             }
             index2++;
             //active = false;

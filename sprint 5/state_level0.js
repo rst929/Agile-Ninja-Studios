@@ -256,7 +256,7 @@ function c_0() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#FF0000';
+             bmd.ctx.fillStyle = '#00FF00';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -304,6 +304,15 @@ var spikes_layer;
 
 
 function u_0() {
+    if (pHealth>100){
+        pHealth=100;
+        healthBar.width=200*(pHealth/100);
+    }
+    if (pHealth<0){
+        pHealth=0;
+        healthBar.width=200*(pHealth/100);
+    }
+    
         
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
