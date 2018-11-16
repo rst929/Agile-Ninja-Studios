@@ -848,7 +848,7 @@ function c2() {
     var bmd = game.add.bitmapData(200,40);
              bmd.ctx.beginPath();
              bmd.ctx.rect(0,0,180,30);
-             bmd.ctx.fillStyle = '#FF0000';
+             bmd.ctx.fillStyle = '#00FF00';
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
@@ -1048,7 +1048,7 @@ function u2() {
     var tutorial_done = false;
     if(door.x - player.x <= 160) {
         door.kill();
-        open = game.add.sprite(4538, game.world.height-437, 'open_door');
+        open = game.add.sprite(4600, game.world.height-437, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
