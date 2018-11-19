@@ -239,11 +239,11 @@ function c_0() {
     
     //animations
     player.animations.add('left', [6, 53, 6, 55], 10, true);
-    player.animations.add('attackL', [7, 8, 9], 25, true);
-    player.animations.add('attackLM', [46, 47, 48], 25, true);
+    player.animations.add('attackL', [7, 8, 9], 10, true);
+    player.animations.add('attackLM', [46, 47, 48], 10, true);
     player.animations.add('right', [1, 50, 1, 51], 10, true);
-    player.animations.add('attackR', [2, 3, 4], 25, true);
-    player.animations.add('attackRM', [42, 43, 44], 25, true);
+    player.animations.add('attackR', [2, 3, 4], 10, true);
+    player.animations.add('attackRM', [42, 43, 44], 10, true);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     
