@@ -123,9 +123,8 @@ function p1() {
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
     game.load.image('headshot', 'assets/playerHeadshot.png')
-<<<<<<< HEAD
     game.load.spritesheet("smoke", 'assets/smoke.png', 639/3, 731/3)
-
+    game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
 }
 
 SmokeCloud = function(game, x, y) {
@@ -140,10 +139,7 @@ SmokeCloud = function(game, x, y) {
     this.removeSmoke = function() {
         this.destroy;
     }    
-=======
-    game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
 
->>>>>>> b0d952734cace3550070cda3a6d16825a0056f97
 }
 
 var image; //background
