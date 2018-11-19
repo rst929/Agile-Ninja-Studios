@@ -896,6 +896,8 @@ function u1() {
         if(swordsmanArray[i].swordsman.inCamera && swordsmanArray[i].swordsman.x < game.camera.x + 300) {
            onScreenEnemy = true;
         }
+        
+        
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
         if(playerVulnerable && game.physics.arcade.overlap(swordsmanArray[i].enemyHitbox, player) && swordsmanArray[i].finishedAttack() && !pFlinchToR.isPlaying && !pFlinchToL.isPlaying && !pFlinchToRD.isPlaying && !pFlinchToLD.isPlaying) {
             moan.play();

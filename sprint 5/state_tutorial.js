@@ -14,7 +14,10 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND*5, function(){}, this); },
+    
     //  The Google Fonts we want to load (specify as many as you like in the array)
+    
     google: {
       families: ['Revalia', 'Teko', 'Permanent Marker', 'Lato', 'Inconsolata']
     }
@@ -351,8 +354,8 @@ function u_tut() {
     if(tutorial_done){
         //game.state.remove(game.state.curret);
         tutorial_done=false;
-        game.state.start('state_level0')
-        //game.state.start('state1')
+        //game.state.start('state_level0')
+        game.state.start('state_level2')
     }
     
     //TEXTBOXCODE
