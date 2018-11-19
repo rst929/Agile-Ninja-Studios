@@ -113,7 +113,7 @@ function p1() {
     game.load.image('castle', 'assets/castle.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new4.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
@@ -123,6 +123,22 @@ function p1() {
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
     game.load.image('headshot', 'assets/playerHeadshot.png')
+    game.load.spritesheet("smoke", 'assets/smoke.png', 639/3, 731/3)
+
+}
+
+SmokeCloud = function(game, x, y) {
+    this.smoke = game.add.sprite(x - 75, y - 140, "smoke");
+    this.smoke.scale.setTo(.8, .8);
+    this.poofing = this.smoke.animations.add('poofing', [0, 1, 2, 3, 4, 5, 6], 10, false)
+    this.smoke.animations.play('poofing', 10, false, true);
+    //this.smoke.animations.play('poofing');
+    console.log("should be poofing");
+    //this.poofing.onComplete.add(this.removeSmoke, this);
+    
+    this.removeSmoke = function() {
+        this.destroy;
+    }    
 }
 
 var image; //background
@@ -223,10 +239,12 @@ function c1() {
     wave.kill();
     
     //  animations, true 
-    player.animations.add('left', [5, 6], 10, true);
+    player.animations.add('left', [6, 53, 6, 55], 10, true);
     player.animations.add('attackL', [7, 8, 9], 10, true);
-    player.animations.add('right', [0, 1], 10, true);
+    player.animations.add('attackLM', [46, 47, 48], 10, true);
+    player.animations.add('right', [1, 50, 1, 51], 10, true);
     player.animations.add('attackR', [2, 3, 4], 10, true);
+    player.animations.add('attackRM', [42, 43, 44], 10, true);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
@@ -349,8 +367,18 @@ function u1() {
         } else {
             player.body.velocity.x = 0;
         }
-    } else  {
-        if (cursors.left.isDown) {
+    } else {
+        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
+            if(cursors.right.isDown) {
+                movePRightM();
+                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackRM"); 
+            } else {
+                movePLeftM();
+                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackLM");
+            }
+        } else if (cursors.left.isDown) {
             movePLeft();
             //swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
         } else if (cursors.right.isDown) {
@@ -456,9 +484,21 @@ function movePRight() {
     player.body.velocity.x = 300;
     player.animations.play('right');
     movingRight = true;
-    
-    
+}
 
+function movePLeftM() {
+    //  Move to the left
+    player.body.velocity.x = -300;
+    movingRight = false;
+}
+
+function movePRightM() {
+    if(player.x <= game.camera.x + 715) {
+        player.body.velocity.x = 300;
+    } else {
+        player.body.velocity.x = 0;
+    }
+    movingRight = true;
 }
 
 function sumoAttack() {

@@ -120,7 +120,7 @@ function p_0() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new4.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -238,10 +238,12 @@ function c_0() {
     player.body.setSize(200,500, 350, 450);
     
     //animations
-    player.animations.add('left', [5, 6], 10, true);
+    player.animations.add('left', [6, 53, 6, 55], 10, true);
     player.animations.add('attackL', [7, 8, 9], 10, true);
-    player.animations.add('right', [0, 1], 10, true);
+    player.animations.add('attackLM', [46, 47, 48], 10, true);
+    player.animations.add('right', [1, 50, 1, 51], 10, true);
     player.animations.add('attackR', [2, 3, 4], 10, true);
+    player.animations.add('attackRM', [42, 43, 44], 10, true);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     
@@ -344,7 +346,20 @@ function u_0() {
     } else if (pFlinchToR.isPlaying) {
         player.body.velocity.x = 100;
     } else {
-        if (cursors.left.isDown) {
+        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
+            if(cursors.right.isDown) {
+                movePRightM();
+                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackRM"); 
+            } else {
+                movePLeftM();
+                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackLM");
+            }
+            if(swordHit) { 
+               dHealth-=5;
+            }
+        } else if (cursors.left.isDown) {
             movePLeft();
             swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
         } else if (cursors.right.isDown) {
@@ -472,6 +487,21 @@ function movePRight() {
         player.body.velocity.x = 0;
     }
     player.animations.play('right');
+    movingRight = true;
+}
+
+function movePLeftM() {
+    //  Move to the left
+    player.body.velocity.x = -300;
+    movingRight = false;
+}
+
+function movePRightM() {
+    if(player.x <= game.camera.x + 715) {
+        player.body.velocity.x = 300;
+    } else {
+        player.body.velocity.x = 0;
+    }
     movingRight = true;
 }
 

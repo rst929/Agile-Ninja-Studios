@@ -119,7 +119,7 @@ function p1() {
     game.load.image('castle', 'assets/castle_background_v2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('sam', 'assets/player_new3.png', 1100, 1100); //fixed version, need scale down
+    game.load.spritesheet('sam', 'assets/player_new4.png', 1100, 1100); //fixed version, need scale down
     game.load.image('stone', 'assets/stone.png')
     game.load.image('platform_img', 'assets/platform.png')
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
@@ -145,6 +145,7 @@ function p1() {
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
     game.load.spritesheet('shurikenDrop', 'assets/shuriken_drop.png', 180/3, 120);
     this.load.text('enemySpawnLoc', 'assets/EnemySpawn.json');
+    game.load.spritesheet("smoke", 'assets/smoke.png', 639/3, 731/3)
     
     //textbox code
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
@@ -503,6 +504,20 @@ ItemDrop = function(game, name, x, y, time) {
     }
 }
 
+SmokeCloud = function(game, x, y) {
+    this.smoke = game.add.sprite(x - 75, y - 140, "smoke");
+    this.smoke.scale.setTo(.8, .8);
+    this.poofing = this.smoke.animations.add('poofing', [0, 1, 2, 3, 4, 5, 6], 10, false)
+    this.smoke.animations.play('poofing', 10, false, true);
+    //this.smoke.animations.play('poofing');
+    console.log("should be poofing");
+    //this.poofing.onComplete.add(this.removeSmoke, this);
+    
+    this.removeSmoke = function() {
+        this.destroy;
+    }    
+}
+
 //SHURIKEN CLASS, USE THIS FOR ALL SHURIKENS IN GENERAL (Both sam and enemy)
 Shuriken = function(game, x, y, goLeft) {
     
@@ -561,6 +576,7 @@ var pFlinchToL, pFlinchToR;
 var pFlinchToLD, pFlinchToRD;
 var tutorial_done = false;
 var moan;
+
 
 function c1() {
     playerHealth = "";
@@ -628,10 +644,12 @@ function c1() {
     swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
     game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     //  animations, true 
-    player.animations.add('left', [5, 6], 10, true);
+    player.animations.add('left', [6, 53, 6, 55], 10, true);
     player.animations.add('attackL', [7, 8, 9], 10, true);
-    player.animations.add('right', [0, 1], 10, true);
+    player.animations.add('attackLM', [46, 47, 48], 10, true);
+    player.animations.add('right', [1, 50, 1, 51], 10, true);
     player.animations.add('attackR', [2, 3, 4], 10, true);
+    player.animations.add('attackRM', [42, 43, 44], 10, true);
     pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [10, 11, 12, 13, 14, 13, 12, 11], 10, false);
     pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
@@ -682,6 +700,7 @@ var playerShurikens = [];
 var playerShurikenTotal = 0; //how many shurikens sam is holding
 var canThrow = true;
 var mustStay = false; //whether camera is fixed or not
+var smokeArray = [];
 
 function u1() {
     if(pHealth>=75){
@@ -751,7 +770,17 @@ function u1() {
             player.body.velocity.x = 0;
         }
     } else {
-        if (cursors.left.isDown) {
+        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
+            if(cursors.right.isDown) {
+                movePRightM();
+                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackRM"); 
+            } else {
+                movePLeftM();
+                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackLM");
+            }
+        } else if (cursors.left.isDown) {
             movePLeft();
             swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
         } else if (cursors.right.isDown) {
@@ -767,7 +796,7 @@ function u1() {
                dhealth-5;
                }
             //creates shuriken on command
-        }else if(throwButton.isDown && canThrow){
+        } else if(throwButton.isDown && canThrow){
             canThrow = false;
             if(playerShurikenTotal > 0){
                 playerShurikenTotal--;
@@ -893,6 +922,7 @@ function u1() {
                     if(swordsmanArray[i].myType() == 2) {
                         itemDropArray.push(new ItemDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
+                    smokeArray.push(new SmokeCloud(game, swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y));
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     if(swordsmanArray.length == 0) {
@@ -915,6 +945,7 @@ function u1() {
                     if(swordsmanArray[i].myType() == 2) {
                         itemDropArray.push(new ItemDrop(game, "heart", swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y, 10));
                     }
+                    smokeArray.push(new SmokeCloud(game, swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y));
                     swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     swordsmanArray.splice(i, 1);
                     break;
@@ -962,6 +993,7 @@ function u1() {
                     if(shurikenThrowerArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
                     }
+                    smokeArray.push(new SmokeCloud(game, shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y));
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     if(shurikenThrowerArray.length == 0) {
@@ -982,6 +1014,7 @@ function u1() {
                     if(shurikenThrowerArray[i].myType() == 1) {
                         itemDropArray.push(new ItemDrop(game, "shurikenDrop", shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y, 10));
                     }
+                    smokeArray.push(new SmokeCloud(game, shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y));
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                     shurikenThrowerArray.splice(i, 1);
                     break;
@@ -1062,6 +1095,21 @@ function movePRight() {
         player.body.velocity.x = 0;
     }
     player.animations.play('right');
+    movingRight = true;
+}
+
+function movePLeftM() {
+    //  Move to the left
+    player.body.velocity.x = -300;
+    movingRight = false;
+}
+
+function movePRightM() {
+    if(player.x <= game.camera.x + 715) {
+        player.body.velocity.x = 300;
+    } else {
+        player.body.velocity.x = 0;
+    }
     movingRight = true;
 }
 
