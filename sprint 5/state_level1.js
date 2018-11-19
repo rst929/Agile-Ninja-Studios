@@ -645,11 +645,11 @@ function c1() {
     game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     //  animations, true 
     player.animations.add('left', [6, 53, 6, 55], 10, true);
-    player.animations.add('attackL', [7, 8, 9], 10, true);
-    player.animations.add('attackLM', [46, 47, 48], 10, true);
+    player.animations.add('attackL', [7, 8, 9], 25, true);
+    player.animations.add('attackLM', [46, 47, 48], 25, true);
     player.animations.add('right', [1, 50, 1, 51], 10, true);
-    player.animations.add('attackR', [2, 3, 4], 10, true);
-    player.animations.add('attackRM', [42, 43, 44], 10, true);
+    player.animations.add('attackR', [2, 3, 4], 25, true);
+    player.animations.add('attackRM', [42, 43, 44], 25, true);
     pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [10, 11, 12, 13, 14, 13, 12, 11], 2, false);
     pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [15, 16, 17, 18, 19, 18, 17, 16], 2, false);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
