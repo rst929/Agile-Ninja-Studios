@@ -457,7 +457,7 @@ function u_0() {
     //TEXTBOX CODE: this is hardcoded, which I hate, but just check the msgbox constructor
     if ((player.x >= 33) && (player.x <= 33 + 475) &&  (player.y <= 150)){
         msgBox1.hideBox()
-        this.boxGone = true;
+        this.boxGone1 = true;
         //console.log("hidden")
     }
     
