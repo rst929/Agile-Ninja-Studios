@@ -645,13 +645,13 @@ function c1() {
     game.physics.arcade.enable(swordHitbox); //so can be used for overlap
     //  animations, true 
     player.animations.add('left', [6, 53, 6, 55], 10, true);
-    player.animations.add('attackL', [7, 8, 9], 10, true);
-    player.animations.add('attackLM', [46, 47, 48], 10, true);
+    player.animations.add('attackL', [7, 8, 9], 25, true);
+    player.animations.add('attackLM', [46, 47, 48], 25, true);
     player.animations.add('right', [1, 50, 1, 51], 10, true);
-    player.animations.add('attackR', [2, 3, 4], 10, true);
-    player.animations.add('attackRM', [42, 43, 44], 10, true);
-    pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [10, 11, 12, 13, 14, 13, 12, 11], 10, false);
-    pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
+    player.animations.add('attackR', [2, 3, 4], 25, true);
+    player.animations.add('attackRM', [42, 43, 44], 25, true);
+    pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [10, 11, 12, 13, 14, 13, 12, 11], 2, false);
+    pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [15, 16, 17, 18, 19, 18, 17, 16], 2, false);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
