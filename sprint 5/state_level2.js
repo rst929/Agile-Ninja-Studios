@@ -968,7 +968,7 @@ function u2() {
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
     game.physics.arcade.collide(player, stone_platforms);
-    game.physics.arcade.collide(player, spikes_layer);
+    //game.physics.arcade.collide(player, spikes_layer);
     
 //    game.physics.arcade.collide(drop, stone_platforms, function(){hitPlatform=true});
 //    if (game.physics.arcade.collide(player,drop)){
@@ -1110,15 +1110,15 @@ function u2() {
            onScreenEnemy = true;
         }
         
-        //code for killng with spikes
-        game.physics.arcade.collide(swordsmanArray[i], spikes_layer, function(){
+        /*//code for killng with spikes
+        game.physics.arcade.collide(swordsmanArray[i].swordsman, spikes_layer, function(){
             smokeArray.push(new SmokeCloud(game, swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y));
             swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
             swordsmanArray.splice(i, 1);
-            if(swordsmanArray.length == 0) {
-                break;
-            }
         })
+        if(swordsmanArray.length == 0) {
+                break;
+        }*/
         
         
         //player i frames are out       ... and enemy's sword hitbox overlaps with player           ...and swordsman has finished attack
