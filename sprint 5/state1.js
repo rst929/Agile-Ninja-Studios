@@ -361,6 +361,13 @@ function u1() {
         console.log(this.boxGone1);
     }
     
+    //TEXTBOX CODE: this is hardcoded, which I hate, but just check the msgbox constructor
+    if ((player.x >= 33) && (player.x <= 33 + 475) &&  (player.y <= 150)){
+        msgBox1.hideBox()
+        this.boxGone = true;
+        //console.log("hidden")
+    }
+    
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check
