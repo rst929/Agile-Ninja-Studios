@@ -1018,7 +1018,7 @@ function u2() {
                dhealth-5;
                }
             //creates shuriken on command
-        }else if(throwButton.isDown && canThrow){
+        } else if(throwButton.isDown && canThrow){
             canThrow = false;
             if(playerShurikenTotal > 0){
                 playerShurikenTotal--;
@@ -1176,16 +1176,20 @@ function u2() {
             }
         }
         
-        if(swordsmanArray[i].swordsman != undefined) {
-            if(game.physics.arcade.collide(swordsmanArray[i].swordsman, spikes_layer)) {
-                smokeArray.push(new SmokeCloud(game, swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y));
-                swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
-                swordsmanArray.splice(i, 1);
-                break;
-                if(swordsmanArray.length == 0) {
+        try {
+            if(swordsmanArray[i].swordsman != undefined) {
+                if(game.physics.arcade.collide(swordsmanArray[i].swordsman, spikes_layer)) {
+                    smokeArray.push(new SmokeCloud(game, swordsmanArray[i].swordsman.x, swordsmanArray[i].swordsman.y));
+                    swordsmanArray[i].swordsman.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                    swordsmanArray.splice(i, 1);
                     break;
+                    if(swordsmanArray.length == 0) {
+                        break;
+                    }
                 }
             }
+        } catch(err) {
+            console.log('err');
         }
     }
     
@@ -1255,16 +1259,20 @@ function u2() {
             }
         }
         
-        if(shurikenThrowerArray[i].shurikenThrower != undefined) {
-            if(game.physics.arcade.collide(shurikenThrowerArray[i].shurikenThrower, spikes_layer)) {
-                smokeArray.push(new SmokeCloud(game, shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y));
-                shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
-                shurikenThrowerArray[i].splice(i, 1);
+        try{
+            if(shurikenThrowerArray[i].shurikenThrower != undefined) {
+                if(game.physics.arcade.collide(shurikenThrowerArray[i].shurikenThrower, spikes_layer)) {
+                    smokeArray.push(new SmokeCloud(game, shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y));
+                    shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                    shurikenThrowerArray[i].splice(i, 1);
 
-                if(shurikenThrowerArray.length == 0) {
-                    break;
+                    if(shurikenThrowerArray.length == 0) {
+                        break;
+                    }
                 }
             }
+        } catch(err) {
+            console.log("err2")
         }
     }
     
