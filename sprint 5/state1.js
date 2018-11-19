@@ -13,7 +13,7 @@ this.boxGone1 = false;
 //textbox code
 function createText() {
 
-    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '30px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -123,6 +123,8 @@ function p1() {
     game.load.image("boxBack", "assets/textboxnew.png");
     game.load.image("closeButton", "assets/xbutton.png")
     game.load.image('headshot', 'assets/playerHeadshot.png')
+    game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
+
 }
 
 var image; //background
@@ -140,6 +142,8 @@ var sumoInnerHitbox;
 
 
 function c1() {
+    //playerHealth.text = "" + playerShurikenTotal; //player health is updated with current health and weapon left
+
     
     this.changeTint = function(){
         this.tintChange = true;
@@ -231,7 +235,8 @@ function c1() {
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
     pFlinchToLD = player.animations.add('pFlinchToLD', [20, 21, 22, 23, 23, 23, 22, 21, 20, 28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
     pFlinchToRD = player.animations.add('pFlinchToRD', [24, 25, 26, 27, 27, 27, 26, 25, 24, 35, 36, 37, 38, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41], 15, false);
-    
+    pShurikenThrowAnimationL = player.animations.add('pShurikenThrowAnimationL', [10, 11, 12, 13, 14, 13, 12, 11], 10, false);
+    pShurikenThrowAnimationR = player.animations.add('pShurikenThrowAnimationR', [15, 16, 17, 18, 19, 18, 17, 16], 10, false);
     sumo.animations.add('attack', [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 2, 1, 0], 20, false);
     
     cursors = game.input.keyboard.createCursorKeys();
@@ -255,7 +260,7 @@ function c1() {
              bmd.ctx.fill();
 
              healthBar = game.add.sprite(38,2,bmd);
-             bossHealth = game.add.sprite(500,2,bmd);
+             bossHealth = game.add.sprite(562,2,bmd);
     
     healthBar.width=(pHealth/100)*200
     healthBar.fixedToCamera=true;
@@ -267,12 +272,15 @@ function c1() {
     //boss healthbar
     bossHealth.width = (bHealth/100)*200
     bossHealth.fixedToCamera=true;
-    bossformat=game.add.sprite(500,2,"healthbar");
+    bossformat=game.add.sprite(562,2,"healthbar");
     bossformat.height=bossHealth.height-3;
     bossformat.width=182;
     bossformat.fixedToCamera=true;
     textNotCreated1 = true;
     msgBox1 = new showMessageBox_1boss("HOLY SHITAKE MUSHROOM, HE'S HUGE! Why did they have the sumo block the door?!? (press spacebar)");
+    playerHealth = game.add.text(38,2, '             | Shurikens: '+playerShurikenTotal, { fontSize: '32px', fill: '#fff' });
+	playerHealth.font = 'Revalia';
+
 }
 
 var pHealth = 100; //player health
@@ -282,6 +290,7 @@ var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
 
 function u1() {
+
     console.log(this.tintChange)
     if (this.tintChange){
         sumo.tint = 0xFFFFFF; // default tint
@@ -321,7 +330,7 @@ function u1() {
         //console.log(textNotCreated1)
         //console.log(textNotCreated1);
         if (textNotCreated1){
-            createText();
+            //createText();
             textNotCreated1 = false;
             
             console.log("Text created in update")
@@ -368,7 +377,21 @@ function u1() {
                 bossHealth.width = (bHealth/100)*200
                 sumoVulnerable = false; 
             }
-        } else {
+        } else if(throwButton.isDown && canThrow){
+            canThrow = false;
+            if(playerShurikenTotal > 0){
+                playerShurikenTotal--;
+                playerHealth.setText('             | Shurikens: '+playerShurikenTotal);
+                //shuriken throw animation
+                if(movingRight) {
+                    player.animations.play('pShurikenThrowAnimationR');
+                } else {
+                    player.animations.play('pShurikenThrowAnimationL');
+                }
+                playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
+            }
+
+        } else { 
             //  Stand still
             if(movingRight) {
                 player.frame = 0;
@@ -377,6 +400,28 @@ function u1() {
             }
             player.body.velocity.x = 0;
         }
+    }
+    //updates shuriken
+    for(var i = 0; i < playerShurikens.length; i++) {
+        playerShurikens[i].updateShuriken();
+        if(playerShurikens[i].checkForDespawn()) {
+            playerShurikens.splice(i, 1);
+        }
+    }
+    //hits the boss with shuriken
+    for(var j = 0; j < playerShurikens.length; j++) {
+            if(game.physics.arcade.overlap(sumoHitboxes, playerShurikens[j].shuriken)) {
+                playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
+                playerShurikens.splice(j, 1);
+                bHealth=bHealth-2;
+                bossHealth.width = (bHealth/100)*200;
+            }
+    }    
+    playerHealth.text = "             | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+
+    //release flag-key for player's shurikens, so that they don't shoot rapid fire
+    if(!throwButton.isDown) {
+        canThrow = true;
     }
 
     //  Allow the player to jump if they are touching the ground.

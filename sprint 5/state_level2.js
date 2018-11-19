@@ -14,7 +14,7 @@ this.boxGone1 = false;
 //textbox code
 function createText() {
 
-    playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
+    playerHealth = game.add.text(38,2, '', { fontSize: '30px', fill: '#fff' });
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
@@ -1051,7 +1051,7 @@ function u2() {
         player.body.velocity.y = -700;
         hitPlatform = false;
     }
-    playerHealth.text = "                        | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    playerHealth.text = "             | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
 
     
     var tutorial_done = false;
