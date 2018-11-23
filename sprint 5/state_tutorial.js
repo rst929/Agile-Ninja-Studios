@@ -356,6 +356,7 @@ function u_tut() {
         tutorial_done=false;
         //game.state.start('state_level0')
         game.state.start('state_level2')
+        
     }
     
     //TEXTBOXCODE

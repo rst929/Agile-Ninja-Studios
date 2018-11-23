@@ -198,16 +198,16 @@ function c1() {
     ground.body.immovable = true;
     
     
-    door = game.add.sprite(660, game.world.height-470, 'closed_door');
-    door.scale.setTo(.23, .23);
-    
     game.physics.enable(door, Phaser.Physics.ARCADE);
     door.body.immobile = true;
     
-    sumo = game.add.sprite(game.world.width - 300, game.world.height - 450, 'sumo');
+    
+    door = game.add.sprite(game.world.width - 125, game.world.height-215, 'closed_door');
+    door.scale.setTo(.23, .23);
+    
+    sumo = game.add.sprite(game.world.width - 393, game.world.height - 450, 'sumo');
     sumo.scale.setTo(3,3);
-    
-    
+        
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
@@ -277,7 +277,7 @@ function c1() {
     bossHealth = game.add.text(500,2, '', { fontSize: '32px', fill: '#fff' });
     bossHealth.font = 'Revalia';
     
-    game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack(this.sumo_alive), this);
+    game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
     
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makePlayerVulnerable, this);
@@ -323,7 +323,7 @@ var movingRight=true;
 
 function u1() {
 
-    console.log(this.tintChange)
+    //console.log(this.tintChange)
     if (this.tintChange){
         sumo.tint = 0xFFFFFF; // default tint
         this.tintChange = false;
@@ -373,7 +373,7 @@ function u1() {
     if (msgBox1.checkForDespawn()){
         msgBox1.hideBox()
         this.boxGone1 = true;
-        console.log(this.boxGone1);
+        //console.log(this.boxGone1);
     }
     
     //TEXTBOX CODE: this is hardcoded, which I hate, but just check the msgbox constructor
@@ -388,6 +388,9 @@ function u1() {
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms);
     
     var hitPlatform3 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    
+    var hitPlatform4 = game.physics.arcade.collide(door, platforms)
+    
     var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
     var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
     //movement tree for player
@@ -396,6 +399,8 @@ function u1() {
     var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
     var runIntoSumo = game.physics.arcade.overlap(player, sumoHitboxes); // Overlap with player and sumo
     moan = game.add.audio('moan');
+    
+    //console.log("sumo_alive = ", this.sumo_alive)
     
     //movement tree for player
     if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
@@ -458,9 +463,9 @@ function u1() {
         }
     }
     
-    if(door.x - player.x <= 160 && player.y - door.y <= 90) { // victory
+    if(door.x - player.x <= 160) { // victory
         door.kill();
-        open = game.add.sprite(660, game.world.height -1470, 'open_door');
+        open = game.add.sprite(game.world.width - 125, game.world.height-215, 'open_door');
         open.scale.setTo(.23,.23);
         game.physics.enable(open, Phaser.Physics.ARCADE);
         open.body.immovable = true;
@@ -475,7 +480,7 @@ function u1() {
         //game.state.remove(game.state.curret);
         tutorial_done=false;
         //game.state.start('state_level0')
-        game.state.start('state_level2')
+        game.state.start('state3')
     }
     
     //updates shuriken
@@ -547,7 +552,7 @@ function u1() {
         this.sumo_alive = false
         sumo.destroy();
     } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat
-        game.state.start('state2');
+        game.state.start('state3');
     }
 }
 
@@ -559,7 +564,7 @@ function r1() {
 
 //note: some functions are small now, but idea is that they'll grow with the game
 function deathScene() {
-    game.state.start('state1');
+    game.state.start('state2');
 }
 
 function swordAttack() {
@@ -597,12 +602,15 @@ function movePRightM() {
     movingRight = true;
 }
 
-function sumoAttack(sumo_alive) {
+function sumoAttack() {
     
-    if (sumo_alive){
+    if (this.sumo_alive){
         console.log("sumoAttack");
         sumo.animations.play('attack');
         sumo.animations.currentAnim.onComplete.add(waveSpawn);
+    }
+    else {
+        console.log("sumo not attack")
     }
 }
 
