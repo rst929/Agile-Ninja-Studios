@@ -118,6 +118,9 @@ function p1() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48)
     game.load.spritesheet('sumo', 'assets/sumo.png', 110, 110);
     game.load.image('wave', 'assets/Wave smash.png')
+    game.load.image('open_door', 'assets/open_door.png');
+    game.load.image('healthbar', 'assets/Healthbars.png');
+    game.load.image('closed_door', 'assets/closed_door.png');
     game.load.image('healthbar', 'assets/Healthbars.png');
     game.load.script('webfont', 'http://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image("boxBack", "assets/textboxnew.png");
@@ -159,6 +162,7 @@ var sumoInnerHitbox;
 function c1() {
     //playerHealth.text = "" + playerShurikenTotal; //player health is updated with current health and weapon left
 
+    this.sumo_alive = true
     
     this.changeTint = function(){
         this.tintChange = true;
@@ -193,8 +197,17 @@ function c1() {
     //  Make ground stable
     ground.body.immovable = true;
     
+    
+    door = game.add.sprite(660, game.world.height-470, 'closed_door');
+    door.scale.setTo(.23, .23);
+    
+    game.physics.enable(door, Phaser.Physics.ARCADE);
+    door.body.immobile = true;
+    
     sumo = game.add.sprite(game.world.width - 300, game.world.height - 450, 'sumo');
     sumo.scale.setTo(3,3);
+    
+    
     
     // The player and its settings
     player = game.add.sprite(250, game.world.height - 250, 'sam');
@@ -235,7 +248,7 @@ function c1() {
     game.physics.arcade.enable(sumoInnerHitbox); //so can be used for overlap
     
     //wave properties 
-    wave = game.add.sprite(sumo.x, sumo.y, 'wave');
+    wave = game.add.sprite(sumo.x+100, sumo.y, 'wave');
     wave.scale.setTo(.8, .8);
     game.physics.arcade.enable(wave);
     wave.body.setSize(50, 200, 115, 100);
@@ -263,7 +276,9 @@ function c1() {
     playerHealth.font = 'Revalia';
     bossHealth = game.add.text(500,2, '', { fontSize: '32px', fill: '#fff' });
     bossHealth.font = 'Revalia';
-    game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack, this);
+    
+    game.time.events.loop(Phaser.Timer.SECOND * 3, sumoAttack(this.sumo_alive), this);
+    
     game.time.events.loop(Phaser.Timer.SECOND * 1, makeSumoVulnerable, this);
     game.time.events.loop(Phaser.Timer.SECOND * 1, makePlayerVulnerable, this);
     
@@ -370,7 +385,14 @@ function u1() {
     
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
-    var hitPlatform2 = game.physics.arcade.collide(sumo, platforms); //collide with platform (i.e. ground) check
+    var hitPlatform2 = game.physics.arcade.collide(sumo, platforms);
+    
+    var hitPlatform3 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
+    var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
+    var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
+    //movement tree for player
+    
+    //collide with platform (i.e. ground) check
     var swordHit = game.physics.arcade.overlap(sumo, hitbox); // Overlap with sword and player 2
     var runIntoSumo = game.physics.arcade.overlap(player, sumoHitboxes); // Overlap with player and sumo
     moan = game.add.audio('moan');
@@ -435,6 +457,27 @@ function u1() {
             player.body.velocity.x = 0;
         }
     }
+    
+    if(door.x - player.x <= 160 && player.y - door.y <= 90) { // victory
+        door.kill();
+        open = game.add.sprite(660, game.world.height -1470, 'open_door');
+        open.scale.setTo(.23,.23);
+        game.physics.enable(open, Phaser.Physics.ARCADE);
+        open.body.immovable = true;
+    } 
+    
+    if(game.physics.arcade.overlap(player, open)){
+           var tutorial_done = true
+    } // Overlap with player and door
+    //change once tutorial is completed
+    
+    if(tutorial_done){
+        //game.state.remove(game.state.curret);
+        tutorial_done=false;
+        //game.state.start('state_level0')
+        game.state.start('state_level2')
+    }
+    
     //updates shuriken
     for(var i = 0; i < playerShurikens.length; i++) {
         playerShurikens[i].updateShuriken();
@@ -500,7 +543,9 @@ function u1() {
     
     //check for winning/defeat conditions
     if(bHealth <= 0) { // victory
-        game.state.start('state3');
+        //game.state.start('state3');
+        this.sumo_alive = false
+        sumo.destroy();
     } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat
         game.state.start('state2');
     }
@@ -552,13 +597,18 @@ function movePRightM() {
     movingRight = true;
 }
 
-function sumoAttack() {
-    sumo.animations.play('attack');
-    sumo.animations.currentAnim.onComplete.add(waveSpawn)
+function sumoAttack(sumo_alive) {
+    
+    if (sumo_alive){
+        console.log("sumoAttack");
+        sumo.animations.play('attack');
+        sumo.animations.currentAnim.onComplete.add(waveSpawn);
+    }
 }
 
+//eliminate pocket by adding x
 function waveSpawn() {
-    wave.reset(sumo.x, sumo.y + 90);
+    wave.reset(sumo.x+45, sumo.y + 90);
 }
 
 function pDamage(amount) {

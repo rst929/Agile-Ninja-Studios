@@ -888,7 +888,7 @@ function c2() {
     shurikenThrowerArray = [];
     
     textNotCreated1 = true;
-    msgBox1 = new showMessageBox2("Wait... is that barking, or am I drunk? People, fine, but I could never hurt a dog! (press spacebar)");
+    msgBox1 = new showMessageBox2("Wait... is that barking, or am I drunk? I could never hurt a dog! (SAM cannot damage dogs!)");
 }
 
 var pHealth = 100; //player health
