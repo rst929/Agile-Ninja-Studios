@@ -275,6 +275,7 @@ var dHealth = 5; //player health
 var movingRight=true;
 
 function u_tut() {
+    console.log(game.score);
     if (pHealth>100){
         pHealth=100;
         healthBar.width=200*(pHealth/100);

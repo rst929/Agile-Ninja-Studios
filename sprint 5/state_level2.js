@@ -15,9 +15,14 @@ this.boxGone1 = false;
 function createText() {
 
     playerHealth = game.add.text(38,2, '', { fontSize: '30px', fill: '#fff' });
+    
+    scoreText = game.add.text(200,2,'score: ', {fontSize: '30px', fill: '#fff'});
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
+    
+    scoreText.font = 'Revalia';
+    scoreText.fixedToCamera=true;
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
@@ -755,6 +760,7 @@ var image; //background
 var attackButton; // F to attack
 var throwButton;// D to throw
 var playerHealth; //keeps track of total player health
+var scoreText;
 var bossHealth; //keeps track of total boss health
 //var sumoMusic; //boss music
 var instructions; //game instructions'
@@ -1084,6 +1090,7 @@ function u2() {
         hitPlatform = false;
     }
     playerHealth.text = "             | Shurikens: " + playerShurikenTotal; //player health is updated with current health and weapon left
+    //scoreText.text = "Score: " + game.score;
 
     
     var tutorial_done = false;
@@ -1401,19 +1408,4 @@ function movePRightM() {
 
 function makePlayerVulnerable() {
     playerVulnerable = true;
-}
-
-function createText() {
-
-    playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '32px', fill: '#fff' });
-
-	playerHealth.font = 'Revalia';
-    playerHealth.fixedToCamera=true;
-    
-    instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
-    instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
-    instructions2.font = 'Permanent Marker';
-    instruction3 = game.add.text(38, 92, 'f to open door', {fontSize: "22px", fill:"#fff"});
-    instruction3.font= 'Permanent Marker';
-    instructions.font = 'Permanent Marker';
 }
