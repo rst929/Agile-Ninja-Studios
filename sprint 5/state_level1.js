@@ -764,17 +764,41 @@ function u1() {
     
     //add the sound effect 
     //movement tree for player
-    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+    if(pFlinchToL.isPlaying) {
         if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
             player.body.velocity.x = -100;
+            player.body.velocity.y=0;
         } else {
             player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
         }
-    } else if (pFlinchToR.isPlaying || pFlinchToRD.isPlaying) {
+    }else if(pFlinchToLD.isPlaying){
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if (pFlinchToR.isPlaying) {
         if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
             player.body.velocity.x = 100;
+            player.body.velocity.y=0;
         } else {
             player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if(pFlinchToRD.isPlaying){
+        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
         }
     } else {
         if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {

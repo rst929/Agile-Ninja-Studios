@@ -107,6 +107,18 @@ showMessageBox_1boss = function(text, w = 475, h = 150, x = 33, y = 40) {
         this.msgBox = msgBox;
     }
 
+SmokeCloudBoss = function(game, x, y) {
+    this.smoke = game.add.sprite(x - 75, y - 200, "smoke");
+    this.smoke.scale.setTo(1.5, 1);
+    this.poofing = this.smoke.animations.add('poofing', [0, 1, 2, 3, 4, 5, 6], 10, false)
+    this.smoke.animations.play('poofing', 10, false, true);
+    //this.smoke.animations.play('poofing');
+    console.log("should be poofing");
+    
+    this.removeSmoke = function() {
+        this.destroy;
+    }    
+}
 function p1() {
     game.load.audio('moan', 'assets/audio/pain.mp3');
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -128,22 +140,9 @@ function p1() {
     game.load.image('headshot', 'assets/playerHeadshot.png')
     game.load.spritesheet("smoke", 'assets/smoke.png', 639/3, 731/3)
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
-}
-
-SmokeCloud = function(game, x, y) {
-    this.smoke = game.add.sprite(x - 75, y - 140, "smoke");
-    this.smoke.scale.setTo(.8, .8);
-    this.poofing = this.smoke.animations.add('poofing', [0, 1, 2, 3, 4, 5, 6], 10, false)
-    this.smoke.animations.play('poofing', 10, false, true);
-    //this.smoke.animations.play('poofing');
-    console.log("should be poofing");
-    //this.poofing.onComplete.add(this.removeSmoke, this);
-    
-    this.removeSmoke = function() {
-        this.destroy;
-    }    
 
 }
+
 
 var image; //background
 var attackButton; // F to attack
@@ -205,7 +204,8 @@ function c1() {
     door = game.add.sprite(game.world.width - 125, game.world.height-215, 'closed_door');
     door.scale.setTo(.23, .23);
     
-    sumo = game.add.sprite(game.world.width - 393, game.world.height - 450, 'sumo');
+    //sumo = game.add.sprite(game.world.width - 393, game.world.height - 450, 'sumo');
+    sumo = game.add.sprite(game.world.width - 200, game.world.height - 450, 'sumo');
     sumo.scale.setTo(3,3);
         
     
@@ -320,6 +320,7 @@ var bHealth = 100; //boss / sumo health
 var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
+var canCreateSmoke = true;
 
 function u1() {
 
@@ -403,11 +404,23 @@ function u1() {
     //console.log("sumo_alive = ", this.sumo_alive)
     
     //movement tree for player
-    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+    if(pFlinchToL.isPlaying) {
         if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
             player.body.velocity.x = -100;
+            player.body.velocity.y=0;
         } else {
             player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if(pFlinchToLD.isPlaying){
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
         }
     } else {
         if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
@@ -463,7 +476,7 @@ function u1() {
         }
     }
     
-    if(door.x - player.x <= 160) { // victory
+    if(door.x - player.x <= 160 && !this.sumo_alive) { // victory
         door.kill();
         open = game.add.sprite(game.world.width - 125, game.world.height-215, 'open_door');
         open.scale.setTo(.23,.23);
@@ -471,7 +484,8 @@ function u1() {
         open.body.immovable = true;
     } 
     
-    if(game.physics.arcade.overlap(player, open)){
+    //CHANGES!
+    if(game.physics.arcade.overlap(player, open) && !this.sumo_alive){
            var tutorial_done = true
     } // Overlap with player and door
     //change once tutorial is completed
@@ -480,7 +494,7 @@ function u1() {
         //game.state.remove(game.state.curret);
         tutorial_done=false;
         //game.state.start('state_level0')
-        game.state.start('state3')
+        game.state.start('state3'); 
     }
     
     //updates shuriken
@@ -547,20 +561,24 @@ function u1() {
     }
     
     //check for winning/defeat conditions
-    if(bHealth <= 0) { // victory
+    if(bHealth <= 0 && canCreateSmoke) { // victory
+        canCreateSmoke = false;
         //game.state.start('state3');
         this.sumo_alive = false
+        smokeArray.push(new SmokeCloudBoss(game, sumo.x+155, sumo.y+270));
         sumo.destroy();
-    } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat
-        game.state.start('state3');
+        bossformat.destroy();
+        bossHealth.destroy();
+    } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat 
+        game.state.start('state2'); //CHANGES!
     }
 }
+
 
 function r1() {
 //    game.debug.body(sumoInnerHitbox);
 //    game.debug.body(sumo);
 }
-
 
 //note: some functions are small now, but idea is that they'll grow with the game
 function deathScene() {
