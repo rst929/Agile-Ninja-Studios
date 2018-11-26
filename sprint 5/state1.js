@@ -391,11 +391,23 @@ function u1() {
     //console.log("sumo_alive = ", this.sumo_alive)
     
     //movement tree for player
-    if(pFlinchToL.isPlaying || pFlinchToLD.isPlaying) {
+    if(pFlinchToL.isPlaying) {
         if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
             player.body.velocity.x = -100;
+            player.body.velocity.y=0;
         } else {
             player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if(pFlinchToLD.isPlaying){
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
         }
     } else {
         if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
@@ -483,7 +495,7 @@ function u1() {
             if(game.physics.arcade.overlap(sumoHitboxes, playerShurikens[j].shuriken)) {
                 playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                 playerShurikens.splice(j, 1);
-                bHealth=bHealth-50;
+                bHealth=bHealth-2;
                 bossHealth.width = (bHealth/100)*200;
             }
     }    
