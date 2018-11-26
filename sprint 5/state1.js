@@ -128,22 +128,10 @@ function p1() {
     game.load.image('headshot', 'assets/playerHeadshot.png')
     game.load.spritesheet("smoke", 'assets/smoke.png', 639/3, 731/3)
     game.load.spritesheet('shuriken', 'assets/shuriken.png', 500, 315);
-}
-
-SmokeCloud = function(game, x, y) {
-    this.smoke = game.add.sprite(x - 75, y - 140, "smoke");
-    this.smoke.scale.setTo(.8, .8);
-    this.poofing = this.smoke.animations.add('poofing', [0, 1, 2, 3, 4, 5, 6], 10, false)
-    this.smoke.animations.play('poofing', 10, false, true);
-    //this.smoke.animations.play('poofing');
-    console.log("should be poofing");
-    //this.poofing.onComplete.add(this.removeSmoke, this);
-    
-    this.removeSmoke = function() {
-        this.destroy;
-    }    
 
 }
+
+
 
 var image; //background
 var attackButton; // F to attack
@@ -495,7 +483,7 @@ function u1() {
             if(game.physics.arcade.overlap(sumoHitboxes, playerShurikens[j].shuriken)) {
                 playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                 playerShurikens.splice(j, 1);
-                bHealth=bHealth-2;
+                bHealth=bHealth-50;
                 bossHealth.width = (bHealth/100)*200;
             }
     }    
@@ -550,7 +538,10 @@ function u1() {
     if(bHealth <= 0) { // victory
         //game.state.start('state3');
         this.sumo_alive = false
+        smokeArray.push(new SmokeCloud(game, sumo.x+155, sumo.y+270));
         sumo.destroy();
+        bossformat.destroy();
+        bossHealth.destroy();
     } else if(pHealth <= 0 && !pFlinchToLD.isPlaying) { // defeat
         game.state.start('state3');
     }
