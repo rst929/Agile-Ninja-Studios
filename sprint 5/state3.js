@@ -14,7 +14,7 @@ function p3() {
 }
 
 var win;
-var imageArray;
+var imageArray2;
 var nextButton;
 var canChange = true;
 var index = 0;
@@ -25,10 +25,10 @@ function c3() {
 //    var style = { font: "bold 40px Algerian", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 //    win = game.add.text(265, 150, 'VICTORY', style);
     
-    imageArray = ["leavingCastle1", "leavingCastle2", "leavingCastle3", "Victory"];
+    imageArray2 = ["leavingCastle1", "leavingCastle2", "leavingCastle3", "Victory"];
     this.vicData = JSON.parse(this.game.cache.getText('vicSceneJSON'));
     nextButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
-    displayBackground(this.vicData.VicScene[0].type)
+    displayBackground2(this.vicData.VicScene[0].type)
 }
 
 function u3() {
@@ -36,7 +36,7 @@ function u3() {
         canChange = false;
         if(this.vicData.VicScene.length > index + 1) {
             index++;
-            displayBackground(this.vicData.VicScene[index].type);
+            displayBackground2(this.vicData.VicScene[index].type);
         }
         game.input.keyboard.onUpCallback = function(){
             canChange = true
@@ -45,8 +45,8 @@ function u3() {
     
 }
 
-function displayBackground(name) {
-    image = game.add.sprite(0, 0, imageArray[name]);
+function displayBackground2(name) {
+    image = game.add.sprite(0, 0, imageArray2[name]);
     image.width = game.width;
     image.height = game.height;
     console.log(name)

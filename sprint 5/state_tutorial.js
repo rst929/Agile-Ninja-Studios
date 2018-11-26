@@ -355,8 +355,8 @@ function u_tut() {
     if(tutorial_done){
         //game.state.remove(game.state.curret);
         tutorial_done=false;
-        //game.state.start('state_level0')
-        game.state.start('state_level2')
+        game.state.start('state_level0')
+        //game.state.start('state_level2')
         
     }
     
