@@ -409,9 +409,10 @@ function u_0() {
     
     //start on initial bar scene INSERT THIS CODE FOR LOGIC ON CHANGING FROM CUTSCENE, DOOR
     var tutorial_done = false
-
+    
     //if player has no health, go to game over state
     if(pHealth <= 0) {
+        game.score = -2000;
         game.state.start('state2');
     }
     
