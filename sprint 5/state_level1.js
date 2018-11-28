@@ -717,7 +717,7 @@ function u1() {
         createText1_st1();
         game.timer.start();
     }
-    seconds_st1 = Math.round(game.timer.seconds*10)/10 + seconds_st0;
+    seconds_st1 = Math.round(game.timer.seconds*10)/10 + seconds_st0 - .7;
     
     timeText_st1.text = "Time: " + seconds_st1.toFixed(1);
     

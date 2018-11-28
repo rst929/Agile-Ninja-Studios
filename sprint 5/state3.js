@@ -20,9 +20,10 @@ var canChange = true;
 var index = 0;
 var textNotCreated_victory = true;
 var timeText_victory;
+var seconds_stboss = 100;
 
 function c3() {
-    sumoMusic.mute = true;
+    //sumoMusic.mute = true;
     game.stage.backgroundColor = '#000000'
 //    var style = { font: "bold 40px Algerian", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 //    win = game.add.text(265, 150, 'VICTORY', style);
@@ -48,7 +49,7 @@ function u3() {
 }
 
 function createText_victory(){
-    timeText_victory = game.add.text(276,290, seconds_stboss.toFixed(1) + ' s', { fontSize: '50px', fill: '#000' })
+    timeText_victory = game.add.text(276,286, seconds_stboss.toFixed(1) + ' s', { fontSize: '50px', fill: '#000' })
     timeText_victory.font = 'Revalia';
     textNotCreated_victory = false;
 }

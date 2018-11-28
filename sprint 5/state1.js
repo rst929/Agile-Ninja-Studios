@@ -335,7 +335,7 @@ function u1() {
         createText1_stboss();
         game.timer.start();
     }
-    seconds_stboss = Math.round(game.timer.seconds*10)/10 + seconds_st2; 
+    seconds_stboss = Math.round(game.timer.seconds*10)/10 + seconds_st2 - .7; 
     
     timeText_stboss.text = "Time: " + seconds_stboss.toFixed(1);
 
