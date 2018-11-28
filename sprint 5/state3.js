@@ -20,7 +20,6 @@ var canChange = true;
 var index = 0;
 var textNotCreated_victory = true;
 var timeText_victory;
-var seconds_stboss = 100;
 
 function c3() {
     //sumoMusic.mute = true;
@@ -65,7 +64,7 @@ function displayBackground2(name) {
         //image.scale.setTo()
     }
     
-    //be sure to change to number greater than three when image added
+    //NOTE TO RANDY be sure to change to number greater than three when image added
     if(name == 3 && textNotCreated_victory){
         createText_victory();
         textNotCreated_victory = false;   

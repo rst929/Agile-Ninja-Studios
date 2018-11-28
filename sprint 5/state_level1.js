@@ -780,104 +780,7 @@ function u1() {
 //        playerShurikenTotal=playerShurikenTotal+10;
 //        drop.kill();
 //    }
-    
-    //add the sound effect 
-    //movement tree for player
-    if(pFlinchToL.isPlaying) {
-        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
-            player.body.velocity.x = -100;
-            player.body.velocity.y=0;
-        } else {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-
-        }
-    }else if(pFlinchToLD.isPlaying){
-        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-        } else {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-
-        }
-    } else if (pFlinchToR.isPlaying) {
-        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
-            player.body.velocity.x = 100;
-            player.body.velocity.y=0;
-        } else {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-
-        }
-    } else if(pFlinchToRD.isPlaying){
-        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-        } else {
-            player.body.velocity.x = 0;
-            player.body.velocity.y=0;
-
-        }
-    } else {
-        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
-            if(cursors.right.isDown) {
-                movePRightM();
-                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-                player.animations.play("attackRM"); 
-            } else {
-                movePLeftM();
-                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-                player.animations.play("attackLM");
-            }
-        } else if (cursors.left.isDown) {
-            movePLeft();
-            swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        } else if (cursors.right.isDown) {
-            movePRight();
-            swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
-            if(movingRight) {
-                player.animations.play('attackR');
-            } else {
-                player.animations.play('attackL');
-            }
-            if(game.physics.arcade.collide(this.hitbox,door)){
-               dhealth-5;
-               }
-            //creates shuriken on command
-        } else if(throwButton.isDown && canThrow){
-            canThrow = false;
-            if(playerShurikenTotal > 0){
-                playerShurikenTotal--;
-                //shuriken throw animation
-                if(movingRight) {
-                    player.animations.play('pShurikenThrowAnimationR');
-                } else {
-                    player.animations.play('pShurikenThrowAnimationL');
-                }
-                playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
-            }
-
-        } else {
-            //  Stand still
-            player.animations.stop();
-            if(movingRight) {
-                player.frame = 0;
-            } else {
-                player.frame = 5;
-            }
-            player.body.velocity.x = 0;
-        }
         
-        //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
-        //  Allow the player to jump if they are touching the ground.
-        if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
-            player.body.velocity.y = -700;
-            hitPlatform = false;
-        }
-    }
-    
     //reading data for enemy spawn points
     if(this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != -1) { //spawning enemies, check for array bounds
         if(player.x >= this.enemyLocData.enemySpawnLoc[enemyLocIndex].x - 500 && this.enemyLocData.enemySpawnLoc[enemyLocIndex].x != lastEnemyX) {
@@ -1107,6 +1010,103 @@ function u1() {
             itemDropArray.splice(i, 1);
         }
     }
+    //add the sound effect 
+    //movement tree for player
+    if(pFlinchToL.isPlaying) {
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = -100;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    }else if(pFlinchToLD.isPlaying){
+        if(player.frame != 32 || player.frame != 33 || player.frame != 34) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if (pFlinchToR.isPlaying) {
+        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
+            player.body.velocity.x = 100;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else if(pFlinchToRD.isPlaying){
+        if(player.frame != 39 || player.frame != 40 || player.frame != 41) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+        } else {
+            player.body.velocity.x = 0;
+            player.body.velocity.y=0;
+
+        }
+    } else {
+        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
+            if(cursors.right.isDown) {
+                movePRightM();
+                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackRM"); 
+            } else {
+                movePLeftM();
+                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                player.animations.play("attackLM");
+            }
+        } else if (cursors.left.isDown) {
+            movePLeft();
+            swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if (cursors.right.isDown) {
+            movePRight();
+            swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+        } else if(attackButton.isDown) { //attackbutton (aka f) is pushed down, if not pushed down, player stops
+            if(movingRight) {
+                player.animations.play('attackR');
+            } else {
+                player.animations.play('attackL');
+            }
+            if(game.physics.arcade.collide(this.hitbox,door)){
+               dhealth-5;
+               }
+            //creates shuriken on command
+        } else if(throwButton.isDown && canThrow){
+            canThrow = false;
+            if(playerShurikenTotal > 0){
+                playerShurikenTotal--;
+                //shuriken throw animation
+                if(movingRight) {
+                    player.animations.play('pShurikenThrowAnimationR');
+                } else {
+                    player.animations.play('pShurikenThrowAnimationL');
+                }
+                playerShurikens.push(new Shuriken(game, player.x + 50, player.y + 50, !movingRight));
+            }
+
+        } else {
+            //  Stand still
+            player.animations.stop();
+            if(movingRight) {
+                player.frame = 0;
+            } else {
+                player.frame = 5;
+            }
+            player.body.velocity.x = 0;
+        }
+        
+        //note: removing player.body.touching.down allows player to jump, but means player can jump when alongside walls
+        //  Allow the player to jump if they are touching the ground.
+        if (cursors.up.isDown && hitPlatform && player.body.onFloor()) {
+            player.body.velocity.y = -700;
+            hitPlatform = false;
+        }
+    }
+
 }
 
 //timertext code
