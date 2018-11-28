@@ -12,7 +12,7 @@ var textNotCreated1 = true;
 this.boxGone1 = false;
 
 //textbox code
-function createText() {
+function createText0() {
 
     playerHealth = game.add.text(38,2, '', { fontSize: '32px', fill: '#fff' });
 
@@ -164,8 +164,14 @@ var moan;
 var pFlinchToL, pFlinchToR;
 var msgBox;
 
+//timertext code
+var timeText1_st0;
+
 function c_0() {
-    textNotCreated1 = true;
+    //timertext code
+    game.timer = game.time.create(false);
+    
+    textNotCreated1_st0 = true;
     //  Physics
     game.world.setBounds(0, 0, 800, 416);
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -306,6 +312,16 @@ var spikes_layer;
 
 
 function u_0() {
+    
+    //timertext code
+    if (textNotCreated1_st0){
+        createText1_st0();
+        game.timer.start();
+    }
+    seconds_st0 = Math.round(game.timer.seconds*10)/10 + seconds;
+    
+    timeText_st0.text = "Time: " + seconds_st0.toFixed(1);
+    
     if(pHealth>=75){
         healthBar.tint=0x00FF00
     }
@@ -441,7 +457,7 @@ function u_0() {
         //console.log(textNotCreated1)
         //console.log(textNotCreated1);
         if (textNotCreated1){
-            createText();
+            createText0();
             textNotCreated1 = false;
             
             console.log("Text created in update")
@@ -461,6 +477,15 @@ function u_0() {
         this.boxGone1 = true;
         //console.log("hidden")
     }
+    
+    //timertext code
+    function createText1_st0(){
+        timeText_st0 = game.add.text(38,388, 'time: 42.3', { fontSize: '23px', fill: '#fff' })
+        timeText_st0.font = 'Revalia';
+        timeText_st0.fixedToCamera=true;
+        textNotCreated1_st0 = false;
+    }
+    
     
 }
 

@@ -12,17 +12,17 @@ var msgBox;
 this.boxGone1 = false;
 
 //textbox code
-function createText() {
+function createText2() {
 
     playerHealth = game.add.text(38,2, '', { fontSize: '30px', fill: '#fff' });
     
-    scoreText = game.add.text(200,2,'score: ', {fontSize: '30px', fill: '#fff'});
+    //scoreText = game.add.text(200,2,'score: ', {fontSize: '30px', fill: '#fff'});
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
     
-    scoreText.font = 'Revalia';
-    scoreText.fixedToCamera=true;
+    //scoreText.font = 'Revalia';
+    //scoreText.fixedToCamera=true;
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
@@ -774,8 +774,16 @@ var pFlinchToL, pFlinchToR;
 var pFlinchToLD, pFlinchToRD;
 var tutorial_done=false;
 var doggoArray = [];
+//timertext code
+var timeText1_st2;
+
 
 function c2() {
+    
+    //timertext code
+    game.timer = game.time.create(false);
+    
+    textNotCreated1_st2 = true;
     
     //sumoMusic.mute = true;
 
@@ -915,6 +923,16 @@ var hitSpikes = false;
 
 
 function u2() {
+    //timertext code
+    if (textNotCreated1_st2){
+        createText1_st2();
+        game.timer.start();
+    }
+    seconds_st2 = Math.round(game.timer.seconds*10)/10 + seconds_st1; 
+    
+    timeText_st2.text = "Time: " + seconds_st2.toFixed(1);
+    
+    
     if(pHealth>=75){
         healthBar.tint=0x00FF00
     }
@@ -939,7 +957,7 @@ function u2() {
         //console.log(textNotCreated1)
         //console.log(textNotCreated1);
         if (textNotCreated1){
-            createText();
+            createText2();
             textNotCreated1 = false;
             
             console.log("Text created in update")
@@ -962,7 +980,7 @@ function u2() {
     
     /*
     if (this.boxGone){
-        createText()
+        createText2()
     }
     */
     //  Collide the player and the stars with the platforms
@@ -1370,6 +1388,15 @@ function u2() {
     }
     
 }
+
+
+//timertext code
+function createText1_st2(){
+        timeText_st2 = game.add.text(38,388, 'time: 42.3', { fontSize: '23px', fill: '#fff' })
+        timeText_st2.font = 'Revalia';
+        timeText_st2.fixedToCamera=true;
+        textNotCreated1_st2 = false;
+    }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 

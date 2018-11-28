@@ -12,7 +12,7 @@ var msgBox;
 this.boxGone2 = false;
 
 //textbox code
-function createText() {
+function createText1() {
 
     playerHealth = game.add.text(38,2, 'Sam HP: 100', { fontSize: '30px', fill: '#fff' });
 
@@ -577,8 +577,17 @@ var pFlinchToLD, pFlinchToRD;
 var tutorial_done = false;
 var moan;
 
+//timertext code
+var timeText1_st1;
+
 
 function c1() {
+    
+    //timertext code
+    game.timer = game.time.create(false);
+    
+    textNotCreated1_st1 = true;
+    
     playerHealth = "";
     textNotCreated2 = true;
 
@@ -703,6 +712,16 @@ var mustStay = false; //whether camera is fixed or not
 var smokeArray = [];
 
 function u1() {
+    //timertext code
+    if (textNotCreated1_st1){
+        createText1_st1();
+        game.timer.start();
+    }
+    seconds_st1 = Math.round(game.timer.seconds*10)/10 + seconds_st0;
+    
+    timeText_st1.text = "Time: " + seconds_st1.toFixed(1);
+    
+    
     if(pHealth>=75){
         healthBar.tint=0x00FF00
     }
@@ -728,7 +747,7 @@ function u1() {
         //console.log(textNotCreated2)
         //console.log(textNotCreated2);
         if (textNotCreated2){
-            createText();
+            createText1();
             textNotCreated2 = false;
             
             console.log("Text created in update")
@@ -1089,6 +1108,14 @@ function u1() {
         }
     }
 }
+
+//timertext code
+function createText1_st1(){
+        timeText_st1 = game.add.text(38,388, 'time: 42.3', { fontSize: '23px', fill: '#fff' })
+        timeText_st1.font = 'Revalia';
+        timeText_st1.fixedToCamera=true;
+        textNotCreated1_st1 = false;
+    }
 
 //note: some functions are small, but are as functions with the idea that more will be added to them later
 

@@ -8,11 +8,12 @@ var st_tut = {
 //textbox code
 var msgBox;
 var textNotCreated = true;
+var textNotCreated_tut1 = true;
 //  The Google WebFont Loader will look for this object, so create it before loading the script.
 WebFontConfig = {
 
     //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
+    //  We set a 1 second delay before calling 'createText_tut'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
     active: function() { game.time.events.add(Phaser.Timer.SECOND*5, function(){}, this); },
     
@@ -24,7 +25,7 @@ WebFontConfig = {
 };
 
 //textbox code
-createText = function() {
+function createText_tut() {
     
     console.log("Text instructions, health created");
 
@@ -32,6 +33,8 @@ createText = function() {
 
 	playerHealth.font = 'Revalia';
     playerHealth.fixedToCamera=true;
+
+	
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
@@ -40,6 +43,15 @@ createText = function() {
     
     textNotCreated = false;
 }
+
+//timertext code
+function createText_tut1(){
+    timeText_tut = game.add.text(38,388, 'time: 42.3', { fontSize: '23px', fill: '#fff' })
+    timeText_tut.font = 'Revalia';
+    timeText_tut.fixedToCamera=true;
+    textNotCreated_tut1 = false;
+}
+
 
 function p_tut() {
     game.load.audio('sumoMusic', ['assets/audio/boss fight music.ogg', 'assets/audio/boss fight music.mp3']);
@@ -72,6 +84,10 @@ var bossHealth; //keeps track of total boss health
 var sumoMusic; //boss music
 var instructions; //game instructions'
 var tutorial_done=false;
+
+//timertext code
+var timeText_tut;
+
 
 
 //textbox code
@@ -167,7 +183,10 @@ this.boxGone = false;
 
 function c_tut() {
     textNotCreated = true;
+    //timertext code
+    game.timer = game.time.create(false);
     //game.state.restart(true,true);
+    
     
     //  Physics
     game.world.setBounds(0, 0, 800, 416);
@@ -275,7 +294,7 @@ var dHealth = 5; //player health
 var movingRight=true;
 
 function u_tut() {
-    console.log(game.score);
+    //console.log(game.score);
     if (pHealth>100){
         pHealth=100;
         healthBar.width=200*(pHealth/100);
@@ -285,6 +304,15 @@ function u_tut() {
         healthBar.width=200*(pHealth/100);
     }
     
+    //timertext code
+    if (textNotCreated_tut1){
+        createText_tut1();
+        game.timer.start();
+    }
+    seconds = Math.round(game.timer.seconds*10)/10 - 1;
+    
+    timeText_tut.text = "Time: " + seconds.toFixed(1);
+    
     //textbox code
     if (this.boxGone){
         //console.log(this.boxGone);
@@ -292,10 +320,11 @@ function u_tut() {
         //console.log(textNotCreated)
         
         if (textNotCreated){
-            createText();
+            createText_tut();
             textNotCreated = false;
             console.log("Text created in update")
         }
+        
     }
     
     //  Collide the player and the stars with the platforms

@@ -155,10 +155,16 @@ var pFlinchToR;
 var pFlinchToLD;
 var sumoHitboxes;
 var sumoInnerHitbox;
+//timertext code
+var timeText1_stboss;
 
 
 
 function c1() {
+    //timertext code
+    game.timer = game.time.create(false);
+    
+    textNotCreated1_stboss = true;
     //playerHealth.text = "" + playerShurikenTotal; //player health is updated with current health and weapon left
 
     this.sumo_alive = true
@@ -323,6 +329,15 @@ var movingRight=true;
 var canCreateSmoke = true;
 
 function u1() {
+    
+    //timertext code
+    if (textNotCreated1_stboss){
+        createText1_stboss();
+        game.timer.start();
+    }
+    seconds_stboss = Math.round(game.timer.seconds*10)/10 + seconds_st2; 
+    
+    timeText_stboss.text = "Time: " + seconds_stboss.toFixed(1);
 
     //console.log(this.tintChange)
     if (this.tintChange){
@@ -574,6 +589,13 @@ function u1() {
     }
 }
 
+//timertext code
+function createText1_stboss(){
+        timeText_stboss = game.add.text(38,388, 'time: 42.3', { fontSize: '23px', fill: '#fff' })
+        timeText_stboss.font = 'Revalia';
+        timeText_stboss.fixedToCamera=true;
+        textNotCreated1_stboss = false;
+    }
 
 function r1() {
 //    game.debug.body(sumoInnerHitbox);

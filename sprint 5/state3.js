@@ -18,6 +18,8 @@ var imageArray2;
 var nextButton;
 var canChange = true;
 var index = 0;
+var textNotCreated_victory = true;
+var timeText_victory;
 
 function c3() {
     sumoMusic.mute = true;
@@ -45,6 +47,12 @@ function u3() {
     
 }
 
+function createText_victory(){
+    timeText_victory = game.add.text(276,290, seconds_stboss.toFixed(1) + ' s', { fontSize: '50px', fill: '#000' })
+    timeText_victory.font = 'Revalia';
+    textNotCreated_victory = false;
+}
+
 function displayBackground2(name) {
     image = game.add.sprite(0, 0, imageArray2[name]);
     image.width = game.width;
@@ -55,6 +63,14 @@ function displayBackground2(name) {
         image.y = image.y - 20;
         //image.scale.setTo()
     }
+    
+    //be sure to change to number greater than three when image added
+    if(name == 3 && textNotCreated_victory){
+        createText_victory();
+        textNotCreated_victory = false;   
+    }
+    
+    
 //    game.physics.enable(image, Phaser.Physics.ARCADE);
 //    instructions = game.add.sprite(360,345,'Skip and Continue');
 //    game.physics.enable(instructions, Phaser.Physics.ARCADE);

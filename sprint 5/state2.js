@@ -32,7 +32,7 @@ function c2() {
 }
 
 function u2() {
-    console.log(game.score);
+    //console.log(game.score);
     if(restart.isDown){
         //game.cache = new Phaser.Cache(game);
         //game.load.reset();
