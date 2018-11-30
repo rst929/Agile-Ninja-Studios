@@ -1,8 +1,0 @@
-{
-        "enemySpawnLoc": [ 
-            {"x": 200, "y": -150, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 150, "xBoundR": 250},
-            {"x": 550, "y": -150, "type": 2, "drop": 0, "directionIsL": false, "xBoundL": 520, "xBoundR": 580},
-            {"x": -1, "y": -1, "type": -1, "drop": 0}
-        ]
-                        
-}
