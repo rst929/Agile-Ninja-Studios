@@ -1311,8 +1311,8 @@ function u2() {
                 if(game.physics.arcade.collide(shurikenThrowerArray[i].shurikenThrower, spikes_layer)) {
                     smokeArray.push(new SmokeCloud(game, shurikenThrowerArray[i].shurikenThrower.x, shurikenThrowerArray[i].shurikenThrower.y));
                     shurikenThrowerArray[i].shurikenThrower.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
-                    shurikenThrowerArray[i].splice(i, 1);
-
+                    shurikenThrowerArray.splice(i, 1);
+                    break;
                     if(shurikenThrowerArray.length == 0) {
                         break;
                     }
