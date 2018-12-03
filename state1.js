@@ -525,6 +525,7 @@ function u1() {
                 playerShurikens[j].shuriken.destroy(); //if attacked returns true, means enemy is dead and therefore 'destroyed'
                 playerShurikens.splice(j, 1);
                 bHealth=bHealth-2;
+                sumo.tint = 0xff0000;
                 bossHealth.width = (bHealth/100)*200;
             }
     }    
