@@ -278,10 +278,10 @@ Doggo = function(game, x, y, goingL, xBoundL, xBoundR) {
     this.moveNew = function() {
         if(this.movingL && this.doggo.body.x > this.xBoundL) { //if going 
             this.doggo.animations.play("runL");
-            this.doggo.body.velocity.x = -300;
+            this.doggo.body.velocity.x = -400;
         } else if(!this.movingL && this.doggo.body.x < this.xBoundR) {
             this.doggo.animations.play("runR");
-            this.doggo.body.velocity.x = 300;
+            this.doggo.body.velocity.x = 400;
         } else {
             if(this.timerCanRun) {
                 this.timerEvent = this.timer.add(Phaser.Timer.SECOND * 1, this.endTimer, this);
@@ -921,6 +921,8 @@ var mustStay = false; //whether camera is fixed or not
 var moan;
 var hitSpikes = false;
 
+
+//var seconds_st1 = 10; //comment me out!!!
 
 function u2() {
     //timertext code

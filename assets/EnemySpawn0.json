@@ -1,12 +1,12 @@
 {
         "enemySpawnLoc": [ 
-            {"x": 800, "y": -200, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 450, "xBoundR": 920},
+            {"x": 970, "y": -300, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 450, "xBoundR": 920},
             {"x": 1584, "y": -150, "type": 1, "drop": 1},
-            {"x": 2380, "y": -200, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 1924, "xBoundR": 2389},
+            {"x": 2330, "y": -200, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 1924, "xBoundR": 2389},
             {"x": 3000, "y": -150, "type": 0, "drop": 2},
             {"x": 3064, "y": -150, "type": 0, "drop": 2},
             {"x": 3100, "y": -150, "type": 0, "drop": 2},
-            {"x": 3450, "y": -200, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 3250, "xBoundR": 3500},
+            {"x": 3520, "y": -200, "type": 2, "drop": 0, "directionIsL": true, "xBoundL": 3250, "xBoundR": 3500},
             {"x": 3975, "y": -150, "type": 1, "drop": 1},
             {"x": 4385, "y": -150, "type": 1, "drop": 1},
             {"x": -1, "y": -1, "type": -1, "drop": 0}
