@@ -257,6 +257,8 @@ function c_0() {
     player.animations.add('attackRM', [42, 43, 44], 10, true);
     pFlinchToL = player.animations.add('pFlinchToL', [20, 21, 22, 23, 23, 23, 22, 21, 20], 15, false);
     pFlinchToR = player.animations.add('pFlinchToR', [24, 25, 26, 27, 27, 27, 26, 25, 24], 15, false);
+    pFlinchToLDS = player.animations.add('pFlinchToLDS', [28, 29, 30, 31, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34, 33, 33, 32, 32, 33, 33, 34, 34], 15, false);
+    pFlinchToRDS = player.animations.add('pFlinchToRDS', [35, 36, 37, 38, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41, 40, 40, 39, 39, 40, 40, 41, 41], 15, false);
     
     cursors = game.input.keyboard.createCursorKeys();
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
@@ -313,6 +315,7 @@ var map;
 var stone_platforms;
 var background;
 var spikes_layer;
+var canDie = true;
 
 
 
@@ -349,7 +352,15 @@ function u_0() {
     game.physics.arcade.collide(player, stone_platforms, function(){hitPlatform = true}); //collide with platform (i.e. ground) check
     game.physics.arcade.collide(player, spikes_layer, function(){
         hitSpikes = true; 
-        pHealth = pHealth - 50;
+        if(pHealth > 0) {
+            pHealth = pHealth - 50;
+        } else if (pHealth < 0) {
+            pHealth = 0;
+        }
+        if(canDie) {
+            player.animations.play("pFlinchToLDS");
+            canDie = false;
+        }
         healthBar.width = (pHealth/100)*200;
     }); //collide with platform (i.e. ground) check
     game.physics.arcade.TILE_BIAS = 40;
@@ -362,48 +373,50 @@ function u_0() {
     var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
     var runIntoDoor = game.physics.arcade.overlap(player, door); // Overlap with player and door
     //movement tree for player
-    if(pFlinchToL.isPlaying) {
-        player.body.velocity.x = -100;
-    } else if (pFlinchToR.isPlaying) {
-        player.body.velocity.x = 100;
-    } else {
-        if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
-            if(cursors.right.isDown) {
-                movePRightM();
-                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-                player.animations.play("attackRM"); 
-            } else {
-                movePLeftM();
-                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-                player.animations.play("attackLM");
-            }
-            if(swordHit) { 
-               dHealth-=5;
-            }
-        } else if (cursors.left.isDown) {
-            movePLeft();
-            swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        } else if (cursors.right.isDown) {
-            movePRight();
-            swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
-        } else if(attackButton.isDown) {
-            if(movingRight){
-                player.animations.play("attackR");
-            }else{
-                player.animations.play("attackL");
-            }
-            if(swordHit) { 
-               dHealth-=5;
-            }
-
+    if(!pFlinchToLDS.isPlaying && !pFlinchToRDS.isPlaying) {
+        if(pFlinchToL.isPlaying) {
+            player.body.velocity.x = -100;
+        } else if (pFlinchToR.isPlaying) {
+            player.body.velocity.x = 100;
         } else {
-            //  Stand still
-            if(movingRight) {
-                player.frame = 0;
+            if ((cursors.right.isDown || cursors.left.isDown) && attackButton.isDown) {
+                if(cursors.right.isDown) {
+                    movePRightM();
+                    swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                    player.animations.play("attackRM"); 
+                } else {
+                    movePLeftM();
+                    swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+                    player.animations.play("attackLM");
+                }
+                if(swordHit) { 
+                   dHealth-=5;
+                }
+            } else if (cursors.left.isDown) {
+                movePLeft();
+                swordHitbox.body.setSize(40, 60, 0, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+            } else if (cursors.right.isDown) {
+                movePRight();
+                swordHitbox.body.setSize(40, 60, 55, 20); //hitbox parameters for sword (adjust these to work with sam's sprite)
+            } else if(attackButton.isDown) {
+                if(movingRight){
+                    player.animations.play("attackR");
+                }else{
+                    player.animations.play("attackL");
+                }
+                if(swordHit) { 
+                   dHealth-=5;
+                }
+
             } else {
-                player.frame = 5;
+                //  Stand still
+                if(movingRight) {
+                    player.frame = 0;
+                } else {
+                    player.frame = 5;
+                }
+                player.body.velocity.x = 0;
             }
-            player.body.velocity.x = 0;
         }
     }
 
@@ -432,7 +445,7 @@ function u_0() {
     var tutorial_done = false
     
     //if player has no health, go to game over state
-    if(pHealth <= 0) {
+    if(pHealth <= 0 && !pFlinchToLDS.isPlaying && !pFlinchToRDS.isPlaying) {
         game.score = -2000;
         game.state.start('state2');
     }
