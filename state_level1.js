@@ -10,6 +10,7 @@ var stateVar = 1
 var textNotCreated2 = true;
 var msgBox;
 this.boxGone2 = false;
+var w = 800, h = 416;
 
 //textbox code
 function createText1() {
@@ -21,9 +22,10 @@ function createText1() {
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions3 = game.add.text(38,86, 'tap p twice to pause, press any key to resume', {fontSize: '22px', fill:'#fff'});
     instructions2.font = 'Permanent Marker';
     instructions.font = 'Permanent Marker';
-    
+    instructions3.font = 'Permanent Marker';
     textNotCreated2 = false;
 }
 
@@ -134,6 +136,7 @@ function p1() {
     game.load.image('purple_tile', 'assets/tilemap/stonetilepurple.png')
     game.load.image('stone_tile', 'assets/tilemap/stone_tile2.png');
     game.load.image('castle_tile', 'assets/tilemap/castle_background_v2.png');
+    game.load.image('menu', 'assets/number-buttons-90x90.png', 270, 180);
     
     //  Load the Google WebFont Loader script
 
@@ -693,6 +696,8 @@ function c1() {
     moan = game.add.audio('moan');
 
     msgBox1 = new showMessageBox1("Are those footsteps? Here's hoping the puracebo works as advertised... (press spacebar)");
+    // Create a label to use as a button
+    
     
 }
 
