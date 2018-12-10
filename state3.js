@@ -10,6 +10,7 @@ function p3() {
     game.load.image('leavingCastle2', 'assets/VictoryCutscenePics/leavingCastle2.png');
     game.load.image('leavingCastle3', 'assets/VictoryCutscenePics/leavingCastle3.png');
     game.load.image('Victory', 'assets/VictoryCutscenePics/Victory.png');
+    game.load.image('Credits', 'Video/end credits2a.png')
     this.load.text('vicSceneJSON', 'assets/VictoryCutscenePics/VicCutsceneImageOrder.json');
 }
 
@@ -27,7 +28,7 @@ function c3() {
 //    var style = { font: "bold 40px Algerian", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 //    win = game.add.text(265, 150, 'VICTORY', style);
     
-    imageArray2 = ["leavingCastle1", "leavingCastle2", "leavingCastle3", "Victory"];
+    imageArray2 = ["leavingCastle1", "leavingCastle2", "leavingCastle3", "Victory", "Credits"];
     this.vicData = JSON.parse(this.game.cache.getText('vicSceneJSON'));
     nextButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //dialogue skip button
     displayBackground2(this.vicData.VicScene[0].type)
@@ -53,6 +54,7 @@ function createText_victory(){
     textNotCreated_victory = false;
 }
 
+
 function displayBackground2(name) {
     image = game.add.sprite(0, 0, imageArray2[name]);
     image.width = game.width;
@@ -69,6 +71,10 @@ function displayBackground2(name) {
         createText_victory();
         textNotCreated_victory = false;   
     }
+    
+    /*if(name == 4){
+        image.width = game.width-225
+    }*/
     
     
 //    game.physics.enable(image, Phaser.Physics.ARCADE);

@@ -182,6 +182,22 @@ var healthBar;
 this.boxGone = false;
 
 function c_tut() {
+    
+        this.pauseButton = this.game.add.sprite(this.game.world.centerX + 320, this.game.world.centerY - 280, 'sprites', 'pause-button');
+    this.pauseButton.inputEnabled = true;
+    this.pauseButton.fixedToCamera = true;
+    this.pauseButton.events.onInputUp.add(function() {
+        this.game.paused = true;
+        this.pauseButton.tint = 16711680;
+    }, this);
+    this.game.input.onDown.add(function() {
+        if (this.game.paused) this.game.paused = false;
+        this.pauseButton.tint = 16777215;
+    }, this);
+
+    
+    
+    
     textNotCreated = true;
     //timertext code
     game.timer = game.time.create(false);
