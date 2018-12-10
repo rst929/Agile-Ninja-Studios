@@ -38,6 +38,8 @@ function createText_tut() {
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions3 = game.add.text(38,86, 'tap p twice to pause, press any key to resume', {fontSize: '22px', fill:'#fff'});
+    instructions3.font = 'Permanent Marker';
     instructions2.font = 'Permanent Marker';
     instructions.font = 'Permanent Marker';
     

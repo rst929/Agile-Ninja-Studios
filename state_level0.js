@@ -4,7 +4,11 @@ var st_lev0 = {
     update: u_0,
     render: r_0
 }
-
+window.onkeydown = function() {
+            if (game.input.keyboard.event.keyCode == 80){
+                game.paused = !game.paused;
+            }
+        }
 var varState = 0;
     
 //textbox code
@@ -21,9 +25,10 @@ function createText0() {
     
     instructions = game.add.text(38,38, 'use arrow keys to move, up key to jump, f key to attack', {fontSize: '22px', fill:'#fff'});
     instructions2 = game.add.text(38,62, 'use d key to throw shuriken when you have them', {fontSize: '22px', fill:'#fff'});
+    instructions3 = game.add.text(38,86, 'tap p twice to pause, press any key to resume', {fontSize: '22px', fill:'#fff'});
     instructions2.font = 'Permanent Marker';
     instructions.font = 'Permanent Marker';
-    
+    instructions3.font = 'Permanent Marker';
     textNotCreated1 = false;
 }
 
