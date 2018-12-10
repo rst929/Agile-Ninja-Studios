@@ -10,7 +10,7 @@ function p3() {
     game.load.image('leavingCastle2', 'assets/VictoryCutscenePics/leavingCastle2.png');
     game.load.image('leavingCastle3', 'assets/VictoryCutscenePics/leavingCastle3.png');
     game.load.image('Victory', 'assets/VictoryCutscenePics/Victory.png');
-    game.load.image('Credits', 'Video/end credits2a.png')
+    game.load.image('Credits', 'Video/end_credits2a.png')
     this.load.text('vicSceneJSON', 'assets/VictoryCutscenePics/VicCutsceneImageOrder.json');
 }
 

@@ -20,7 +20,7 @@ function p0() {
     game.load.image('surprisesam1', 'assets/surprisesam1.png');
     game.load.image('surprisesam2', 'assets/surprisesam2.png');
     game.load.image('surprisesam3', 'assets/surprisesam3.png');
-    game.load.image('credits1', 'video/end credits1.png')
+    game.load.image('credits1', 'video/end_credits1.png')
     game.load.image('Skip and Continue', 'assets/Skip and Continue.png');
     
     this.load.text('barText', 'assets/cutscene1Text.json');
@@ -62,7 +62,7 @@ function c0() {
     image1 = game.add.sprite(100,0, 'credits1');
     image1.width = game.width - 225;
     image1.height = game.height;
-    instructions = game.add.sprite(360,345,'Skip and Continue');
+    instructions = game.add.sprite(320,345,'Skip and Continue');
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
     
     
@@ -153,7 +153,7 @@ function displayBackground(name) {
         //image.scale.setTo()
     }
     game.physics.enable(image, Phaser.Physics.ARCADE);
-    instructions = game.add.sprite(360,345,'Skip and Continue');
+    instructions = game.add.sprite(320,345,'Skip and Continue');
     game.physics.enable(instructions, Phaser.Physics.ARCADE);
 
 }
