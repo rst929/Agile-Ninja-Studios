@@ -20,7 +20,7 @@ function p0() {
     game.load.image('surprisesam1', 'assets/surprisesam1.png');
     game.load.image('surprisesam2', 'assets/surprisesam2.png');
     game.load.image('surprisesam3', 'assets/surprisesam3.png');
-    game.load.image('credits1', 'video/end_credits1.png')
+    game.load.image('credits1', 'Video/end_credits1.png')
     game.load.image('Skip and Continue', 'assets/Skip and Continue.png');
     
     this.load.text('barText', 'assets/cutscene1Text.json');
