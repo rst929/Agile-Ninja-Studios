@@ -10,7 +10,7 @@ function p3() {
     game.load.image('leavingCastle2', 'assets/VictoryCutscenePics/leavingCastle2.png');
     game.load.image('leavingCastle3', 'assets/VictoryCutscenePics/leavingCastle3.png');
     game.load.image('Victory', 'assets/VictoryCutscenePics/Victory.png');
-    game.load.image('Credits', 'Video/end_credits2a.png')
+    game.load.image('Credits', 'assets/end_credits2a.png')
     this.load.text('vicSceneJSON', 'assets/VictoryCutscenePics/VicCutsceneImageOrder.json');
 }
 
@@ -23,7 +23,7 @@ var textNotCreated_victory = true;
 var timeText_victory;
 
 function c3() {
-    //sumoMusic.mute = true;
+    sumoMusic.mute = true;
     game.stage.backgroundColor = '#000000'
 //    var style = { font: "bold 40px Algerian", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
 //    win = game.add.text(265, 150, 'VICTORY', style);
