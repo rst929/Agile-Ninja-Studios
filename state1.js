@@ -327,6 +327,7 @@ var playerVulnerable = true; //if player is vulnerable (out of 'i frames')
 var sumoVulnerable = true; // if sumo is vulnerable (out of 'i frames')
 var movingRight=true;
 var canCreateSmoke = true;
+var notFirstHit = false;
 
 function u1() {
     
@@ -402,9 +403,7 @@ function u1() {
     //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms); //collide with platform (i.e. ground) check
     var hitPlatform2 = game.physics.arcade.collide(sumo, platforms);
-    
     var hitPlatform3 = game.physics.arcade.collide(door, platforms); //collide with platform (i.e. ground) check
-    
     var hitPlatform4 = game.physics.arcade.collide(door, platforms)
     
     var swordHit = game.physics.arcade.overlap(door, hitbox); // Overlap with sword and player 2
@@ -563,7 +562,7 @@ function u1() {
     }
     
     //if player runs into sumo, damage him
-    if(runIntoSumo) {
+    if(runIntoSumo && notFirstHit) {
         if(playerVulnerable && !pFlinchToL.isPlaying) {
             pDamage(3);
             if(pHealth <= 0) {
@@ -574,6 +573,8 @@ function u1() {
             moan.play();
             playerVulnerable = false;
         }
+    } else if(runIntoSumo) {
+        notFirstHit = true;
     }
     
     //check for winning/defeat conditions
